@@ -16,12 +16,20 @@ class TYPES
 	B	t2;
 	C	t3;
 
+	TYPES() { }
 	TYPES(const A& i, const B& f, const C& s) : t1(i), t2(f), t3(s) { }
 	~TYPES() { }
 };
 
 template <typename A, typename B, typename C>
-std::ostream& operator<<(std::ostream& os, const TYPES<A, B, C>& t) { return (os << "{" << t.t1 << "} {" << t.t2 << "} {" << t.t3 << "}"); }
+std::ostream& operator<<(std::ostream& os, const TYPES<A, B, C>& t) { return (os << "{" << t.t1 << "} {" << t.t2 << "} {" << t.t3 << "} "); }
+
+
+
+// NOTE: To compile put the boolean operators in comment
+
+
+
 
 void			vector_test_exp()
 {
@@ -40,7 +48,7 @@ void			vector_test_exp()
 
 		/* Test At */
 		fd << "Test \'at\' 1: Element in range: " << vec.at(1) << std::endl;
-		fd << "Test \'at\' 2: Element out of range: " << vec.at(420) << std::endl;
+		//fd << "Test \'at\' 2: Element out of range: " << vec.at(420) << std::endl;
 
 		/* Test operator[] */
 		fd << "Test \'at\' 1: Element in range: " << vec[1] << std::endl;
@@ -48,7 +56,7 @@ void			vector_test_exp()
 
 		/* Test front */
 		fd << "Test \'front\' 1: With elem: " << vec.front() << std::endl;
-		fd << "Test \'front\' 2: Without elem: " << empty.front() << std::endl;
+		//fd << "Test \'front\' 2: Without elem: " << empty.front() << std::endl;
 
 		/* Test back */
 		fd << "Test \'front\' 1: With elem: " << vec.front() << std::endl;
@@ -111,7 +119,7 @@ void			vector_test_exp()
 		//fd << "Last before: " << empty.at(empty.size() - 1) << std::endl;
 		fd << "Size before: " << empty.size() << std::endl;
 		vec.push_back(TYPES<int, float, std::string>(65, 65.0f, "VECTOR65"));
-		fd << "Last after: " << empty.at(empty.size() - 1) << std::endl;
+		//fd << "Last after: " << empty.at(empty.size() -	 1) << std::endl;
 		fd << "Size after: " << empty.size() << std::endl;
 
 		/* Test pop back */
