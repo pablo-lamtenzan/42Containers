@@ -25,4 +25,23 @@ namespace FT_NAMESPACE
 
 	template <bool Cond, typename Iftrue, typename Iffalse>
 	struct conditional_type<true, Iftrue, Iffalse> { typedef Iftrue type; };
+
+	struct true_type { };
+	struct false_type { };
+
+	/// Compare for equty types
+	template <typename, typename>
+	struct are_same
+	{
+		enum { value = 0 };
+		typedef false_type type;
+	};
+
+	template<typename T>
+	struct are_same<T, T>
+	{
+		enum { value = 1 };
+		typedef true_type type;
+	};
+
 };
