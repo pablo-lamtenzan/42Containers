@@ -21,7 +21,7 @@ namespace FT_NAMESPACE
 	 * 
 	 * 	@tparam Target: the target type.
 	 * 	@tparam Required: the required type.
-	 * 	@return If Target == Required return true.
+	 * 	@return If @code Target == Required @endcode return true.
 	*/
 	template <typename Target, typename Required>
 	inline bool check_type()
