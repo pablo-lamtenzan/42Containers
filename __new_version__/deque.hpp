@@ -8,6 +8,8 @@
 
 # include <ft_containers.hpp>
 
+# define FT_MAX(x, y) x > y ? x : y
+
 /**
  * 	@brief Deque node size MACROS
  * 
@@ -71,7 +73,7 @@ namespace FT_NAMESPACE
 		 * 
 		 * 	Fast-use of the MACROS.
 		*/
-		static size_type		get_node_size() { return (FT_DEQUE_BUFF_SIZE(sizeof(value_type)); }
+		size_type				get_node_size() { return (FT_DEQUE_BUFF_SIZE(sizeof(value_type)); }
 
 		/* Core:
 		* (see: futher explenation in deque class)
@@ -315,5 +317,167 @@ namespace FT_NAMESPACE
 		}
 	};
 
-	
+	/**
+	 * 	@brief deque_algorithm
+	 * 
+	 * 	This class is the base class of @c deque it allocates and destroy but dont
+	 * 	initialise the data
+	*/
+	template <class T, class Allocator>
+	class deque_algorithm
+	{
+		/* Member types */
+
+		protected:
+
+		typedef T				value_type;
+		typedef value_type*		pointer;
+		typedef const pointer	const_pointer;
+		typedef value_type&		reference;
+		typedef const reference	const_reference;
+		typedef Allocator		allocator_type;
+
+		typedef deque_iterator<T, reference, pointer>				iterator;
+		typedef deque_iterator<T, const_reference, const_pointer>	const_iterator;
+
+		typedef typename iterator::difference_type	difference_type;
+		typedef typename iterator::Node_ptr			Node_ptr;
+		typedef typename iterator::Map_ptr			Map_ptr;
+		typedef typename iterator::size_type		size_type;
+
+		/* Core:
+		 * 
+		 * head -> A %deque_iterator at the front of the deque.
+		 * tail -> A %deque_iterator at the back of the deque.
+		 * map -> An array of pointer to arrays of T.
+		 * map_size -> The size of the map. */
+		iterator		head;
+		iterator		tail;
+		Map_ptr			map;
+		size_type		map_size;
+
+		allocator_type	memory;
+		enum { map_initial_size = 8 };
+
+		/* Constructor */
+
+		/**
+		 * 	@brief Default Constructor
+		*/
+		deque_algorithm() : head(), tail(), map(), map_size() { }
+
+		deque_algorithm(const allocator_type& alloc) : memory(alloc) { }
+
+		using iterator::get_node_size;
+
+		/**
+		 * 	@brief Allocate node
+		 * 
+		 * 	Fast use of allocator.
+		*/
+		pointer		alg_allocate_node()
+		{
+			return (memory.allocate(get_node_size()))
+		}
+
+		/**
+		 * 	@brief Deallocate node
+		 * 
+		 * 	Fast use deallocator
+		*/
+		void		alg_deallocate_node(pointer p)
+		{
+			memory.deallocate(p, get_node_size());
+		}
+
+		/**
+		 * 	@brief Allocate map
+		 * 
+		 * 	Fast use of allocator.
+		*/
+		pointer		alg_allocate_map(size_type n)
+		{
+			return (memory.allocate(n));
+		}
+
+		/**
+		 * 	@brief Deallocate map
+		 * 
+		 * 	Fast use deallocator
+		*/
+		void		alg_deallocate_map(pointer p, size_type n)
+		{
+			memory.deallocate(p, n);
+		}
+
+		/**
+		 * 	@brief Destroy nodes
+		 * 
+		 * 	@param first A Map_ptr.
+		 * 	@param last A Map_ptr.
+		 * 
+		 * 	Deallocates the nodes in range @p first - @p last.
+		*/
+		void		alg_destroy_nodes(Map_ptr first, Map_ptr last)
+		{
+			for (Map_ptr i = first ; i < last ; i++)
+				alg_deallocate_node(*i);
+		}
+
+		/**
+		 * 	@brief Create nodes
+		 * 
+		 * 	@param first A Map_ptr.
+		 * 	@param last A Map_ptr.
+		 * 	
+		 * 	Allocates nodes in range @p first - @p last.
+		 * 
+		 * 	@throw std::bad_alloc.
+		*/
+		void		alg_create_node(Map_ptr first, Map_ptr last)
+		{
+			Map_ptr	curr;
+
+			try {
+				for (curr = first ; curr < last ; curr++)
+					curr = alg_allocate_node();
+			} catch(std::bad_alloc& e) {
+				alg_destroy_nodes(first, curr);
+				throw;
+			}
+		}
+
+		/**
+		 * 	@brief Itatialise map
+		 * 
+		 * 	@param n The len of the map.
+		 * 
+		 * 	@throw std::bad_alloc.
+		*/
+		void		alg_init_map(size_type n)
+		{
+			const size_type		num_nodes = (n / get_node_size()) + 1;
+
+			map_size = size_type(FT_MAX(map_initial_size, num_nodes + 2));
+			map = alg_allocate_map(map_size);
+
+			Map_ptr		map_first = (map  + map_size - num_nodes) / 2;
+			Map_ptr		map_last = map_first + num_nodes;
+
+			try {
+				alg_create_nodes(map_first, map_last);
+			}
+			catch (std::bad_alloc& e) { 
+				alg_deallocate_map(map, map_size);
+				throw;
+			}
+
+			head.it_change_node(map_first);
+			tail.it_change_node(map_last - 1);
+			head.curr = head.head;
+			tail.curr = tail.head + num_nodes % get_node_size();
+		}
+	};
+
+	// to do deque description tomorrow + deque implementation
 };
