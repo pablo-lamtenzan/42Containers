@@ -3,6 +3,7 @@
 
 # include "../allocator/allocator.hpp"
 
+# include <set>
 # include <vector>
 # include <string>
 # include <fstream>
@@ -27,8 +28,6 @@ std::ostream& operator<<(std::ostream& os, const TYPES<A, B, C>& t) { return (os
 
 
 // NOTE: To compile put the boolean operators in comment
-
-
 
 
 void			vector_test_exp()
@@ -214,9 +213,8 @@ void			vector_test_exp()
 	
 		/* Test erase */
 
-		/*
-		typename vec::iterator it = vec.begin();
-		typename vec::iterator end = vec.end();
+		typename std::vector<TYPES<int, float, std::string>>::iterator it = vec.begin();
+		typename std::vector<TYPES<int, float, std::string>>::iterator end = vec.end();
 		
 		for (size_t i = 0 ; it != end ; it++)
 			if (i++ % 2)
@@ -227,7 +225,6 @@ void			vector_test_exp()
 		fd << "}" << std::endl;
 		fd << "Size: " << vec.size() << std::endl;
 		fd << "Capacity: " << vec.capacity() << std::endl;
-		*/
 
 		/* Test insert */
 
