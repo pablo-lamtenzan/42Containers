@@ -8,6 +8,7 @@
 # pragma once
 
 # include <cstddef>
+# include <exception>
 
 # define FT_NAMESPACE ft
 
@@ -30,4 +31,5 @@ namespace FT_NAMESPACE
 
 		return (dynamic_cast<Required*>(t));
 	}
+	// Note: are_same could be more elegant option (implemented in ft_type_traits.hpp)
 };

@@ -14,12 +14,12 @@ namespace FT_NAMESPACE
 	 * 	@brief Stack
 	 * 
 	 * 	@tparam T the type of value holded by the conatiner.
-	 * 	@tparam Container the type of value hilded by the stack
+	 * 	@tparam Container the type of value holded by the stack
 	*/
 	template <class T, class Container> // to do set queue by dft
 	class stack
 	{
-		// TO DO: Probally i have to ad the operator== and operator< here too
+		// TO DO: Probally i have to add the operator== and operator< here too
 
 		public:
 
@@ -45,7 +45,7 @@ namespace FT_NAMESPACE
 		/**
 		 * 	@brief empty
 		 * 
-		 * 	@return True if the stack is empty.
+		 * 	@return True if %stack is empty.
 		*/
 		bool		empty() const
 		{

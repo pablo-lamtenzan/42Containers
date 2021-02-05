@@ -664,7 +664,7 @@ x			try {
 		}
 
 		// Insert dependecy
-		void				insert(const_iterator pos, value_type amount, const_reference value)
+		void				insert(const_iterator pos, value_type amount, const_reference value);
 
 		/**
 		 * 	@brief insert
@@ -769,7 +769,7 @@ x			try {
 				memory.destroy(&(*this)[pos + i]);
 				(*this)[pos + i] = (*this)[pos + i + amount];
 			}
-			// Shift backward witout destroying the remaining elements
+			// Shift backwards without destroying the remaining elements
 			for (size_type i = pos + amount ; i < size() ; i++)
 				(*this)[i] = (*this)[i + amount];
 			tail -= amount;
@@ -804,15 +804,15 @@ x			try {
 	}
 
 	template <class T, class Allocator>
-	inline bool		operator!=(const vector<T, Allocator>& lhs, const vector<T, Allocator>& rhs)
-	{
-		return (!(lhs == rhs));
-	}
-
-	template <class T, class Allocator>
 	inline bool		operator<(const vector<T, Allocator>& lhs, const vector<T, Allocator>& rhs)
 	{
 		return (std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end())));
+	}
+
+	template <class T, class Allocator>
+	inline bool		operator!=(const vector<T, Allocator>& lhs, const vector<T, Allocator>& rhs)
+	{
+		return (!(lhs == rhs));
 	}
 
 	template <class T, class Allocator>

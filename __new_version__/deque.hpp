@@ -751,7 +751,7 @@ namespace FT_NAMESPACE
 		*/
 		reverse_iterator		rbegin()
 		{
-			return (head);
+			return (reverse_iterator(end() - 1));
 		}
 
 		/**
@@ -761,7 +761,7 @@ namespace FT_NAMESPACE
 		*/
 		const_reverse_iterator	rbegin() const
 		{
-			return (head);
+			return (const_reverse_iterator(end() - 1));
 		}
 
 		/**
@@ -771,7 +771,7 @@ namespace FT_NAMESPACE
 		*/
 		reverse_iterator		rend()
 		{
-			return (tail);
+			return (reverse_iterator(begin()));
 		}
 
 		/**
@@ -781,7 +781,7 @@ namespace FT_NAMESPACE
 		*/
 		const_reverse_iterator	rend() const
 		{
-			return (tail);
+			return (const_reverse_iterator(begin()));
 		}
 
 		/**

@@ -53,7 +53,7 @@ namespace FT_NAMESPACE
 
 		void			deallocate(pointer p, size_type amount)
 		{
-			// DO TO: Check what happend here if p in NULL
+			// DO TO: Check what happens here if p in NULL
 			::operator delete(p, amount  * sizeof(value_type));
 		}
 
