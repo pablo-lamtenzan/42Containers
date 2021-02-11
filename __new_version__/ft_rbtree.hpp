@@ -168,18 +168,85 @@ namespace FT_NAMESPACE
 		RBT_Key_Compare(const Key_Comp& cmp) : key_compare(cmp) { }
 	};
 
-	// TO DO: to think later
 	template <typename Val>
-	RBT_Node<Val>*			RBT_increment(RBT_Node<Val>* x) throw();
+	static RBT_Node<Val>* aux_increment(RBT_Node<Val>* x) throw()
+	{
+		/* If x in the bottom of the tree */
+		if (x->right == 0)
+		{
+			/* While x is the right child, go up in the tree */
+			RBT_Node<Val>* y = x->parent;
+			while (x == y->right)
+			{
+				x = y;
+				y = y->parent;
+			}
+			if (x->right != y)
+				x = y;
+		}
+		else
+		{
+			/* Go to the bottom of the next branch */
+			x = x->right;
+			while (x->left)
+				x = x->left;
+		}
+		return (x);
+	}
 
 	template <typename Val>
-	const RBT_Node<Val>*	RBT_increment(RBT_Node<Val>* x) throw();
+	RBT_Node<Val>*			RBT_increment(RBT_Node<Val>* x) throw()
+	{
+		return (aux_increment(x));
+	}
 
 	template <typename Val>
-	RBT_Node<Val>*			RBT_decrement(RBT_Node<Val>* x) throw();
+	const RBT_Node<Val>*	RBT_increment(RBT_Node<Val>* x) throw()
+	{
+		return (aux_increment(static_cast<RBT_Node<Val>*>(x)));
+	}
 
 	template <typename Val>
-	const RBT_Node<Val>*	RBT_decrement(RBT_Node<Val>* x) throw();
+	static RBT_Node<Val>* aux_decrement(RBT_Node<Val>* x) throw()
+	{
+		/* If the grandparent is equal to x, the prev is it right child */
+		if (x->color == RBT_Red && x->parent->parent == x)
+			x = x->right;
+		/* If x is on the bottom of the tree */
+		else if (x->left == 0)
+		{
+			/* Go up until x is the left node */
+			RBT_Node<Val>* y = x->parent;
+			while (x == y->left)
+			{
+				x = y;
+				y = y->parent;
+			}
+			x = y;
+		}
+		/* Is not on the bottom */
+		else
+		{
+			/* Go to the bottom of the previous branch */
+			RBT_Node<Val>* y = x->left;
+			while (y->right)
+				y = y->right;
+			x = y;
+		}
+		return (x);
+	}
+
+	template <typename Val>
+	RBT_Node<Val>*			RBT_decrement(RBT_Node<Val>* x) throw()
+	{
+		return (aux_decrement(x));
+	}
+
+	template <typename Val>
+	const RBT_Node<Val>*	RBT_decrement(RBT_Node<Val>* x) throw()
+	{
+		return (aux_decrement(static_cast<RBT_Node<Val>*>(x)));
+	}
 
 	/**
 	 * 	@brief RBT Iterator
@@ -485,6 +552,245 @@ namespace FT_NAMESPACE
 			cln->left = NULL;
 			cln->right = NULL;
 			return (cln);
+		}
+
+		/// Rotates the tree to the left
+		static void aux_rotate_left(Node_Ptr const target, Node_Ptr& root)
+		{
+			Node_Ptr const tmp = sget_right(target);
+
+			/* Target right child = left child of target right child,
+				if this left child exist target begins the parent */
+			if ((target->right = tmp->left))
+				tmp->left->parent = target;
+
+			/* tmp takes as parent it grand-parent */
+			tmp->parent = x->parent;
+
+			/* Change the root if the root is the target */
+			if (target == root)
+				root = tmp;
+			/* If target is left node */
+			else if (target == target->parent->left)
+				target->parent->left = tmp;
+			else
+				target->parent->right = tmp;
+
+			tmp->left = target;
+			target->parent = tmp;
+		}
+
+		/// Rotates the tree to the right
+		static void	aux_rotate_right(Node_Ptr const target, Node_Ptr& root)
+		{
+			Node_Ptr const tmp = target->left;
+
+			if ((target->left = tamp->right))
+				tmp->right = target;
+			tmp->parent = target->parent;
+			if (target == root)
+				root = tmp;
+			else if (target == target->parent->right)
+				target->parent->right = tmp;
+			else
+				target->parent->left = tmp;
+			tmp->right = target;
+			target->parent = target;
+		}
+
+		static void aux_rebalance_tree(Node_Ptr& const target, Node_Ptr const parent_child, Node_Ptr const grand_parent_child,
+				void (&rot1)(Node_Ptr const, Node_Ptr&), void (&rot2)(Node_Ptr const, Node_Ptr&), RBT_Node<T>& header) throw()
+		{
+			Node_Ptr const grand_parent = target->parent->parent;
+			Node_Ptr& root = header.parent;
+
+			if (grand_parent_child && grand_parent_child->color == RBT_Red)
+			{
+				target->parent->color = RBT_Black;
+				grand_parent_child->color = RBT_Black;
+				grand_parent->color = RBT_Red;
+				target = grand_parent;
+			}
+			else
+			{
+				if (target == parent_child)
+				{
+					target = target->parent;
+					rot1(target, root);
+				}
+				target->parent->color = RBT_Black;
+				grand_parent->color = RBT_Red;
+				rot2(grand_parent, root);
+			}
+		}
+
+		template <typename T>
+		static void aux_insert_and_rebalance(bool insert_left, Node_Ptr target, Node_Ptr parent, RBT_Node<T>& header) throw()
+		{
+			/* Init the new node to insert */
+			target->parent = parent;
+			target->left = 0;
+			target->right = 0;
+			target->color = RBT_Red;
+
+			/* 	First, proceed to insert, the new node will be child of the parent.
+				Root's leftmost and rightmost nodes are maintained.
+				NOTE: First node is always inserted left. */
+			if (insert_left)
+			{
+				parent->left = target;
+
+				if (parent == &header)
+				{
+					/* Make it leftmost */
+					header.parent = target;
+					header.right = target;
+				}
+				else if (parent == header.left) /* Maintain leftmost pointing to min node */
+					header.left = target;
+			}
+			else
+			{
+				parent->right = target;
+
+				if (parent == header.right) /* Maintain rightmost pointing to max node */
+					header.right = target;
+			}
+
+			/* Then, rebalance the tree */
+			while (target != get_root() && target->parent->color == RBT_Red)
+			{
+				Node_Ptr const grand_parent = target->parent->parent;
+		
+				if (target->parent == grand_parent->left)
+					aux_rebalance_tree(target, target->parent->right, grand_parent->right,
+					aux_rotate_left, aux_rotate_right, header);
+				else
+					aux_rebalance_tree(target, target->parent->left, grand_parent->left,
+					aux_rotate_right, aux_rotate_left, header);
+			}
+			get_root()->color = RBT_Black;
+		}
+
+		static bool aux_erase_rebalance(Node_Ptr& const parent_child, Node_Ptr const pc1,
+			Node_Ptr pc2, void (&rot1)(Node_Ptr const, Node_Ptr&), void (&rot2)(Node_Ptr const, Node_Ptr&),
+			Node_Ptr& tmp, Node_Ptr& parent_tmp) throw()
+		{
+			if (parent_child->color == RBT_Red)
+			{
+				parent_child->color = RBT_Black;
+				parent_tmp->color 0 RBT_Red;
+				rot1(parent_tmp, get_root());
+				parent_child = parent_tmp->right;
+			}
+			if ((pc1 == 0) || )
+			// TO DO: THIS WONT WORK CAUSE PC1 and PC2
+		}
+
+		static Node_Ptr aux_rebalance_for_erase(Node_Ptr const target, RBT_Node<T>& header) throw()
+		{
+			Node_Ptr successor = target;
+			Node_Ptr tmp = 0;
+			Node_Ptr tmp_parent = 0;
+
+			/* If target has at most one non null child */
+			if (target->left == 0)
+				tmp = target->right;
+			else
+			{
+				/* If target has exactly 1 non null child */
+				if (target->right == 0)
+					tmp = target->left;
+	
+				/* If target has 2 non null children */
+				else
+				{
+					successor = target->right;
+					while (successor->left)
+						successor = successor->left;
+					tmp = successor->right;
+				}
+			}
+
+			/* target has no null children */
+			if (successor != target)
+			{
+				/* Relink successor */
+
+				target->left->parent = successor;
+				successor->left = target->left;
+
+				if (successor != target->right)
+				{
+					tmp_parent = successor->parent;
+					if (tmp)
+						tmp->parent = successor->parent;
+					successor->parent->left = tmp;
+					successor->right = target->right;
+					target->right->parent = successor;
+				}
+				else
+					tmp_parent = successor;
+				
+				if (get_root() == target)
+					get_root() = successor;
+				else if (target->parent->left == target)
+					target->parent->left = successor;
+				else
+					target->parent->right = successor;
+				std::swap(successor->color, target->color);
+				successor = target; // NOTE: successor point to the node to be deleted now
+			}
+			/* target has at least 1 null child */
+			else
+			{
+				tmp_parent = successor->parent;
+
+				if (tmp)
+					tmp->parent = successor->parent;
+	
+				if (get_root() == target)
+					get_root() = tmp;
+				else
+				{
+					if (target->parent->left == target)
+						arget->parent->left = tmp;
+					else
+						arget->parent->right = tmp;
+				}
+
+				// TO DO: Is it worth to make a function for this condition ?
+				if (get_leftmost() == target)
+				{
+					if (target->right == 0)
+						get_leftmost() = target->parent;
+					else
+						get_leftmost() = sget_minimum(tmp);
+				}
+				if (get_rightmost() == target)
+				{
+					if (target->left == 0)
+						get_rightmost() = target->parent;
+					else
+						get_rightmost() = sget_maximum(tmp);
+				}
+			}
+
+			/* Rebalance */
+			if (successor->color == RBT_Black)
+			{
+				while (tmp != get_root() && (!tmp || tmp->color == RBT_Black))
+				{
+					if (tmp == tmp_parent->left && aux_erase_rebalance())
+						break ;
+					else if (aux_erase_rebalance())
+						break ;
+
+					if (tmp)
+						tmp->color = RBT_Black;
+				}
+			}
+			return (successor);
 		}
 
 		/* Node allocation class */

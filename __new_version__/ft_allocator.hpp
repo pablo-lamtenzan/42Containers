@@ -41,8 +41,8 @@ namespace FT_NAMESPACE
 		allocator(const allocator<T1>&) { }
 		~allocator() { }
 		
-		pointer			address(reference x) const { return (std::__addressof(x)); }
-		const_pointer	address(const_reference x) const { return (std::__addressof(x)); }
+		pointer			address(reference x) const { return (std::addressof(x)); }
+		const_pointer	address(const_reference x) const { return (std::addressof(x)); }
 	
 		pointer			allocate(size_type n, const void* = static_cast<const void*>(0))
 		{

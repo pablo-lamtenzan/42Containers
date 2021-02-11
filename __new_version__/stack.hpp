@@ -89,7 +89,7 @@ namespace FT_NAMESPACE
 		*/
 		void		push(const_reference value)
 		{
-			c.push_back();
+			c.push_back(value);
 		}
 
 

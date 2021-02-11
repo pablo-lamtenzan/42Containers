@@ -759,7 +759,7 @@ namespace FT_NAMESPACE
 	//@{
 	/**
 	 * 	@param lhs A %normal_iterator.
-	 *	@param rhs A %normal_iterator.
+	 *	@param rhs A %normal_iterator with the same type of @p lhs.
 	 *	
 	 *	@return The result of the boolean operation between both.
 	*/

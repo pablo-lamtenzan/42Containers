@@ -475,6 +475,7 @@ namespace FT_NAMESPACE
 	{
 		return (!(lhs < rhs));
 	}
+	//@}
 
 	/**
 	 * 	@brief swap
@@ -486,6 +487,4 @@ namespace FT_NAMESPACE
 	{
 		lhs.swap(rhs);
 	}
-	//@}
 };
-
