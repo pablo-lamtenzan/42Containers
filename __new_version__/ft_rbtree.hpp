@@ -672,19 +672,45 @@ namespace FT_NAMESPACE
 			get_root()->color = RBT_Black;
 		}
 
-		static bool aux_erase_rebalance(Node_Ptr& const parent_child, Node_Ptr const pc1,
-			Node_Ptr pc2, void (&rot1)(Node_Ptr const, Node_Ptr&), void (&rot2)(Node_Ptr const, Node_Ptr&),
-			Node_Ptr& tmp, Node_Ptr& parent_tmp) throw()
+		static bool aux_erase_rebalance(Node_Ptr& tmp, Node_Ptr& parent_tmp, bool is_right) throw()
 		{
-			if (parent_child->color == RBT_Red)
+			Node_Ptr brother = is_right ? parent_tmp->left : parent_tmp->right;
+			void (*rot[])(Node_Ptr const, Node_Ptr&) { &aux_rotate_left, &aux_rotate_right };
+
+			if (brother->color == RBT_Red)
 			{
-				parent_child->color = RBT_Black;
-				parent_tmp->color 0 RBT_Red;
-				rot1(parent_tmp, get_root());
-				parent_child = parent_tmp->right;
+				brother->color = RBT_Black;
+				parent_tmp->color = RBT_Red;
+				rot[is_right](parent_tmp, get_root());
+				brother = is_right ? parent_tmp->right : parent_tmp->left;
 			}
-			if ((pc1 == 0) || )
-			// TO DO: THIS WONT WORK CAUSE PC1 and PC2
+
+			if ((!is_right && (brother->left == 0 || brother->left->color == RBT_Black)
+				&& (brother->right == 0 || brother->right->color == RBT_Black))
+				|| ((is_right && (brother->right == 0 || brother->right->color == RBT_Black)
+				&& (brother->left == 0 || brother->right->color == RBT_Black)))
+			{
+				brother->color = RBT_Red;
+				tmp = parent_tmp;
+				parent_tmp = parent_tmp->parent;
+			}
+			else
+			{
+				if (brother->right == 0 || brother->right->color == RBT_Black)
+				{
+					brother->left->color = RBT_Black;
+					brother->color = RBT_Red;
+					rot[!is_right](brother, get_root());
+					brother = parent_tmp->right;
+				}
+				brother->color = parent_tmp->color;
+				parent_tmp->color = RBT_Black;
+				if ((is_right && brother->left) || (!is_right && brother->right))
+					!is_right ? brother->right->color : brother->left->color = RBT_Black;
+				rot[is_right](parent_tmp, get_root());
+				return (true);
+			}
+			return (false);
 		}
 
 		static Node_Ptr aux_rebalance_for_erase(Node_Ptr const target, RBT_Node<T>& header) throw()
@@ -781,9 +807,9 @@ namespace FT_NAMESPACE
 			{
 				while (tmp != get_root() && (!tmp || tmp->color == RBT_Black))
 				{
-					if (tmp == tmp_parent->left && aux_erase_rebalance())
+					if (tmp == tmp_parent->left && aux_erase_rebalance(tmp, tmp_parent, false))
 						break ;
-					else if (aux_erase_rebalance())
+					else if (aux_erase_rebalance(tmp, tmp_parent, true))
 						break ;
 
 					if (tmp)
