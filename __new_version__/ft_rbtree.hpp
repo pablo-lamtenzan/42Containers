@@ -675,7 +675,7 @@ namespace FT_NAMESPACE
 		static bool aux_erase_rebalance(Node_Ptr& tmp, Node_Ptr& parent_tmp, bool is_right) throw()
 		{
 			Node_Ptr brother = is_right ? parent_tmp->left : parent_tmp->right;
-			void (*rot[])(Node_Ptr const, Node_Ptr&) { &aux_rotate_left, &aux_rotate_right };
+			static void (*const rot[])(Node_Ptr const, Node_Ptr&) { &aux_rotate_left, &aux_rotate_right };
 
 			if (brother->color == RBT_Red)
 			{

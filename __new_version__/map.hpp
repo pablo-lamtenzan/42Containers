@@ -7,6 +7,7 @@
 # pragma once
 
 # include <ft_rbtree.hpp>
+# include <functional>
 
 namespace FT_NAMESPACE
 {
@@ -15,7 +16,8 @@ namespace FT_NAMESPACE
 	 * 
 	 * 	TO DO
 	*/
-	template <typename Key, typename T, typename Compare, typename Alloc> // TO DO INIT BY DFL COMPARE AND ALLOC
+	template <typename Key, typename T, typename Compare = std::less<Key>,
+	typename Alloc = allocator<std::pair<const Key, T>>
 	class map
 	{
 		/* Member types */
@@ -251,7 +253,12 @@ namespace FT_NAMESPACE
 		*/
 		mapped_type& 	operator[](const key_type& k)
 		{
-			// TO DO: Need research
+			iterator i = lower_bound(k);
+
+			// If i->first >= k or i is the last insert it and return the inserted data.
+			if (i == end() || key_comp()(k, (*i).first))
+				i = insert(i, value_type(k, mapped_type()));
+			return ((*i).second);
 		}
 
 		/**
@@ -265,7 +272,10 @@ namespace FT_NAMESPACE
 		*/
 		mapped_type& 	at(const key_type& k)
 		{
-			// TO DO: Need research
+			iterator i = lower_bound(k);
+			if (i == end() || key_comp()(k, (*i).first))
+				throw std::out_of_range(std::string("map::at"));
+			return ((*i).second);
 		}
 
 		/**
@@ -279,7 +289,10 @@ namespace FT_NAMESPACE
 		*/
 		const mapped_type& 	at(const key_type& k)
 		{
-			// TO DO: Need research
+			iterator i = lower_bound(k);
+			if (i == end() || key_comp()(k, (*i).first))
+				throw std::out_of_range(std::string("map::at"));
+			return ((*i).second);
 		}
 
 		/**

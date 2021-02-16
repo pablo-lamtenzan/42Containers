@@ -223,7 +223,6 @@ namespace FT_NAMESPACE
 				memory.destroy(tail);
 		}
 
-
 		public:
 
 		/**

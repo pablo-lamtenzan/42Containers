@@ -6,6 +6,7 @@
 # pragma once
 
 # include <ft_rbtree.hpp>
+# include <functional>
 
 namespace FT_NAMESPACE
 {
@@ -14,7 +15,8 @@ namespace FT_NAMESPACE
 	 * 
 	 * 	TO DO
 	*/
-	template <typename Key, typename T, typename Compare, typename Alloc> // TO DO INIT BY DFL COMPARE AND ALLOC
+	template <typename Key, typename T, typename Compare = std::less<Key>,
+	typename Alloc = allocator<std::pair<const Key, Key>>
 	class multimap
 	{
 		/* Member types */
@@ -250,7 +252,7 @@ namespace FT_NAMESPACE
 		*/
 		mapped_type& 	operator[](const key_type& k)
 		{
-			// TO DO: Need research
+			// TO DO: Does not have this function ?
 		}
 
 		/**
@@ -264,7 +266,7 @@ namespace FT_NAMESPACE
 		*/
 		mapped_type& 	at(const key_type& k)
 		{
-			// TO DO: Need research
+			// TO DO: Does not have this function ?
 		}
 
 		/**
@@ -278,7 +280,7 @@ namespace FT_NAMESPACE
 		*/
 		const mapped_type& 	at(const key_type& k)
 		{
-			// TO DO: Need research
+			// TO DO: Does not have this function ?
 		}
 
 		/**
