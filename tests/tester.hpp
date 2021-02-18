@@ -11,7 +11,6 @@
 # include "set_tests.hpp"
 # include "multiset_tests.hpp"
 
-
 # define TEST_DIR "__TESTER__/"
 
 /*
@@ -77,7 +76,7 @@
 #  define STD_MULTISET_FILENAME_SHARED "std_shared_multiset_test"
 # endif
 
-/// FT targeted test filenames
+/// FT targeted tests filenames
 # ifndef FT_VECTOR_FILENAME
 #  define FT_VECTOR_FILENAME "ft_vector_test"
 # endif
@@ -106,7 +105,7 @@
 #  define FT_MULTISET_FILENAME "ft_multiset_test"
 # endif
 
-/// STD targeted test filenames
+/// STD targeted tests filenames
 # ifndef STD_VECTOR_FILENAME
 #  define STD_VECTOR_FILENAME "std_vector_test"
 # endif
