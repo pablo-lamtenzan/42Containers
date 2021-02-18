@@ -36,12 +36,14 @@ int main()
 
 	// TO DO: Change to the ft filenames the index % 2 == 0 indexes
 	static const char*const filenames[] = {
+		FT_VECTOR_FILENAME_SHARED,
 		STD_VECTOR_FILENAME_SHARED,
-		STD_VECTOR_FILENAME_SHARED,
+		FT_LIST_FILENAME_SHARED,
 		STD_LIST_FILENAME_SHARED,
-		STD_LIST_FILENAME_SHARED,
-		STD_DEQUE_FILENAME_SHARED,
-		STD_DEQUE_FILENAME_SHARED
+		FT_DEQUE_FILENAME_SHARED,
+		STD_DEQUE_FILENAME_SHARED, // insert shared tree filenames here
+		FT_VECTOR_FILENAME,
+		STD_VECTOR_FILENAME
 	};
 
 	for (size_t i = 0 ; i < sizeof(filenames) / sizeof(*filenames) ; i++)
@@ -63,15 +65,15 @@ int main()
 			buff1 << ifs_ft.rdbuf();
 			buff2 << ifs_std.rdbuf();
 
-			// TO DO: Add colored log
-
-			std::cout << "Diff between [ " << filenames[i - 1] << " ]"
-			<< " and [ " << filenames[i] << " ] : ";
+			std::cout << "\033[0;34mDiff between [ \033[0m" << "\033[1;33m"<< filenames[i - 1]
+			<< "\033[0m" << "\033[0;34m ]\033[0m" << "\033[0;34m and [ \033[0m" << "\033[1;33m"
+			<< filenames[i] << "\033[0m" << "\033[0;34m ] : \033[0m";
 
 			const std::string& s1 = buff1.str();
 			const std::string& s2 = buff2.str();
 
-			std::cout << std::string(s1 != s2 && (status = 1) ? "FAILURE" : "SUCCESS") << std::endl;
+			std::cout << std::string(s1 != s2 && (status = 1) ? "\033[0;31mFAILURE\033[0m"
+			: "\033[0;32mSUCCESS\033[0m") << std::endl;
 		}
 	}
 	std::cout << std::endl;
