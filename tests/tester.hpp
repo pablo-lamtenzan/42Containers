@@ -14,6 +14,14 @@
 
 # define TEST_DIR "__TESTER__/"
 
+/*
+* TEST DIR can be commented and the log will be created in the
+* test dirrectory (the dirrectory where the tester code is implented).
+*/
+# ifndef TEST_DIR
+#  define TEST_DIR ""
+# endif
+
 # define FT_VECTOR_FILENAME_SHARED "ft_shared_vector_test"
 # define FT_LIST_FILENAME_SHARED "ft_shared_list_test"
 # define FT_DEQUE_FILENAME_SHARED "ft_shared_deque_test"

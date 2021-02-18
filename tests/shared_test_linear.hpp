@@ -17,19 +17,9 @@
 # include <list>
 # include <deque>
 
-
-
-// NOTE: Probally stack and queue must be excluded of those tests for practical reasons.
-// NOTE: Perhabs is a good idea to use some log dirrectory for the filenames.
-
 // NOTE: Move random access test for list
 
-// TO DO: Constructor and insert does not macth with map, set, multimap, multiset
-
-// Match for vector, deque and list (if RANDOM_ACCESS == 0)
-
-
-#define RANDOM_ACCESS 0
+# define RANDOM_ACCESS 0
 
 /**
  * 	@brief cond == true if the template type is random_access
@@ -93,9 +83,43 @@ inline static void test_constructor(std::ofstream& fd)
 template <typename Container, typename T>
 inline static void test_assignation(std::ofstream& fd)
 {
+	fd << std::endl << "-------------- ASSIGNATION ----------------" << std::endl;
+
 	// TEST: operator=
 
+	Container c(size_t(42));
+
+	size_t y = 0;
+	for (auto i = c.begin() ; i != c.end() ; i++)
+		*i = T(y++);
+
+	Container w = c;
+
+	fd << "Test \'operator=\' 1: " << std::endl << "["
+	<< w.size() << "]" << std::endl << "{ ";
+	for (auto i = w.begin() ; i != w.end() ; i++)
+		fd << *i << std::string(" ");
+	fd << "}" << std::endl;
+
 	// TEST: assign
+
+	Container r;
+
+	r.assign(42, T(42));
+	fd << "Test \'assign\' 1: " << std::endl << "["
+	<< r.size() << "]" << std::endl << "{ ";
+	for (auto i = r.begin() ; i != r.end() ; i++)
+		fd << *i << std::string(" ");
+	fd << "}" << std::endl;
+
+	Container rr;
+
+	rr.assign(c.begin(), c.end());
+	fd << "Test \'assign\' 2: " << std::endl << "["
+	<< rr.size() << "]" << std::endl << "{ ";
+	for (auto i = rr.begin() ; i != rr.end() ; i++)
+		fd << *i << std::string(" ");
+	fd << "}" << std::endl;
 }
 
 #if RANDOM_ACCESS
@@ -208,9 +232,9 @@ inline static void test_element_access(std::ofstream& fd)
 	int wstatus;
 	while (waitpid(pid, &wstatus, 0) >= 0);
 	if (WIFSIGNALED(wstatus) && WTERMSIG(wstatus) == SIGABRT)
-		fd << "ABORT" << std::endl;
+		fd << " ABORT" << std::endl;
 	else
-		fd << "DON'T ABORT " << wstatus << std::endl;
+		fd << " DON'T ABORT" << wstatus << std::endl;
 
 	// TEST: front
 
@@ -229,13 +253,57 @@ inline static void test_element_access(std::ofstream& fd)
 template <typename Container, typename T>
 inline static void test_iterators(std::ofstream& fd)
 {
+	fd << std::endl << "-------------- ITERATORS ----------------" << std::endl;
+
+	Container c(size_t(42));
+
 	// TEST: iterator iteration
+
+	typename Container::iterator it = c.begin();
+	typename Container::iterator o = c.end();
+
+	size_t y = 0;
+	for (auto i = c.begin() ; i != c.end() ; i++)
+		*i = T(y++);
+	fd << "Test \'iterators\' 1: " << std::endl << "{ ";
+	while (it != o)
+		fd << *(it++) << std::string(" ");
+	fd << "}" << std::endl;
 
 	// TEST: const iterator iteration
 
+	// TO DO: Once finished mutable iterator test copy paste
+
 	// TEST: member iterator operators
 
+	// Nothing here ? List has no += / -= / + / -
+
 	// TEST: non member iterator operators
+
+	auto lhs = c.begin();
+	auto rhs = c.end();
+
+	for (size_t i = 0xf ; i > 0 ; i--)
+	{
+		lhs++;
+		rhs--;
+	}
+
+	fd << "Test \'iterator\' 4: " << std::endl;
+	fd << "[" << bool(lhs == rhs) << "]" << std::endl;
+	fd << "[" << bool(lhs != rhs) << "]" << std::endl;
+
+	//fd << "[" << bool(lhs < rhs) << "]" << std::endl;
+	//fd << "[" << bool(lhs <= rhs) << "]" << std::endl;
+	//fd << "[" << bool(lhs > rhs) << "]" << std::endl;
+	//fd << "[" << bool(lhs >= rhs) << "]" << std::endl;
+	
+}
+
+template <typename Container, typename T>
+inline static void test_reverse_iterators(std::ofstream& fd)
+{
+	// Do the same as with iterator with with reverse
 }
 
 template <typename Container, typename T>
@@ -285,13 +353,98 @@ inline static void test_capacity(std::ofstream& fd)
 template <typename Container, typename T>
 inline static void test_modifiers(std::ofstream& fd)
 {
+	fd << std::endl << "-------------- MODIFIERS ----------------" << std::endl;
+
 	// TEST clear
 
-	// clear changes vector capacity
+	Container c(size_t(42));
+
+	c.clear();
+	fd << "\'Clear\' test 1: " << c.size() << " " << c.empty() << std::endl;
+
+	Container z;
+	z.clear();
+
+	size_t y = 0;
+	for (auto i = c.begin() ; i != c.end() ; i++)
+		*i = T(y++);
+	c.insert(c.begin(), 42, T());
+	c.clear();
+	fd << "\'Clear\' test 2: " << c.size() << " " << c.empty() << std::endl;
 
 	// TEST insert
 
+	Container ww;
+	Container www(size_t(42));
+
+	ww.insert(ww.begin(), 41, T(42));
+	www.insert(++www.begin(), 41, T(42));
+	fd << "\'Insert test 1: " << ww.size() << " " << www.size() << std::endl
+	<< "{ ";
+	auto ll = ww.begin();
+	auto lll = www.begin();
+	for (size_t i = 41 ; i > 0 ; i--)
+		fd << " { " << *(ll++) << " ; " << *(lll++) << " }";
+	fd << " }" << std::endl;
+
+	auto f = ww.begin();
+	for (size_t i = 21 ; i > 0 ; i--)
+		f++;
+	auto ff = f;
+	for (size_t i = 13 ; i > 0 ; i--)
+		ff++;
+	ww.insert(ww.begin(), f, ff);
+	fd << "\'Insert\' test 2: " << ww.size() << std::endl << "{ ";
+	for (auto i = ww.begin() ; i != ww.end() ; i++)
+		fd << *i << std::string(" ");
+	fd << "} " << std::endl;
+
 	// TEST erase
+
+	if (!are_same<Container ,std::list<T>>::cond
+		/*|| typename are_same<Container, ft::list<T>::cond*/)
+	{
+		Container q;
+
+		pid_t pid = fork();
+		if (pid == 0)
+		{
+			q.erase(q.begin());
+			exit(EXIT_FAILURE); // Will never reach this line.
+		}
+		else if (pid < 0)
+			std::cerr << "Syscall \'fork\' failed for misterious reasons ..."
+			<< "[Check the memory avalaible in your device]" << std::endl;
+		int wstatus;
+		while (waitpid(pid, &wstatus, 0) >= 0);
+		if (WIFSIGNALED(wstatus) && WTERMSIG(wstatus) == SIGSEGV)
+			fd << " SEGMENTATION FAULT" << std::endl;
+		else
+			fd << " " << wstatus << std::endl;
+	}
+
+	Container ii;
+
+	ii.insert(ii.begin(), 42, T(42));
+	auto xx = ii.begin();
+	for (size_t i = 18 ; i > 0 ; i--)
+		xx++;
+	auto yy = xx;
+	for (size_t i = 8 ; i > 0 ; i--)
+		yy++;
+	ii.erase(xx, yy);
+	fd << "\'Erase\' test 1: " << ii.size() << std::endl << " { ";
+	for (auto i = ii.begin() ; i != ii.end() ; i++)
+		fd << *i << " ";
+	fd << " }" << std::endl;
+
+	auto gg = ii.begin();
+	gg++;
+	ii.erase(gg);
+	fd << "\'Erase\' test 2: " << ii.size() << std::endl << " { ";
+	for (auto i = ii.begin() ; i != ii.end() ; i++)
+		fd << *i << " ";
+	fd << " }" << std::endl;
 }
 
 template <typename Container, typename T>
@@ -384,6 +537,7 @@ inline static void shared_tests(const std::string& filename)
 		&test_assignation<Container, T>,
 		&test_element_access<Container, T>,
 		&test_iterators<Container, T>,
+		&test_reverse_iterators<Container, T>,
 		&test_capacity<Container, T>,
 		&test_modifiers<Container, T>,
 		&test_non_members<Container, T>

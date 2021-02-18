@@ -5,6 +5,14 @@
 # include "shared_test_tree.hpp"
 # include "tester.hpp"
 
+/**
+ * 	TO DO tests:
+ * 
+ * 	- End shared linear
+ * 	- Do shared tree
+ * 	- Do unique-targeted test (one per container)
+*/
+
 int main()
 {
 	bool status = 0;
