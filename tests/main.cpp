@@ -41,7 +41,15 @@ int main()
 		FT_LIST_FILENAME_SHARED,
 		STD_LIST_FILENAME_SHARED,
 		FT_DEQUE_FILENAME_SHARED,
-		STD_DEQUE_FILENAME_SHARED, // insert shared tree filenames here
+		STD_DEQUE_FILENAME_SHARED,
+		FT_MAP_FILENAME_SHARED,
+		STD_MAP_FILENAME_SHARED,
+		FT_MULTIMAP_FILENAME_SHARED,
+		STD_MULTIMAP_FILENAME_SHARED,
+		FT_SET_FILENAME_SHARED,
+		STD_SET_FILENAME_SHARED,
+		FT_MULTISET_FILENAME_SHARED,
+		STD_MULTISET_FILENAME_SHARED,
 		FT_VECTOR_FILENAME,
 		STD_VECTOR_FILENAME
 	};
@@ -75,6 +83,7 @@ int main()
 			std::cout << std::string(s1 != s2 && (status = 1) ? "\033[0;31mFAILURE\033[0m"
 			: "\033[0;32mSUCCESS\033[0m") << std::endl;
 		}
+		usleep(useconds_t(0xffff));
 	}
 	std::cout << std::endl;
 	return (status);
