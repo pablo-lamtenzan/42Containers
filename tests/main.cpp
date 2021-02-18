@@ -1,99 +1,71 @@
 
-# include "../vector/vector.hpp"
-# include "../stack/stack.hpp"
-# include "../queue/queue.hpp"
-
 # include <fstream>
+# include <sstream>
+# include "shared_test_linear.hpp"
+# include "shared_test_tree.hpp"
+# include "tester.hpp"
 
 int main()
 {
-	size_t status = 0;
+	bool status = 0;
 
-	static const char*const names[] = {
-		"Test vector: ",
-		"Test list: ",
-		"Test map: ",
-		"Test stack: ",
-		"Test queue: "
+	static void (*const tests[])() = {
+		&execute_shared_tests_for_linear_containers<int>,
+		&execute_shared_tests_for_tree_containers<int, int>,
+		&vector_tests,
+		&list_tests,
+		&map_tests,
+		&stack_tests,
+		&queue_tests,
+		&deque_tests,
+		&multimap_tests,
+		&set_tests,
+		&multiset_tests
 	};
 
+	for (size_t i = 0 ; i < sizeof(tests) / sizeof(*tests) ; i++)
+		tests[i]();
+
+	// TO DO: Change to the ft filenames the index % 2 == 0 indexes
 	static const char*const filenames[] = {
-		"test_vector_ft",
-		"test_vector_std",
-		"test_list_ft",
-		"test_list_std",
-		"test_map_ft",
-		"test_map_std",
-		"test_stack_ft",
-		"test_stack_std",
-		"test_queue_ft",
-		"test_queue_std"
+		STD_VECTOR_FILENAME_SHARED,
+		STD_VECTOR_FILENAME_SHARED,
+		STD_LIST_FILENAME_SHARED,
+		STD_LIST_FILENAME_SHARED,
+		STD_DEQUE_FILENAME_SHARED,
+		STD_DEQUE_FILENAME_SHARED
 	};
 
-	template <class Container>
-	using type = Container;
-
-	static void				(*const tests[])(const std::string&, type)
+	for (size_t i = 0 ; i < sizeof(filenames) / sizeof(*filenames) ; i++)
 	{
-		&test_vector,
-		&test_list,
-		&test_map,
-		&test_stack,
-		&test_queue
-	};
-
-	template <class Container>
-	using type = Container;
-
-	static type containers[] = {
-		ft::vector,
-		std::vector,
-		ft::list,
-		std::list,
-		ft::map,
-		std::map,
-		ft::stack,
-		std::stack,
-		ft::queue,
-		std::queue
-	};
-
-	for (size_t i = 0, y = 0 ; i < sizeof(filenames) / sizeof(*filenames) ; i++)
-	{
-		tests[y](filenames[i], containers[i]);
-
 		if (i % 2)
 		{
-			std::ifstream ifs1(filename[i - 2]);
-			std::ifstream ifs2(filename[i - 1]);
+			std::ifstream ifs_ft(filenames[i - 1]);
+			std::ifstream ifs_std(filenames[i]);
 
-			if (ifs1.bad() || ifs2.bad())
+			if (ifs_ft.bad() || ifs_std.bad())
 			{
-				std::cerr << "Error: can not open the test files." << std::endl;
+				std::cerr << "std::ifstream ERROR" << std::endl;
 				return (1);
 			}
 
 			std::stringstream buff1;
 			std::stringstream buff2;
 
-			buff1 << ifs1.rdbuf();
-			buff2 << ifs2.rdbuf();
+			buff1 << ifs_ft.rdbuf();
+			buff2 << ifs_std.rdbuf();
+
+			// TO DO: Add colored log
+
+			std::cout << "Diff between [ " << filenames[i - 1] << " ]"
+			<< " and [ " << filenames[i] << " ] : ";
 
 			const std::string& s1 = buff1.str();
 			const std::string& s2 = buff2.str();
 
-			std::cout << names[i];
-
-			// TO DO: Add color
-			if (s1 == s2)
-				std::cout << "Passed!" << std::endl;
-			else
-			{
-				std::cout << "Failed!" << std::endl;
-				status = 1;
-			}
-			y++;
+			std::cout << std::string(s1 != s2 && (status = 1) ? "FAILURE" : "SUCCESS") << std::endl;
 		}
 	}
+	std::cout << std::endl;
 	return (status);
 }
