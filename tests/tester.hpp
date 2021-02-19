@@ -1,16 +1,6 @@
 
 # pragma once
 
-# include "vector_tests.hpp"
-# include "list_tests.hpp"
-# include "map_tests.hpp"
-# include "stack_tests.hpp"
-# include "queue_tests.hpp"
-# include "deque_tests.hpp"
-# include "multimap_tests.hpp"
-# include "set_tests.hpp"
-# include "multiset_tests.hpp"
-
 # define TEST_DIR "__TESTER__/"
 
 /*

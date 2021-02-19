@@ -5,6 +5,16 @@
 # include "shared_test_tree.hpp"
 # include "tester.hpp"
 
+# include "vector_tests.hpp"
+# include "list_tests.hpp"
+# include "map_tests.hpp"
+# include "stack_tests.hpp"
+# include "queue_tests.hpp"
+# include "deque_tests.hpp"
+# include "multimap_tests.hpp"
+# include "set_tests.hpp"
+# include "multiset_tests.hpp"
+
 /**
  * 	TO DO tests:
  * 
@@ -86,5 +96,5 @@ int main()
 		usleep(useconds_t(0xffff));
 	}
 	std::cout << std::endl;
-	return (status);
+	return (int(status));
 }
