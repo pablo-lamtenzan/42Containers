@@ -179,7 +179,7 @@ inline static void test_iterators(std::ofstream& fd)
 	typename Container::iterator o = c.end();
 
 	size_t y = 0;
-	for (auto i = c.begin() ; i != c.end() ; i++)
+	for (typename Container::iterator i = c.begin() ; i != c.end() ; i++)
 		*i = T(y++);
 	fd << "Test \'iterators\' 1: " << std::endl << "{ ";
 	while (it != o)
