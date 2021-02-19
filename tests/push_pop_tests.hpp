@@ -17,20 +17,20 @@ inline void test_push_pop_back(std::ofstream& fd)
 
 	fd << "\'Push back\' test 1: " << c.empty() << " " << c.size() << " ";
 	c.push_back(T(42));
-	fd << *c.begin() << " " << bool(*c.end() != *c.begin()) << " " << c.size() << " " << c.capacity() << std::endl;
+	fd << *c.begin() << " " << bool(*c.end() != *c.begin()) << " " << c.size() << std::endl;
 
 	// non empty
 
 	fd << "\'Push back\' test 2: " << c.empty() << " " << c.size() << " ";
 	c.push_back(T(42));
-	fd << *c.end() << " " << bool(*c.end() != *c.begin()) << " " << c.size() << " " << c.capacity() << std::endl;
+	fd << *c.end() << " " << bool(*c.end() != *c.begin()) << " " << c.size() << std::endl;
 
-	// push until size == cap and then push
+	// push loop
 
 	fd << "\'Push back\' test 3: " << c.empty() << " " << c.size() << " ";
-	for (size_t i = -1 ; i < c.capacity() ; i++)
+	for (size_t i = -1 ; i < size_t(42) ; i++)
 		c.push_back(T(42));
-	fd << *c.end() << " " << bool(*c.end() != *c.begin()) << " " << c.size() << " " << c.capacity() << std::endl;
+	fd << *c.end() << " " << bool(*c.end() != *c.begin()) << " " << c.size() << std::endl;
 
 	// pop empty
 
@@ -58,4 +58,10 @@ inline void test_push_pop_back(std::ofstream& fd)
 	while (!r.empty())
 		r.pop_back();
 	fd << "\'Pop back\' test 2: " << r.size() << " " << bool(r.begin() == r.end()) << std::endl;
+}
+
+template <typename Container, typename T>
+inline void test_push_pop_front(std::ofstream& fd)
+{
+	// when back is finished, copy paste and chanche back by front
 }

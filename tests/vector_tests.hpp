@@ -123,10 +123,6 @@ inline static void test_vec_resize(std::ofstream& fd)
 template <typename Container, typename T>
 inline static void start_vector_tests(const std::string& filename)
 {
-	std::ofstream fd;
-
-	fd.open(filename);
-
 	static void (*const tests[])(std::ofstream&) = {
 		&test_vec_constructor<Container, T>,
 		&test_random_access<Container, T>,
@@ -136,14 +132,12 @@ inline static void start_vector_tests(const std::string& filename)
 		&test_non_member_iterators<Container, T>
 	};
 
-	for (size_t i = 0 ; i < sizeof(tests) / sizeof(*tests) ; i++)
-		tests[i](fd);
+	start_tests(filename, tests, ARRAY_SIZE(tests)); 
 
-	fd.close();
 }
 
 inline void vector_tests()
-{
+{	
 	start_vector_tests<std::vector<int>, int>(std::string(std::string(std::string(TEST_DIR) + std::string(STD_VECTOR_FILENAME))));
 	start_vector_tests<std::vector<int>, int>(std::string(std::string(std::string(TEST_DIR) + std::string(FT_VECTOR_FILENAME))));
 }

@@ -123,3 +123,17 @@
 # ifndef STD_MULTISET_FILENAME
 #  define STD_MULTISET_FILENAME "std_multiset_test"
 # endif
+
+# define ARRAY_SIZE(x) sizeof(x) / sizeof(*x)
+
+inline static void start_tests(const std::string& filename, void (*const tests[])(std::ofstream&), size_t amount)
+{
+	std::ofstream fd;
+
+	fd.open(filename);
+
+	for (size_t i = 0 ; i < amount ; i++)
+		tests[i](fd);
+
+	fd.close();
+}

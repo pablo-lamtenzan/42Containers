@@ -13,17 +13,10 @@
 template <typename Container, typename T>
 inline static void shared_tree_tests(const std::string& filename)
 {
-	std::ofstream fd;
-
-	fd.open(filename);
-
 	static void (*const tests[])(std::ofstream&) = {
 	};
 
-	for (size_t i = 0 ; i < sizeof(tests) / sizeof(*tests) ; i++)
-		tests[i](fd);
-	
-	fd.close();
+	start_tests(filename, tests, ARRAY_SIZE(tests));
 }
 
 template <typename Key, typename Value>

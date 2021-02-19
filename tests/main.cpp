@@ -41,10 +41,9 @@ int main()
 		&multiset_tests
 	};
 
-	for (size_t i = 0 ; i < sizeof(tests) / sizeof(*tests) ; i++)
+	for (size_t i = 0 ; i < ARRAY_SIZE(tests) ; i++)
 		tests[i]();
 
-	// TO DO: Change to the ft filenames the index % 2 == 0 indexes
 	static const char*const filenames[] = {
 		FT_VECTOR_FILENAME_SHARED,
 		STD_VECTOR_FILENAME_SHARED,
@@ -61,10 +60,26 @@ int main()
 		FT_MULTISET_FILENAME_SHARED,
 		STD_MULTISET_FILENAME_SHARED,
 		FT_VECTOR_FILENAME,
-		STD_VECTOR_FILENAME
+		STD_VECTOR_FILENAME,
+		FT_LIST_FILENAME,
+		STD_LIST_FILENAME,
+		FT_MAP_FILENAME,
+		STD_MAP_FILENAME,
+		FT_STACK_FILENAME,
+		STD_STACK_FILENAME,
+		FT_QUEUE_FILENAME,
+		STD_QUEUE_FILENAME,
+		FT_DEQUE_FILENAME,
+		STD_DEQUE_FILENAME,
+		FT_MULTIMAP_FILENAME,
+		STD_MULTISET_FILENAME,
+		FT_SET_FILENAME,
+		STD_SET_FILENAME,
+		FT_MULTISET_FILENAME,
+		STD_MULTISET_FILENAME
 	};
 
-	for (size_t i = 0 ; i < sizeof(filenames) / sizeof(*filenames) ; i++)
+	for (size_t i = 0 ; i < ARRAY_SIZE(filenames) ; i++)
 	{
 		if (i % 2)
 		{
