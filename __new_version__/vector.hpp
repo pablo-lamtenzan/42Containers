@@ -6,6 +6,8 @@
  *  TO DO: add a description when is done
 */
 
+// TO DO: Forgot reserve
+
 # pragma once
 
 # include <ft_allocator.hpp>
