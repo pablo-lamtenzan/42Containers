@@ -143,7 +143,7 @@ struct are_same<T, T>
  * 	@brief Launch the tests those are indexed in @p tests ,
  * 	@p amount times and write a log of thoses testes in @p filename .
  * 
- * 	NOTE: tests must follow the signature: void (*const)(std::ofstream&)
+ * 	NOTE: *tests must follow the signature: void (*const)(std::ofstream&)
 */
 inline static void start_tests(const std::string& filename, void (*const tests[])(std::ofstream&), size_t amount)
 {
