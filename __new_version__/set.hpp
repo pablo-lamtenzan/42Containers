@@ -69,7 +69,7 @@ namespace FT_NAMESPACE
 		 * 
 		 * 	Create a %set with no elements.
 		*/
-		set(const Compare& cmp, const allocator_type& alloc = allocator_type())
+		set(const key_compare& cmp, const allocator_type& alloc = allocator_type())
 		: tree(cmp, alloc) { }
 
 		/**
