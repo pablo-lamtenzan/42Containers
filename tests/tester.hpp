@@ -124,8 +124,27 @@
 #  define STD_MULTISET_FILENAME "std_multiset_test"
 # endif
 
+template <typename, typename>
+struct are_same
+{ enum { cond = false }; };
+
+template <typename T>
+struct are_same<T, T>
+{ enum { cond = true }; };
+
 # define ARRAY_SIZE(x) sizeof(x) / sizeof(*x)
 
+/**
+ * 	@param filename The output filename.
+ * 	@param tests An array of pointer to function.
+ * 	@param amount The amount of tests to launch == ARRAY_SIZE(tests).
+ * 	@return Nothing.
+ * 
+ * 	@brief Launch the tests those are indexed in @p tests ,
+ * 	@p amount times and write a log of thoses testes in @p filename .
+ * 
+ * 	NOTE: tests must follow the signature: void (*const)(std::ofstream&)
+*/
 inline static void start_tests(const std::string& filename, void (*const tests[])(std::ofstream&), size_t amount)
 {
 	std::ofstream fd;

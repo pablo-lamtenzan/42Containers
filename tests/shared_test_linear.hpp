@@ -17,38 +17,27 @@
 # include <list>
 # include <deque>
 
-// NOTE: Move random access test for list
-
-/**
- * 	@brief cond == true if the template type is random_access
-*/
-
-template <typename, typename>
-struct are_same
-{ enum { cond = false }; };
-
-template <typename T>
-struct are_same<T, T>
-{ enum { cond = true }; };
-
 template <typename Container, typename T>
 inline static void test_constructor(std::ofstream& fd)
 {
 	fd << std::endl << "-------------- CONSTRUCTOR ----------------" << std::endl;
 
 	// TEST: default constructor
+
 	Container c;
 
 	fd << "Test default constructor 1: " << static_cast<std::string>(c.size() == size_t(0)
 	&& c.empty() ? "SUCCESS" : "ERROR") << std::endl;
 
 	// TEST: size constructor
+
 	Container c1(size_t(42));
 
 	fd << "Test size constructor 1: " << static_cast<std::string>(c1.size() == size_t(42)
 	&& !c1.empty() ? "SUCCESS" : "ERROR") << std::endl;
 
 	// TEST: range constructor
+
 	typename Container::iterator it = c1.begin();
 	for (size_t i = 0; i < c1.size() ; i++)
 		*(it++) = T(i);
@@ -65,6 +54,7 @@ inline static void test_constructor(std::ofstream& fd)
 	fd << std::endl;
 
 	// TEST: copy constructor
+
 	Container c3(c2);
 
 	fd << "Test copy constructor 1 (part 1/2): " << static_cast<std::string>(c3.size() == c2.size()
@@ -88,14 +78,14 @@ inline static void test_assignation(std::ofstream& fd)
 	Container c(size_t(42));
 
 	size_t y = 0;
-	for (auto i = c.begin() ; i != c.end() ; i++)
+	for (typename Container::iterator i = c.begin() ; i != c.end() ; i++)
 		*i = T(y++);
 
 	Container w = c;
 
 	fd << "Test \'operator=\' 1: " << std::endl << "["
 	<< w.size() << "]" << std::endl << "{ ";
-	for (auto i = w.begin() ; i != w.end() ; i++)
+	for (typename Container::iterator i = w.begin() ; i != w.end() ; i++)
 		fd << *i << std::string(" ");
 	fd << "}" << std::endl;
 
@@ -106,7 +96,7 @@ inline static void test_assignation(std::ofstream& fd)
 	r.assign(42, T(42));
 	fd << "Test \'assign\' 1: " << std::endl << "["
 	<< r.size() << "]" << std::endl << "{ ";
-	for (auto i = r.begin() ; i != r.end() ; i++)
+	for (typename Container::iterator i = r.begin() ; i != r.end() ; i++)
 		fd << *i << std::string(" ");
 	fd << "}" << std::endl;
 
@@ -115,7 +105,7 @@ inline static void test_assignation(std::ofstream& fd)
 	rr.assign(c.begin(), c.end());
 	fd << "Test \'assign\' 2: " << std::endl << "["
 	<< rr.size() << "]" << std::endl << "{ ";
-	for (auto i = rr.begin() ; i != rr.end() ; i++)
+	for (typename Container::iterator i = rr.begin() ; i != rr.end() ; i++)
 		fd << *i << std::string(" ");
 	fd << "}" << std::endl;
 }
@@ -196,8 +186,8 @@ inline static void test_iterators(std::ofstream& fd)
 
 	// TEST: non member iterator operators
 
-	auto lhs = c.begin();
-	auto rhs = c.end();
+	typename Container::iterator lhs = c.begin();
+	typename Container::iterator rhs = c.end();
 
 	for (size_t i = 0xf ; i > 0 ; i--)
 	{
@@ -207,13 +197,7 @@ inline static void test_iterators(std::ofstream& fd)
 
 	fd << "Test \'iterator\' 4: " << std::endl;
 	fd << "[" << bool(lhs == rhs) << "]" << std::endl;
-	fd << "[" << bool(lhs != rhs) << "]" << std::endl;
-
-	//fd << "[" << bool(lhs < rhs) << "]" << std::endl;
-	//fd << "[" << bool(lhs <= rhs) << "]" << std::endl;
-	//fd << "[" << bool(lhs > rhs) << "]" << std::endl;
-	//fd << "[" << bool(lhs >= rhs) << "]" << std::endl;
-	
+	fd << "[" << bool(lhs != rhs) << "]" << std::endl;	
 }
 
 template <typename Container, typename T>
@@ -282,7 +266,7 @@ inline static void test_modifiers(std::ofstream& fd)
 	z.clear();
 
 	size_t y = 0;
-	for (auto i = c.begin() ; i != c.end() ; i++)
+	for (typename Container::iterator i = c.begin() ; i != c.end() ; i++)
 		*i = T(y++);
 	c.insert(c.begin(), 42, T());
 	c.clear();
@@ -297,16 +281,16 @@ inline static void test_modifiers(std::ofstream& fd)
 	www.insert(++www.begin(), 41, T(42));
 	fd << "\'Insert test 1: " << ww.size() << " " << www.size() << std::endl
 	<< "{ ";
-	auto ll = ww.begin();
-	auto lll = www.begin();
+	typename Container::iterator ll = ww.begin();
+	typename Container::iterator lll = www.begin();
 	for (size_t i = 41 ; i > 0 ; i--)
 		fd << " { " << *(ll++) << " ; " << *(lll++) << " }";
 	fd << " }" << std::endl;
 
-	auto f = ww.begin();
+	typename Container::iterator f = ww.begin();
 	for (size_t i = 21 ; i > 0 ; i--)
 		f++;
-	auto ff = f;
+	typename Container::iterator ff = f;
 	for (size_t i = 13 ; i > 0 ; i--)
 		ff++;
 	ww.insert(ww.begin(), f, ff);
@@ -342,23 +326,23 @@ inline static void test_modifiers(std::ofstream& fd)
 	Container ii;
 
 	ii.insert(ii.begin(), 42, T(42));
-	auto xx = ii.begin();
+	typename Container::iterator xx = ii.begin();
 	for (size_t i = 18 ; i > 0 ; i--)
 		xx++;
-	auto yy = xx;
+	typename Container::iterator yy = xx;
 	for (size_t i = 8 ; i > 0 ; i--)
 		yy++;
 	ii.erase(xx, yy);
 	fd << "\'Erase\' test 1: " << ii.size() << std::endl << " { ";
-	for (auto i = ii.begin() ; i != ii.end() ; i++)
+	for (typename Container::iterator i = ii.begin() ; i != ii.end() ; i++)
 		fd << *i << " ";
 	fd << " }" << std::endl;
 
-	auto gg = ii.begin();
+	typename Container::iterator gg = ii.begin();
 	gg++;
 	ii.erase(gg);
 	fd << "\'Erase\' test 2: " << ii.size() << std::endl << " { ";
-	for (auto i = ii.begin() ; i != ii.end() ; i++)
+	for (typename Container::iterator i = ii.begin() ; i != ii.end() ; i++)
 		fd << *i << " ";
 	fd << " }" << std::endl;
 
@@ -397,7 +381,7 @@ inline static void test_non_members(std::ofstream& fd)
 	fd << "Test \'operator>=\' 2: " << bool(lhs >= rhs) << std::endl;
 
 	rhs.erase(rhs.begin());
-	rhs.erase(rhs.begin());
+	lhs.erase(lhs.begin());
 
 	fd << "Test \'operator==\' 3: " << bool(lhs == rhs) << std::endl;
 	fd << "Test \'operator!=\' 3: " << bool(lhs != rhs) << std::endl;
@@ -460,7 +444,7 @@ inline static void shared_tests(const std::string& filename)
 }
 
 template <typename T>
-inline void execute_shared_tests_for_linear_containers()
+inline static void execute_shared_tests_for_linear_containers()
 {
 	shared_tests<std::vector<T>, T>(std::string(std::string(TEST_DIR) + std::string(STD_VECTOR_FILENAME_SHARED)));
 	shared_tests<std::list<T>, T>(std::string(std::string(TEST_DIR) + std::string(STD_LIST_FILENAME_SHARED)));
