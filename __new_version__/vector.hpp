@@ -26,6 +26,10 @@
 
 namespace FT_NAMESPACE
 {
+	////////////////
+	// Base class //
+	////////////////
+
 	/**
 	 * 	@brief Vector Algorithm
 	 * 
@@ -199,6 +203,10 @@ namespace FT_NAMESPACE
 		tail = head;
 		storage = head + n;
 	}
+
+	//////////////////
+	// Vector class //
+	//////////////////
 
 	/**
 	 * 	@brief Vector Container
