@@ -62,14 +62,14 @@ namespace FT_NAMESPACE
 		~vector_algorithm();
 
 		/* Fast type basic operations */
-		void			alg_copy_data(const vector_algorithm& other);
-		void			alg_swap_data(vector_algorithm& other);
-		pointer			alg_allocate(size_type n);
-		void			alg_deallocate(pointer p);
+		inline void			alg_copy_data(const vector_algorithm& other);
+		inline void			alg_swap_data(vector_algorithm& other);
+		inline pointer		alg_allocate(size_type n);
+		inline void			alg_deallocate(pointer p);
 
 		protected:
 
-		void			alg_reserve(size_type n);
+		inline void			alg_reserve(size_type n);
 	};
 
 	//@{
