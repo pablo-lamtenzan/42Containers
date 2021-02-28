@@ -12,10 +12,7 @@
 // Range erase return
 // Resize set at the end
 // Insert signature (multiple signatures modified)
-// Range insert operator[] and signature
 // operator == and <
-
-
 
 # pragma once
 
@@ -86,30 +83,39 @@ namespace FT_NAMESPACE
 	*/
 	template <class T, class Alloc>
 	vector_algorithm<T, Alloc>::vector_algorithm()
+	: head(), tail(), storage(), memory()
 	{ }
 
 	template <class T, class Alloc>
 	vector_algorithm<T, Alloc>::vector_algorithm(const vector_algorithm&)
+	: head(), tail(), storage(), memory()
 	{ }
 
 	template <class T, class Alloc>
 	vector_algorithm<T, Alloc>::vector_algorithm(const allocator_type& alloc)
-	: memory(alloc)
+	:  head(), tail(), storage(), memory(alloc)
 	{ }
 
 	template <class T, class Alloc>
 	vector_algorithm<T, Alloc>::vector_algorithm(size_type n)
 	: memory()
-	{ alg_reserve(n); }
+	{
+		alg_reserve(n);
+		tail = storage;
+	}
 
 	template <class T, class Alloc>
 	vector_algorithm<T, Alloc>::vector_algorithm(size_type n, const allocator_type& alloc)
 	: memory(alloc)
-	{ alg_reserve(n); }
+	{
+		alg_reserve(n);
+		tail = storage;
+	}
 
 	template <class T, class Alloc>
 	template <typename T1, typename Alloc1>
 	vector_algorithm<T, Alloc>::vector_algorithm(const vector_algorithm<T1, Alloc1>&)
+	: head(), tail(), storage(), memory()
 	{ }
 	//@}
 
@@ -963,7 +969,7 @@ namespace FT_NAMESPACE
 			memory.destroy(tail--);
 	}
 
-			/**
+	/**
 	 * 	@brief resize
 	 * 
 	 * 	Change the capacity of %vector.
