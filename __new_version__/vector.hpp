@@ -518,6 +518,10 @@ namespace FT_NAMESPACE
 			memory.construct(head + i, *first);
 	}
 
+	////////////////////
+	// Element Access //
+	////////////////////
+
 	/**
 	 * 	@brief operator[]
 	 * 
@@ -642,6 +646,10 @@ namespace FT_NAMESPACE
 		return (&front());
 	}
 
+	///////////////
+	// Iterators //
+	///////////////
+
 	/**
 	 * 	@brief begin
 	 * 
@@ -722,6 +730,10 @@ namespace FT_NAMESPACE
 	vector<T, Allocator>::rend() const
 	{ return (const_reverse_iterator(tail)); }
 
+	//////////////
+	// Capacity //
+	//////////////
+
 	/*
 	 * 	@brief empty
 	 * 
@@ -791,6 +803,9 @@ namespace FT_NAMESPACE
 	vector<T, Allocator>::capacity() const
 	{ return (size_type(storage - head)); }
 
+	///////////////
+	// Modifiers //
+	///////////////
 
 	/**
 	 * 	@brief clear
@@ -816,25 +831,16 @@ namespace FT_NAMESPACE
 		// TO DO: (if i dont have it, i need an operator+ from normal iterator that return a size_type)
 
 		// Handle space
-		
 
-		/*
 		if (size_type(size() + amount) > capacity())
 			resize(size_type(capacity() * 2));
 		// Shift elements in range tail-(*this)[pos] by amount
-		iterator insertion_index = iterator((*this)[pos]);
-		for (iterator i = end() ; i != insertion_index ; i--)
-			(*this)[i + amount] = (*this)[i];
+		for (iterator i = end() ; i != pos ; i--)
+			*(i + amount) = *i;
 		// Insert amount copies of value
 		for (size_type i = 0 ; i < amount ; i++)
-			memory.construct(&(*this)[pos + i], value);
+			memory.construct(&*(pos++), value);
 		tail += amount;
-		*/
-
-
-
-
-
 	}
 
 	/**
@@ -870,21 +876,20 @@ namespace FT_NAMESPACE
 	typename vector<T, Allocator>::iterator
 	vector<T, Allocator>::insert(/*const_*/iterator pos, InputIt first, InputIt last)
 	{
-		/*
 		// Handle space
 		const size_type amount = distance(first, last);
 		if (size_type(size() + amount) > capacity())
 			resize(size_type(capacity() * 2));
-		// Shift elements in range tail-(*this)[pos] by amount
-		iterator insertion_index = iterator((*this)[pos]);
-		for (iterator i = end() ; i != insertion_index ; i--)
-			(*this)[i + amount] = (*this)[i];
+		// Shift elements in range tail-pos by amount
+		iterator insertion_index = pos;
+		for (iterator i = end() ; i != pos ; i--)
+			*(i + amount) = *i;
 		// Insert amount copies of value
 		for (size_type i = 0 ; i < amount ; i++)
-			memory.construct(&(*this)[pos + i], *(first++));
+			memory.construct(&*(pos++), *(first++));
 		tail += amount;
-		*/
-		return (iterator()); // TO DO: to define
+
+		return (insertion_index);
 	}
 
 		/**
