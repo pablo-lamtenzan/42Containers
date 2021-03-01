@@ -23,6 +23,366 @@
 
 namespace FT_NAMESPACE
 {
+	/////////////////////////////
+	// Vector iterarator class //
+	/////////////////////////////
+
+	/**
+	 * 	@brief Normal iterator
+	 * 
+	 * 	Normal in the sense that the arithmetic behaviour of its operators is standar.
+	*/
+	template <typename Iterator, typename Container>
+	class normal_iterator
+	{
+		/* Core */
+
+		protected:
+
+		Iterator						it;
+
+		/* Member types */
+
+		typedef iterator_traits<Iterator>	traits_type;
+
+		public:
+
+		typedef Iterator								iterator_type;
+		typedef Container								container_type;
+		typedef typename traits_type::iterator_category	iterator_category;
+		typedef typename traits_type::value_type		value_type;
+		typedef typename traits_type::difference_type	difference_type;
+		typedef typename traits_type::reference			reference;
+		typedef typename traits_type::pointer			pointer;
+
+		/* Member functions */
+
+		normal_iterator();
+		explicit normal_iterator(const iterator_type& i);
+		template <typename Iter>
+		normal_iterator(const normal_iterator<Iter, typename enable_if<(are_same<Iter, typename container_type::pointer>::type), container_type>::type>& i);
+
+		const iterator_type&	base() const;
+
+		/* Require read/write iterators */
+		reference				operator*() const;
+		pointer					operator->() const;
+	
+		/* Requires forward iterators */
+		normal_iterator&		operator++();
+		normal_iterator			operator++(int);
+	
+		/* Requires bidirectional iterators */
+		normal_iterator&		operator--();
+		normal_iterator			operator--(int);
+
+		/* Require random access iterators */
+		reference				operator[](difference_type n);
+		normal_iterator&		operator+=(difference_type n);
+		normal_iterator			operator+(difference_type n);
+		normal_iterator&		operator-=(difference_type n);
+		normal_iterator			operator-(difference_type n);
+	};
+
+	/**
+	 * 	@brief Default Constructor
+	*/
+	template <typename Iterator, typename Container>
+	normal_iterator<Iterator, Container>::normal_iterator()
+	: it(iterator_type())
+	{ }
+
+	/**
+	 * 	@brief Constructor
+	*/
+	template <typename Iterator, typename Container>
+	normal_iterator<Iterator, Container>::normal_iterator(const iterator_type& i)
+	: it(i)
+	{ }
+
+	/* Allow iterator to const_iterator conversion */
+
+	template <typename Iterator, typename Container>
+	template <typename Iter>
+	normal_iterator<Iterator, Container>::normal_iterator(const normal_iterator<Iter, typename enable_if<(are_same<Iter, typename container_type::pointer>::type), container_type>::type>& i)
+	: it(i.base())
+	{ }
+
+	/**
+	 * 	@brief Base
+	 * 
+	 * 	@return @c it the underlying work iterator.
+	*/
+	template <typename Iterator, typename Container>
+	const typename normal_iterator<Iterator, Container>::iterator_type&
+	normal_iterator<Iterator, Container>::base() const
+	{ return (it); }
+
+	///////////////////////////////////
+	// Requires read/write iterators //
+	///////////////////////////////////
+
+	/**
+	 * 	@brief operator*
+	 * 
+	 *	@return A reference to @c it.
+	*/
+	template <typename Iterator, typename Container>
+	typename normal_iterator<Iterator, Container>::reference
+	normal_iterator<Iterator, Container>::operator*() const
+	{ return (*it); }
+
+	/**
+	 * 	@brief operator->
+	 * 
+	 *	@return A pointer to @c it.
+	*/
+	template <typename Iterator, typename Container>
+	typename normal_iterator<Iterator, Container>::pointer
+	normal_iterator<Iterator, Container>::operator->() const
+	{ return (it); }
+
+	////////////////////////////////
+	// Requires forward iterators //
+	////////////////////////////////
+
+	/**
+	 * 	@brief operator++
+	 * 
+	 *	@return @c *this.
+	 *
+	 * 	Pre-increment @c it.
+	*/
+	template <typename Iterator, typename Container>
+	normal_iterator<Iterator, Container>&
+	normal_iterator<Iterator, Container>::operator++()
+	{
+		it++;
+		return (*this);
+	}
+
+	/**
+	 * 	@brief operator++
+	 * 
+	 *	@return @c *this.
+	 *
+	 * 	Post-increment @c it.
+	*/
+	template <typename Iterator, typename Container>
+	normal_iterator<Iterator, Container>
+	normal_iterator<Iterator, Container>::operator++(int)
+	{ return (normal_iterator(it++)); }
+
+	/////////////////////////////////////
+	// Require bidirectional iterators //
+	/////////////////////////////////////
+
+	/**
+	 * 	@brief operator--
+	 * 
+	 *	@return @c *this.
+	 *
+	 * 	Pre-decrements @c it.
+	*/
+	template <typename Iterator, typename Container>
+	normal_iterator<Iterator, Container>&
+	normal_iterator<Iterator, Container>::operator--()
+	{
+		it--;
+		return (*this);
+	}
+
+	/**
+	 * 	@brief operator--
+	 * 
+	 *	@return @c *this.
+	 *
+	 * 	Post-decrements @c it.
+	*/
+	template <typename Iterator, typename Container>
+	normal_iterator<Iterator, Container>
+	normal_iterator<Iterator, Container>::operator--(int)
+	{ return (normal_iterator(it--)); }
+
+	/////////////////////////////////////
+	// Require random access iterators //
+	/////////////////////////////////////
+
+	/**
+	 * 	@brief operator[]
+	 * 
+	 *	@return a reference to @c it at @a n index
+	*/
+	template <typename Iterator, typename Container>
+	typename normal_iterator<Iterator, Container>::reference
+	normal_iterator<Iterator, Container>::operator[](difference_type n)
+	{ return (it[n]); }
+
+	/**
+	 * 	@brief operator+=
+	 * 
+	 *	@return @c *this.
+	 *
+	 * 	pre-increment @c it by @a n steps
+	*/
+	template <typename Iterator, typename Container>
+	normal_iterator<Iterator, Container>&
+	normal_iterator<Iterator, Container>::operator+=(difference_type n)
+	{
+		it += n;
+		return (*this);
+	}
+
+	/**
+	 * 	@brief operator+
+	 * 
+	 *	@return An %normal_iterator that @c it is equal 
+	 *	to @c it incremented by @a n steps.
+	*/
+	template <typename Iterator, typename Container>
+	normal_iterator<Iterator, Container>
+	normal_iterator<Iterator, Container>::operator+(difference_type n)
+	{ return (normal_iterator(it + n)); }
+
+	/**
+	 * 	@brief operator-=
+	 * 
+	 *	@return @c *this.
+	 *
+	 * 	pre-decrement @c it by @a n steps
+	*/
+	template <typename Iterator, typename Container>
+	normal_iterator<Iterator, Container>&
+	normal_iterator<Iterator, Container>::operator-=(difference_type n)
+	{
+		it -= n;
+		return (*this);
+	}
+
+	/**
+	 * 	@brief operator-
+	 * 
+	 *	@return An %normal_iterator that @c it is equal 
+	 *	to @c it decremented by @a n steps.
+	*/
+	template <typename Iterator, typename Container>
+	normal_iterator<Iterator, Container>
+	normal_iterator<Iterator, Container>::operator-(difference_type n)
+	{ return (normal_iterator(it - n)); }
+
+	//////////////////////////////////
+	// Non-member boolean operators //
+	//////////////////////////////////
+
+	//@{
+	/**
+	 * 	@param lhs A %normal_iterator.
+	 *	@param rhs A %normal_iterator with the same type of @p lhs.
+	 *	
+	 *	@return The result of the boolean operation between both.
+	*/
+	template <typename Iterator, typename Container>
+	inline bool
+	operator==(const normal_iterator<Iterator, Container>& lhs, const normal_iterator<Iterator, Container>& rhs)
+	{ return (lhs.base() == rhs.base()); }
+
+	template <typename Iterator, typename Container>
+	inline bool
+	operator!=(const normal_iterator<Iterator, Container>& lhs, const normal_iterator<Iterator, Container>& rhs)
+	{ return (lhs.base() != rhs.base()); }
+
+	template <typename Iterator, typename Container>
+	inline bool
+	operator<(const normal_iterator<Iterator, Container>& lhs, const normal_iterator<Iterator, Container>& rhs)
+	{ return (lhs.base() < rhs.base()); }
+
+	template <typename Iterator, typename Container>
+	inline bool
+	operator<=(const normal_iterator<Iterator, Container>& lhs, const normal_iterator<Iterator, Container>& rhs)
+	{ return (lhs.base() <= rhs.base()); }
+
+	template <typename Iterator, typename Container>
+	inline bool
+	operator>(const normal_iterator<Iterator, Container>& lhs, const normal_iterator<Iterator, Container>& rhs)
+	{ return (lhs.base() > rhs.base()); }
+
+	template <typename Iterator, typename Container>
+	inline bool
+	operator>=(const normal_iterator<Iterator, Container>& lhs, const normal_iterator<Iterator, Container>& rhs)
+	{ return (lhs.base() >= rhs.base()); }
+
+	/* iterator Vs const_iterator */
+
+	template <typename Iterator1, typename Iterator2, typename Container>
+	inline bool
+	operator==(const normal_iterator<Iterator1, Container>& lhs, const normal_iterator<Iterator2, Container>& rhs)
+	{ return (lhs.base() == rhs.base()); }
+
+	template <typename Iterator1, typename Iterator2, typename Container>
+	inline bool
+	operator!=(const normal_iterator<Iterator1, Container>& lhs, const normal_iterator<Iterator2, Container>& rhs)
+	{ return (lhs.base() != rhs.base()); }
+
+	template <typename Iterator1, typename Iterator2, typename Container>
+	inline bool
+	operator<(const normal_iterator<Iterator1, Container>& lhs, const normal_iterator<Iterator2, Container>& rhs)
+	{ return (lhs.base() < rhs.base()); }
+
+	template <typename Iterator1, typename Iterator2, typename Container>
+	inline bool
+	operator<=(const normal_iterator<Iterator1, Container>& lhs, const normal_iterator<Iterator2, Container>& rhs)
+	{ return (lhs.base() <= rhs.base()); }
+
+	template <typename Iterator1, typename Iterator2, typename Container>
+	inline bool
+	operator>(const normal_iterator<Iterator1, Container>& lhs, const normal_iterator<Iterator2, Container>& rhs)
+	{ return (lhs.base() > rhs.base()); }
+
+	template <typename Iterator1, typename Iterator2, typename Container>
+	inline bool
+	operator>=(const normal_iterator<Iterator1, Container>& lhs, const normal_iterator<Iterator2, Container>& rhs)
+	{ return (lhs.base() >= rhs.base()); }
+	//@}
+
+	/**
+	 * 	@brief operator-
+	 * 	@param lhs A %normal_iterator
+	 * 	@param rhs A %normal_iterator
+	 * 
+	 *	@return @a lhs.base() - @a rhs.base().
+	*/
+	template <typename Iterator, typename Container>
+	inline typename normal_iterator<Iterator, Container>::difference_type
+	operator-(const normal_iterator<Iterator, Container>& lhs, const normal_iterator<Iterator, Container>& rhs)
+	{ return (lhs.base() - rhs.base()); }
+
+	/**
+	 * 	@brief operator-
+	 * 	@param lhs A %normal_iterator
+	 * 	@param rhs A %normal_iterator
+	 * 
+	 *	@return @a lhs.base() - @a rhs.base().
+	 *
+	 * 	Note: Mutable %normal_iterator vs const %normal_iterator is expected.
+	*/
+	template <typename Iterator1, typename Iterator2, typename Container>
+	inline typename normal_iterator<Iterator1, Container>::difference_type
+	operator-(const normal_iterator<Iterator1, Container>& lhs, const normal_iterator<Iterator2, Container>& rhs)
+	{ return (lhs.base() - rhs.base()); }
+
+	/**
+	 * 	@brief operator+
+	 * 	@param n Some distance.
+	 * 	@param i A %normal_iterator
+	 * 
+	 *	@return @a i incremented by @a n steps.
+	*/
+	template <typename Iterator, typename Container>
+	inline normal_iterator<Iterator, Container>
+	operator+(typename normal_iterator<Iterator, Container>::difference_type n,
+	const normal_iterator<Iterator, Container>& i)
+	{ return (normal_iterator<Iterator, Container>(i.base() + n)); }
+
 	////////////////
 	// Base class //
 	////////////////
