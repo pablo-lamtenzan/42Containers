@@ -40,6 +40,8 @@ namespace FT_NAMESPACE
 		// TO DO: 3rd tempalte arg is incomplete
 		Tree tree;
 
+		/* Imported member types */
+
 		public:
 
 		typedef typename Tree::reference		reference;
@@ -55,380 +57,465 @@ namespace FT_NAMESPACE
 		typedef typename Tree::reverse_iterator			reverse_iterator;
 		typedef typename Tree::const_reverse_iterator	const_reverse_iterator;
 
-		/** 
-		 * @brief Default Constructor
-		*/
-		multiset() : tree() { }
+		/* Member functions */
 
-		/**
-		 * 	@brief Size Constructor
-		 * 
-		 * 	@param cmp A comparator.
-		 * 	@param alloc An allocator.
-		 * 
-		 * 	Create a %multiset with no elements.
-		*/
-		multiset(const Compare& cmp, const allocator_type& alloc = allocator_type())
-		: tree(cmp, alloc) { }
-
-		/**
-		 * 	@brief Range Constructor
-		 * 
-		 * 	@tparam InputIt An input iterator.
-		 * 	@param first An InputIt.
-		 * 	@param last An InputIt.
-		 * 
-		 * 	Create a %multiset that holds copies of elemets that are in
-		 * 	range @p first - @p last.
-		*/
+		multiset();
+		multiset(const Compare& cmp, const allocator_type& alloc = allocator_type());
 		template <typename InputIt>
-		set(InputIt first, InputIt last) : tree()
-		{  tree.aux_insert_range_unique(first, last); }
-
-		/**
-		 * 	@brief Range Comparison Constructor
-		 * 
-		 * 	@tparam InputIt An input iterator.
-		 * 	@param first An InputIt.
-		 * 	@param last An InputIt.
-		 * 	@param cmp A comparison object.
-		 * 	@param alloc An allocator object.
-		 * 
-		 * 	Create a %multiset that holds copies of elemets that are in
-		 * 	range @p first - @p last.
-		*/
+		multiset(InputIt first, InputIt last);
 		template <typename InputIt>
-		set(InputIt first, InputIt last, const value_compare& cmp, const allocator_type& alloc = allocator_type())
-		: tree(cmp, alloc) { tree.aux_insert_range_unique(first, last); }
+		multiset(InputIt first, InputIt last, const value_compare& cmp, const allocator_type& alloc = allocator_type());
+		multiset(const multiset& other);
 
-		/**
-		 * 	@brief Copy Constructor
-		 * 
-		 * 	@param other A %multiset.
-		*/
-		set(const multiset& other) : tree(other.tree) { }
+		multiset&		operator=(const multiset& other);
 
-		/**
-		 * 	@brief operator=
-		 * 
-		 * 	@param other A %multiset.
-		 * 	@return @c *this.
-		 * 
-		 * 	Perform a deep copy if @p other into @c *this.
-		*/
-		set&			operator=(const multiset& other)
-		{
-			tree = other.tree;
-			return (*this);
-		}
+		/* Iterators */
+		iterator		begin() const;
+		iterator 		end() const;
+		iterator		rbegin() const;
+		iterator 		rend() const;
 
-		/* Accesors */
+		/* Capacity */
+		bool			empty() const;
+		size_type		size() const;
+		size_type		max_size() const;
 
-		/**
-		 * 	@brief key comp
-		 * 
-		 * 	@return The comparison objetc which was used to construct @c *this.
-		*/
-		key_compare		key_comp() const
-		{
-			return (tree.key_comp());
-		}
-
-		/**
-		 * 	@brief value comp
-		 * 
-		 * 	@return The comparison object which was used to construct @c *this.
-		*/
-		key_compare		value_comp() const
-		{
-			return (tree.key_comp());
-		}
-
-		/**
-		 * 	@brief begin
-		 * 
-		 * 	@return An iterator pointing to the first element of @c *this.
-		*/
-		iterator		begin() const 
-		{
-			return (tree.begin());
-		}
-
-		/**
-		 * 	@brief end
-		 * 
-		 * 	@return An iterator pointing to the last element of @c *this.
-		*/
-		iterator end() const
-		{
-			return (tree.end());
-		}
-
-		/**
-		 * 	@brief rbegin
-		 * 
-		 * 	@return A revese iterator pointing to the first element of @c *this.
-		*/
-		iterator		rbegin() const 
-		{
-			return (tree.rbegin());
-		}
-
-		/**
-		 * 	@brief rend
-		 * 
-		 * 	@return An iterator pointing to the last element of @c *this.
-		*/
-		iterator rend() const
-		{
-			return (tree.rend());
-		}
-
-		/**
-		 * 	@brief empty
-		 * 
-		 * 	@return True if the %multiset is empty.
-		*/
-		bool		empty() const
-		{
-			return (tree.empty());
-		}
-
-		/**
-		 * 	@brief size
-		 * 
-		 * 	@return The size of the %multiset.
-		*/
-		size_type	size() const
-		{
-			return (tree.size());
-		}
-
-		/**
-		 * 	@brief max size
-		 * 
-		 * 	@return The maximum number of element type Key that @c *this can hold.
-		*/
-		size_type	max_size() const
-		{
-			return (tree.max_size());
-		}
-
-		/**
-		 * 	@brief swap
-		 * 
-		 * 	@param other A %multiset.
-		 * 
-		 * 	Perform a swap between @c *this and @p other.
-		*/
-		void		swap(const multiset& other)
-		{
-			tree.swap(other.tree);
-		}
-
-		/**
-		 * 	@brief insert
-		 * 
-		 * 	@param value The key to be inserted.
-		 * 
-		 * 	Attemps to insert @p value into the %multiset.
-		 * 	If the insertion is not possible the bool in the returned pair is false.
-		*/
-		std::pair<iterator, bool>	insert(const_reference& value)
-		{
-			return (tree.aux_insert_unique(value));
-		}
-
-		/**
-		 * 	@brief insert
-		 * 
-		 * 	@param position The index of the insertion.
-		 * 	@param value The key to be inserted.
-		 * 
-		 * 	Attemps to insert @p value ussing position as hint.
-		 * 	NOTE: position (if is set correctly) is just to increase the speed execution.
-		 * 		This function perform the same operation as insert(const_reference) signature.
-		*/
-		iterator		insert(const_iterator position, const_reference value)
-		{
-			return (tree.aux_insert_unique(position, value));
-		}
-
-		/**
-		 * 	@brief insert
-		 * 
-		 * 	@tparam InputIt A input iterator.
-		 * 	@param first A InputIt.
-		 * 	@param last A InputIt.
-		 * 
-		 * 	Attemps to insert a range of elements into @c *this.
-		*/
+		/* Modifiers */
+		void			clear() const;
+		std::pair<iterator, bool>	insert(const_reference& value);
+		iterator		insert(const_iterator position, const_reference value);
 		template <typename InputIt>
-		iterator		insert(InputIt first, InputIt last)
-		{
-			return (tree.aux_insert_range_unique(first, last));
-		}
+		iterator		insert(InputIt first, InputIt last);
+		iterator		erase(iterator position);
+		size_type		erase(const key_type& k);
+		void			erase(iterator first, iterator last);
+		void			swap(const multiset& other);
 
-		/**
-		 * 	@brief erase
-		 * 
-		 * 	@param position An index in the %multiset.
-		 * 
-		 * 	@return An iterator to the element that is after the deletion
-		 * 		at index @p position.
-		 * 
-		 * 	Erase the element holded at @p position.
-		*/
-		iterator		erase(iterator position)
-		{
-			return (tree.erase(position));
-		}
+		/* Lookup */
+		size_type		count(const key_type& k) const;
+		iterator		find(cost key_type& k);
+		const_iterator	find(cost key_type& k) const;
+		std::pair<iterator, iterator>	equal_range(const key_type& k);
+		std::pair<const_iterator, const_iterator>	equal_range(const key_type& k) const;
+		iterator		lower_bound(const key_type& k);
+		const_iterator	lower_bound(const key_type& k) const;
+		iterator		upper_bound(const key_type& k);
+		const_iterator	upper_bound(const key_type& k) const;
 
-		/**
-		 * 	@brief erase
-		 * 
-		 * 	@param k A key.
-		 * 	
-		 *  @return The amount of erased elements.
-		 * 
-		 * 	Perform an eresion of all the element matching with the key @p k.
-		*/
-		size_type		erase(const key_type& k)
-		{
-			return (tree.erase(k));
-		}
+		/* Observers */
+		key_compare		key_comp() const;
+		key_compare		value_comp() const;
 
-		/**
-		 * 	@brief erase
-		 * 
-		 * 	@param first An iterator.
-		 * 	@param last An iterator.
-		 * 
-		 * 	Perform an erersion in range @p first - @p last.
-		*/
-		void			erase(iterator first, iterator last)
-		{
-			tree.erase(first, last);
-		}
-
-		/**
-		 * 	@brief empty.
-		 * 
-		 * 	Empty @c *this.
-		*/
-		void			clear() const
-		{
-			tree.clear();
-		}
-
-		/**
-		 * 	@brief count
-		 * 
-		 * 	@param k A key.
-		 * 	
-		 * 	@return The amount of element matching with the key @p k.
-		 * 	NOTE: This function only makes sense on %multiset. On a %set the result
-		 * 		will always be 0 or 1.
-		*/
-		size_type		count(const key_type& k) const
-		{
-			return (tree.count(k));
-		}
-
-		/**
-		 * 	@brief find
-		 * 
-		 * 	@param k A key.
-		 * 	@return An iterator pointing to the maching key with @p k.
-		*/
-		iterator		find(cost key_type& k)
-		{
-			return (tree.find(k));
-		}
-
-		/**
-		 * 	@brief find
-		 * 
-		 * 	@param k A key.
-		 * 	@return An iterator pointing to the maching key with @p k.
-		*/
-		const_iterator	find(cost key_type& k) const
-		{
-			return (tree.find(k));
-		}
-
-		/**
-		 * 	@brief lower bound
-		 * 
-		 * 	@return An iterator pointing to the end of a subsequence
-		 * 		matching with with the key @p k.
-		*/
-		iterator		lower_bound(const key_type& k)
-		{
-			return (tree.lower_bound(k));
-		}
-
-		/**
-		 * 	@brief lower bound
-		 * 
-		 * 	@return A const iterator pointing to the end of a subsequence
-		 * 		matching with with the key @p k.
-		*/
-		const_iterator	lower_bound(const key_type& k)
-		{
-			return (tree.lower_bound(k));
-		}
-
-		/**
-		 * 	@brief lower bound
-		 * 
-		 * 	@return An iterator pointing to the start of a subsequence
-		 * 		matching with with the key @p k.
-		*/
-		iterator		upper_bound(const key_type& k)
-		{
-			return (tree.upper_bound(k));
-		}
-
-		/**
-		 * 	@brief lower bound
-		 * 
-		 * 	@return A const iterator pointing to the start of a subsequence
-		 * 		matching with with the key @p k.
-		*/
-		const_iterator	upper_bound(const key_type& k)
-		{
-			return (tree.upper_bound(k));
-		}
-
-		/**
-		 * 	@brief equal range
-		 * 
-		 * 	@return A pair of iterators that possibly points to the subsequence
-		 * 		that match with the given key @p k.
-		*/
-		std::pair<iterator, iterator>	equal_range(const key_type& k)
-		{
-			return (tree.equal_range(k));
-		}
-
-		/**
-		 * 	@brief equal range
-		 * 
-		 * 	@return A pair of const iterators that possibly points to the subsequence
-		 * 		that match with the given key @p k.
-		*/
-		std::pair<const_iterator, const_iterator>	equal_range(const key_type& k) const
-		{
-			return (tree.equal_range(k));
-		}
-
+		/* Non members */
 		template <typename <K1, typename C1, typename A1>
 		friend bool operator==(const multiset<K1, C1, A1>& lhs, const multiset<K1, C1, A1>& rhs);
-
 		template <typename <K1, typename C1, typename A1>
 		friend bool operator<(const multiset<K1, C1, A1>& lhs, const multiset<K1, C1, A1>& rhs);
 	};
+
+	/** 
+	 * @brief Default Constructor
+	*/
+	template <class Key, class Compare, class Alloc>
+	multiset<Key, Compare, Alloc>::multiset()
+	: tree() 
+	{ }
+
+	/**
+	 * 	@brief Size Constructor
+	 * 
+	 * 	@param cmp A comparator.
+	 * 	@param alloc An allocator.
+	 * 
+	 * 	Create a %multiset with no elements.
+	*/
+	template <class Key, class Compare, class Alloc>
+	multiset<Key, Compare, Alloc>::multiset(const Compare& cmp, const allocator_type& alloc)
+	: tree(cmp, alloc)
+	{ }
+
+	/**
+	 * 	@brief Range Constructor
+	 * 
+	 * 	@tparam InputIt An input iterator.
+	 * 	@param first An InputIt.
+	 * 	@param last An InputIt.
+	 * 
+	 * 	Create a %multiset that holds copies of elemets that are in
+	 * 	range @p first - @p last.
+	*/
+	template <class Key, class Compare, class Alloc>
+	template <typename InputIt>
+	multiset<Key, Compare, Alloc>::multiset(InputIt first, InputIt last)
+	: tree()
+	{ tree.aux_insert_range_unique(first, last); }
+
+	/**
+	 * 	@brief Range Comparison Constructor
+	 * 
+	 * 	@tparam InputIt An input iterator.
+	 * 	@param first An InputIt.
+	 * 	@param last An InputIt.
+	 * 	@param cmp A comparison object.
+	 * 	@param alloc An allocator object.
+	 * 
+	 * 	Create a %multiset that holds copies of elemets that are in
+	 * 	range @p first - @p last.
+	*/
+	template <class Key, class Compare, class Alloc>
+	template <typename InputIt>
+	multiset<Key, Compare, Alloc>::multiset(InputIt first, InputIt last, const value_compare& cmp, const allocator_type& alloc)
+	: tree(cmp, alloc)
+	{ tree.aux_insert_range_unique(first, last); }
+
+	/**
+	 * 	@brief Copy Constructor
+	 * 
+	 * 	@param other A %multiset.
+	*/
+	template <class Key, class Compare, class Alloc>
+	multiset<Key, Compare, Alloc>::multiset(const multiset& other)
+	: tree(other.tree)
+	{ }
+
+	/**
+	 * 	@brief operator=
+	 * 
+	 * 	@param other A %multiset.
+	 * 	@return @c *this.
+	 * 
+	 * 	Perform a deep copy if @p other into @c *this.
+	*/
+	template <class Key, class Compare, class Alloc>
+	multiset<Key, Compare, Alloc>&
+	multiset<Key, Compare, Alloc>::operator=(const multiset& other)
+	{
+		tree = other.tree;
+		return (*this);
+	}
+
+	///////////////
+	// Iterators //
+	///////////////
+
+	/**
+	 * 	@brief begin
+	 * 
+	 * 	@return An iterator pointing to the first element of @c *this.
+	*/
+	template <class Key, class Compare, class Alloc>
+	typename multiset<Key, Compare, Alloc>::iterator
+	multiset<Key, Compare, Alloc>::begin() const 
+	{ return (tree.begin()); }
+
+	/**
+	 * 	@brief end
+	 * 
+	 * 	@return An iterator pointing to the last element of @c *this.
+	*/
+	template <class Key, class Compare, class Alloc>
+	typename multiset<Key, Compare, Alloc>::iterator
+	multiset<Key, Compare, Alloc>::end() const
+	{ return (tree.end()); }
+
+	/**
+	 * 	@brief rbegin
+	 * 
+	 * 	@return A revese iterator pointing to the first element of @c *this.
+	*/
+	template <class Key, class Compare, class Alloc>
+	typename multiset<Key, Compare, Alloc>::iterator
+	multiset<Key, Compare, Alloc>::rbegin() const 
+	{ return (tree.rbegin()); }
+
+	/**
+	 * 	@brief rend
+	 * 
+	 * 	@return An iterator pointing to the last element of @c *this.
+	*/
+	template <class Key, class Compare, class Alloc>
+	typename multiset<Key, Compare, Alloc>::iterator
+	multiset<Key, Compare, Alloc>::rend() const
+	{ return (tree.rend()); }
+
+	//////////////
+	// Capacity //
+	//////////////
+
+	/**
+	 * 	@brief empty
+	 * 
+	 * 	@return True if the %multiset is empty.
+	*/
+	template <class Key, class Compare, class Alloc>
+	bool
+	multiset<Key, Compare, Alloc>::empty() const
+	{ return (tree.empty()); }
+
+	/**
+	 * 	@brief size
+	 * 
+	 * 	@return The size of the %multiset.
+	*/
+	template <class Key, class Compare, class Alloc>
+	typename multiset<Key, Compare, Alloc>::size_type
+	multiset<Key, Compare, Alloc>::size() const
+	{ return (tree.size()); }
+
+	/**
+	 * 	@brief max size
+	 * 
+	 * 	@return The maximum number of element type Key that @c *this can hold.
+	*/
+	template <class Key, class Compare, class Alloc>
+	typename multiset<Key, Compare, Alloc>::size_type
+	multiset<Key, Compare, Alloc>::max_size() const
+	{ return (tree.max_size()); }
+
+	///////////////
+	// Modifiers //
+	///////////////
+
+	/**
+	 * 	@brief clear
+	 * 
+	 * 	Empty @c *this.
+	*/
+	template <class Key, class Compare, class Alloc>
+	void
+	multiset<Key, Compare, Alloc>::clear() const
+	{ tree.clear(); }
+
+	/**
+	 * 	@brief insert
+	 * 
+	 * 	@param value The key to be inserted.
+	 * 
+	 * 	Attemps to insert @p value into the %multiset.
+	 * 	If the insertion is not possible the bool in the returned pair is false.
+	*/
+	template <class Key, class Compare, class Alloc>
+	std::pair<typename multiset<Key, Compare, Alloc>::iterator, bool>
+	multiset<Key, Compare, Alloc>::insert(const_reference& value)
+	{ return (tree.aux_insert_unique(value)); }
+
+	/**
+	 * 	@brief insert
+	 * 
+	 * 	@param position The index of the insertion.
+	 * 	@param value The key to be inserted.
+	 * 
+	 * 	Attemps to insert @p value ussing position as hint.
+	 * 	NOTE: position (if is set correctly) is just to increase the speed execution.
+	 * 		This function perform the same operation as insert(const_reference) signature.
+	*/
+	template <class Key, class Compare, class Alloc>
+	typename multiset<Key, Compare, Alloc>::iterator
+	multiset<Key, Compare, Alloc>::insert(const_iterator position, const_reference value)
+	{ return (tree.aux_insert_unique(position, value)); }
+
+	/**
+	 * 	@brief insert
+	 * 
+	 * 	@tparam InputIt A input iterator.
+	 * 	@param first A InputIt.
+	 * 	@param last A InputIt.
+	 * 
+	 * 	Attemps to insert a range of elements into @c *this.
+	*/
+	template <class Key, class Compare, class Alloc>
+	template <typename InputIt>
+	typename multiset<Key, Compare, Alloc>::iterator
+	multiset<Key, Compare, Alloc>::insert(InputIt first, InputIt last)
+	{ return (tree.aux_insert_range_unique(first, last)); }
+
+	/**
+	 * 	@brief erase
+	 * 
+	 * 	@param position An index in the %multiset.
+	 * 
+	 * 	@return An iterator to the element that is after the deletion
+	 * 		at index @p position.
+	 * 
+	 * 	Erase the element holded at @p position.
+	*/
+	template <class Key, class Compare, class Alloc>
+	typename multiset<Key, Compare, Alloc>::iterator
+	multiset<Key, Compare, Alloc>::erase(iterator position)
+	{ return (tree.erase(position)); }
+
+	/**
+	 * 	@brief erase
+	 * 
+	 * 	@param k A key.
+	 * 	
+	 *  @return The amount of erased elements.
+	 * 
+	 * 	Perform an eresion of all the element matching with the key @p k.
+	*/
+	template <class Key, class Compare, class Alloc>
+	typename multiset<Key, Compare, Alloc>::size_type
+	multiset<Key, Compare, Alloc>::erase(const key_type& k)
+	{ return (tree.erase(k)); }
+
+	/**
+	 * 	@brief erase
+	 * 
+	 * 	@param first An iterator.
+	 * 	@param last An iterator.
+	 * 
+	 * 	Perform an erersion in range @p first - @p last.
+	*/
+	template <class Key, class Compare, class Alloc>
+	void
+	multiset<Key, Compare, Alloc>::erase(iterator first, iterator last)
+	{ tree.erase(first, last); }
+
+	/**
+	 * 	@brief swap
+	 * 
+	 * 	@param other A %multiset.
+	 * 
+	 * 	Perform a swap between @c *this and @p other.
+	*/
+	template <class Key, class Compare, class Alloc>
+	void
+	multiset<Key, Compare, Alloc>::swap(const multiset& other)
+	{ tree.swap(other.tree); }
+
+	////////////
+	// Lookup //
+	////////////
+
+	/**
+	 * 	@brief count
+	 * 
+	 * 	@param k A key.
+	 * 	
+	 * 	@return The amount of element matching with the key @p k.
+	 * 	NOTE: This function only makes sense on %multiset. On a %set the result
+	 * 		will always be 0 or 1.
+	*/
+	template <class Key, class Compare, class Alloc>
+	typename multiset<Key, Compare, Alloc>::size_type
+	multiset<Key, Compare, Alloc>::count(const key_type& k) const
+	{ return (tree.count(k)); }
+
+	/**
+	 * 	@brief find
+	 * 
+	 * 	@param k A key.
+	 * 	@return An iterator pointing to the maching key with @p k.
+	*/
+	template <class Key, class Compare, class Alloc>
+	typename multiset<Key, Compare, Alloc>::iterator
+	multiset<Key, Compare, Alloc>::find(cost key_type& k)
+	{ return (tree.find(k)); }
+
+	/**
+	 * 	@brief find
+	 * 
+	 * 	@param k A key.
+	 * 	@return An iterator pointing to the maching key with @p k.
+	*/
+	template <class Key, class Compare, class Alloc>
+	typename multiset<Key, Compare, Alloc>::const_iterator
+	multiset<Key, Compare, Alloc>::find(cost key_type& k) const
+	{ return (tree.find(k)); }
+
+	/**
+	 * 	@brief equal range
+	 * 
+	 * 	@return A pair of iterators that possibly points to the subsequence
+	 * 		that match with the given key @p k.
+	*/
+	template <class Key, class Compare, class Alloc>
+	std::pair<typename multiset<Key, Compare, Alloc>::iterator, typename multiset<Key, Compare, Alloc>::iterator>
+	multiset<Key, Compare, Alloc>::equal_range(const key_type& k)
+	{ return (tree.equal_range(k)); }
+
+	/**
+	 * 	@brief equal range
+	 * 
+	 * 	@return A pair of const iterators that possibly points to the subsequence
+	 * 		that match with the given key @p k.
+	*/
+	template <class Key, class Compare, class Alloc>
+	std::pair<typename multiset<Key, Compare, Alloc>::const_iterator, typename multiset<Key, Compare, Alloc>::const_iterator>
+	multiset<Key, Compare, Alloc>::equal_range(const key_type& k) const
+	{ return (tree.equal_range(k)); }
+
+	/**
+	 * 	@brief lower bound
+	 * 
+	 * 	@return An iterator pointing to the end of a subsequence
+	 * 		matching with with the key @p k.
+	*/
+	template <class Key, class Compare, class Alloc>
+	typename multiset<Key, Compare, Alloc>::iterator
+	multiset<Key, Compare, Alloc>::lower_bound(const key_type& k)
+	{ return (tree.lower_bound(k)); }
+
+	/**
+	 * 	@brief lower bound
+	 * 
+	 * 	@return A const iterator pointing to the end of a subsequence
+	 * 		matching with with the key @p k.
+	*/
+	template <class Key, class Compare, class Alloc>
+	typename multiset<Key, Compare, Alloc>::const_iterator
+	lower_bound(const key_type& k) const
+	{ return (tree.lower_bound(k)); }
+
+	/**
+	 * 	@brief lower bound
+	 * 
+	 * 	@return An iterator pointing to the start of a subsequence
+	 * 		matching with with the key @p k.
+	*/
+	template <class Key, class Compare, class Alloc>
+	typename multiset<Key, Compare, Alloc>::iterator
+	multiset<Key, Compare, Alloc>::upper_bound(const key_type& k)
+	{ return (tree.upper_bound(k)); }
+
+	/**
+	 * 	@brief lower bound
+	 * 
+	 * 	@return A const iterator pointing to the start of a subsequence
+	 * 		matching with with the key @p k.
+	*/
+	template <class Key, class Compare, class Alloc>
+	typename multiset<Key, Compare, Alloc>::const_iterator
+	multiset<Key, Compare, Alloc>::upper_bound(const key_type& k) const
+	{ return (tree.upper_bound(k)); }
+
+	///////////////
+	// Observers //
+	///////////////
+
+	/**
+	 * 	@brief key comp
+	 * 
+	 * 	@return The comparison objetc which was used to construct @c *this.
+	*/
+	template <class Key, class Compare, class Alloc>
+	typename multiset<Key, Compare, Alloc>::key_compare
+	multiset<Key, Compare, Alloc>::key_comp() const
+	{ return (tree.key_comp()); }
+
+	/**
+	 * 	@brief value comp
+	 * 
+	 * 	@return The comparison object which was used to construct @c *this.
+	*/
+	template <class Key, class Compare, class Alloc>
+	typename multiset<Key, Compare, Alloc>::key_compare
+	multiset<Key, Compare, Alloc>::value_comp() const
+	{ return (tree.key_comp()); }
+
+	/////////////////
+	// Non mmebers //
+	/////////////////
 
 	//@{
 	/**
@@ -440,40 +527,34 @@ namespace FT_NAMESPACE
 	 * 	@return The boolean result of the requested operation.
 	*/
 	template <typename Key, typename Compare, typename Alloc>
-	inline bool operator==(const multiset<Key, Compare, Alloc>& lhs, const multiset<Key, Compare, Alloc>& rhs)
-	{
-		return (lhs.tree == rhs.tree);
-	}
+	inline bool
+	operator==(const multiset<Key, Compare, Alloc>& lhs, const multiset<Key, Compare, Alloc>& rhs)
+	{ return (lhs.tree == rhs.tree); }
 
 	template <typename Key, typename Compare, typename Alloc>
-	inline bool operator<(const multiset<Key, Compare, Alloc>& lhs, const multiset<Key, Compare, Alloc>& rhs)
-	{
-		return (lhs.tree < rhs.tree);
-	}
+	inline bool
+	operator<(const multiset<Key, Compare, Alloc>& lhs, const multiset<Key, Compare, Alloc>& rhs)
+	{ return (lhs.tree < rhs.tree); }
 
 	template <typename Key, typename Compare, typename Alloc>
-	inline bool operator!=(const multiset<Key, Compare, Alloc>& lhs, const multiset<Key, Compare, Alloc>& rhs)
-	{
-		return (!(lhs == rhs));
-	}
+	inline bool
+	operator!=(const multiset<Key, Compare, Alloc>& lhs, const multiset<Key, Compare, Alloc>& rhs)
+	{ return (!(lhs == rhs)); }
 
 	template <typename Key, typename Compare, typename Alloc>
-	inline bool operator>(const multiset<Key, Compare, Alloc>& lhs, const multiset<Key, Compare, Alloc>& rhs)
-	{
-		return (rhs < lhs);
-	}
+	inline bool
+	operator>(const multiset<Key, Compare, Alloc>& lhs, const multiset<Key, Compare, Alloc>& rhs)
+	{ return (rhs < lhs); }
 
 	template <typename Key, typename Compare, typename Alloc>
-	inline bool operator<=(const multiset<Key, Compare, Alloc>& lhs, const multiset<Key, Compare, Alloc>& rhs)
-	{
-		return (!(lhs > rhs));
-	}
+	inline bool
+	operator<=(const multiset<Key, Compare, Alloc>& lhs, const multiset<Key, Compare, Alloc>& rhs)
+	{ return (!(lhs > rhs)); }
 
 	template <typename Key, typename Compare, typename Alloc>
-	inline bool operator>=(const multiset<Key, Compare, Alloc>& lhs, const multiset<Key, Compare, Alloc>& rhs)
-	{
-		return (!(lhs < rhs));
-	}
+	inline bool
+	operator>=(const multiset<Key, Compare, Alloc>& lhs, const multiset<Key, Compare, Alloc>& rhs)
+	{ return (!(lhs < rhs)); }
 
 	/**
 	 * 	@brief swap
@@ -481,9 +562,8 @@ namespace FT_NAMESPACE
 	 * 	A specilisation of swap made for %multiset.
 	*/
 	template <typename Key, typename Compare, typename Alloc>
-	inline void swap(const multiset<Key, Compare, Alloc>& lhs, const multiset<Key, Compare, Alloc>& rhs)
-	{
-		lhs.swap(rhs);
-	}
+	inline void
+	swap(const multiset<Key, Compare, Alloc>& lhs, const multiset<Key, Compare, Alloc>& rhs)
+	{ lhs.swap(rhs); }
 	//@}
 };
