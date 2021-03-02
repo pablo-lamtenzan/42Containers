@@ -1,7 +1,7 @@
 # 42Containers
 
-STL librtery containers re-implementation using native algorithms. All the code is from scratch but the algorithms logistic is like STL source code.
-Each containers has it member types, iterator class and member functions. 
+STL library containers re-implementation using native algorithms. All the code is from scratch but the algorithms logistic is like STL source code.
+Each container has it member types, iterator class and member functions. 
 This repository contains the re-implementation of the following containers:
 - Vector
 - List
