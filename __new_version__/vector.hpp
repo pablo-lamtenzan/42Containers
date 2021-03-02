@@ -14,6 +14,12 @@
 // Insert signature (multiple signatures modified)
 // operator == and <
 
+// TEST to solve:
+// Problem in destruction
+// Problem in back / end
+// Problem in max size
+// Modifers dos 
+
 # pragma once
 
 # include "ft_allocator.hpp"
@@ -423,14 +429,14 @@ namespace FT_NAMESPACE
 		~vector_algorithm();
 
 		/* Fast type basic operations */
-		inline void			alg_copy_data(const vector_algorithm& other);
-		inline void			alg_swap_data(vector_algorithm& other);
-		inline pointer		alg_allocate(size_type n);
-		inline void			alg_deallocate(pointer p);
+		inline void			alg_copy_data(const vector_algorithm& other) throw();
+		inline void			alg_swap_data(vector_algorithm& other) throw();
+		inline pointer		alg_allocate(size_type n) throw(std::bad_alloc);
+		inline void			alg_deallocate(pointer p) throw();
 
 		protected:
 
-		inline void			alg_reserve(size_type n);
+		inline void			alg_reserve(size_type n) throw(std::bad_alloc);
 	};
 
 	//@{
@@ -500,6 +506,7 @@ namespace FT_NAMESPACE
 	template <class T, class Alloc>
 	void
 	vector_algorithm<T, Alloc>::alg_copy_data(const vector_algorithm& other)
+	throw()
 	{
 		head = other.head;
 		tail = other.tail;
@@ -517,6 +524,7 @@ namespace FT_NAMESPACE
 	template <class T, class Alloc>
 	void
 	vector_algorithm<T, Alloc>::alg_swap_data(vector_algorithm& other)
+	throw()
 	{
 		vector_algorithm	tmp;
 		tmp.alg_copy_data(*this);
@@ -536,6 +544,7 @@ namespace FT_NAMESPACE
 	template <class T, class Alloc>
 	typename vector_algorithm<T, Alloc>::pointer
 	vector_algorithm<T, Alloc>::alg_allocate(size_type n)
+	throw(std::bad_alloc)
 	{ return (long(n) >= 0 ? memory.allocate(n) : pointer()); }
 
 	/**
@@ -551,6 +560,7 @@ namespace FT_NAMESPACE
 	template <class T, class Alloc>
 	void
 	vector_algorithm<T, Alloc>::alg_deallocate(pointer p)
+	throw()
 	{ memory.deallocate(p); }
 
 	/**
@@ -564,6 +574,7 @@ namespace FT_NAMESPACE
 	*/
 	template <class T, class Alloc>
 	inline void vector_algorithm<T, Alloc>::alg_reserve(size_type n)
+	throw(std::bad_alloc)
 	{
 		head = alg_allocate(n);
 		tail = head;
@@ -619,10 +630,10 @@ namespace FT_NAMESPACE
 
 		private:
 
-		inline void		vec_cpy(const vector& other, size_type n);
-		inline void		vec_array_copy(pointer dest, const_pointer src, size_type n);
-		inline void		vec_set(pointer dest, const_reference value, size_type n);
-		inline void		vec_clear();
+		inline void		vec_cpy(const vector& other, size_type n) throw(std::bad_alloc);
+		inline void		vec_array_copy(pointer dest, const_pointer src, size_type n) throw();
+		inline void		vec_set(pointer dest, const_reference value, size_type n) throw(std::bad_alloc);
+		inline void		vec_clear() throw();
 
 		/* Member functions */
 
@@ -701,6 +712,7 @@ namespace FT_NAMESPACE
 	template <class T, class Allocator>
 	void
 	vector<T, Allocator>::vec_cpy(const vector& other, size_type n)
+	throw(std::bad_alloc)
 	{
 		for (size_type i = 0 ; i < n ; i++)
 			memory.construct(head + i, other.at(i));
@@ -718,6 +730,7 @@ namespace FT_NAMESPACE
 	template <class T, class Allocator>
 	void
 	vector<T, Allocator>::vec_array_copy(pointer dest, const_pointer src, size_type n)
+	throw()
 	{
 		for (size_type i = 0 ; i < n ; i++)
 			dest[i] = src[i];
@@ -737,6 +750,7 @@ namespace FT_NAMESPACE
 	template <class T, class Allocator>
 	void
 	vector<T, Allocator>::vec_set(pointer dest, const_reference value, size_type n)
+	throw(std::bad_alloc)
 	{
 		for (size_type i = 0 ; i < n ; i++)
 		{
@@ -753,6 +767,7 @@ namespace FT_NAMESPACE
 	template <class T, class Allocator>
 	void
 	vector<T, Allocator>::vec_clear()
+	throw()
 	{
 		for (; tail != head ; tail--)
 			memory.destroy(tail);
@@ -857,10 +872,11 @@ namespace FT_NAMESPACE
 	void
 	vector<T, Allocator>::assign(size_type count, const_reference value)
 	{
-		if (count > size_type(storage - head))
+		if (count > capacity())
 			resize(count, value);
 		else
 			vec_set(head, value, count);
+		tail = pointer(head + count);
 	}
 
 	/**
@@ -878,10 +894,12 @@ namespace FT_NAMESPACE
 	vector<T, Allocator>::assign(InputIt first, InputIt last)
 	{
 		vec_clear();
-		if (size_type(last - first) > size_type(storage))
-			reserve(size_type(last - first));
-		for (size_type i = 0 ; first != last ; i++, first++)
-			memory.construct(head + i, *first);
+		const size_type amount = last - first;
+		if (amount > capacity())
+			reserve(size_type(amount));
+		for (size_type i = 0 ; first != last ; i++)
+			memory.construct(head + i, *(first++));
+		tail = pointer(head + amount);
 	}
 
 	////////////////////
