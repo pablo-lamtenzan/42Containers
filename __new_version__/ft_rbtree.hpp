@@ -402,26 +402,26 @@ namespace FT_NAMESPACE
 		RBT_iterator(Const_Self& it);
 
 		/* Requires read/write iterators */
-		reference		operator*() const;
-		pointer			operator->() const;
+		inline reference		operator*() const;
+		inline pointer			operator->() const;
 
 		/* Require forward iterators */
-		Self&			operator++();
-		Const_Self&		operator++() const;
-		Self			operator++(int);
-		Const_Self		operator++(int) const;
+		inline Self&			operator++();
+		inline Const_Self&		operator++() const;
+		inline Self				operator++(int);
+		inline Const_Self		operator++(int) const;
 
 		/* Require bidirectional iterators */
-		Self&			operator--();
-		Const_Self&		operator--() const;
-		Self			operator--(int);
-		Const_Self		operator--(int) const;
+		inline Self&			operator--();
+		inline Const_Self&		operator--() const;
+		inline Self				operator--(int);
+		inline Const_Self		operator--(int) const;
 
 		/* Non members */
-		friend inline bool	operator==(const Self& lhs, const Self& rhs);
-		friend inline bool	operator!=(const Self& lhs, const Self& rhs);
-		friend inline bool	operator==(const Const_Self& lhs, const Const_Self& rhs);
-		friend inline bool	operator!=(const Const_Self& lhs, const Const_Self& rhs);
+		friend bool	operator==(const Self&, const Self&);
+		friend bool	operator!=(const Self&, const Self&);
+		friend bool	operator==(const Const_Self&, const Const_Self&);
+		friend bool	operator!=(const Const_Self&, const Const_Self&);
 	};
 
 	/**
@@ -708,13 +708,13 @@ namespace FT_NAMESPACE
 		inline Const_Node_Ptr&			get_end() const throw();
 
 		/* Memory handlers */
-		Link_type						get_node() throw(std::bad_alloc);
-		void							put_node(Link_type p) throw();
+		inline Link_type				get_node() throw(std::bad_alloc);
+		inline void						put_node(Link_type p) throw();
 		void							construct_node(Link_type target,
 										const_reference value) throw(std::bad_alloc);
-		Link_type						create_node(const_reference value) throw(std::bad_alloc):
-		void							destroy_node(Link_type p) throw();
-		void							drop_node(Link_type p) throw();
+		inline Link_type				create_node(const_reference value) throw(std::bad_alloc):
+		inline void						destroy_node(Link_type p) throw();
+		inline void						drop_node(Link_type p) throw();
 		template <typename NodeGen>
 		Link_type						clone_node(Const_Link_type src, NodeGen& node_gen) throw();
 
@@ -814,6 +814,7 @@ namespace FT_NAMESPACE
 		inline size_type				max_size() const;
 
 		/* Modifiers */
+		// TO DO Insert ?!?!?!!? (how did i forgot this ? lmao)
 		inline void						clear();
 		inline void						erase(iterator pos);
 		inline void						erase(const_iterator pos);
