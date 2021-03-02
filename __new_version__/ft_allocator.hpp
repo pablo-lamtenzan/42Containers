@@ -8,7 +8,7 @@
 
 # pragma once
 
-# include <ft_containers.hpp>
+# include "ft_containers.hpp"
 
 namespace FT_NAMESPACE
 {
@@ -22,6 +22,8 @@ namespace FT_NAMESPACE
 	template <typename T>
 	class allocator
 	{
+		/* Member types */
+
 		public:
 
 		typedef T				value_type;
@@ -35,52 +37,99 @@ namespace FT_NAMESPACE
 		template <typename T1>
 		struct rebind { typedef allocator<T1> other; };
 
-		allocator() { }
-		allocator(const allocator&) { }
+		/* Member functions */
+
+		allocator();
+		allocator(const allocator&);
 		template <typename T1>
-		allocator(const allocator<T1>&) { }
-		~allocator() { }
-		
-		pointer			address(reference x) const { return (std::addressof(x)); }
-		const_pointer	address(const_reference x) const { return (std::addressof(x)); }
-	
-		pointer			allocate(size_type n, const void* = static_cast<const void*>(0))
-		{
-			if (n > max_size())
-				throw std::bad_alloc();
-			return (static_cast<pointer>(::operator new(n * sizeof(value_type))));
-		}
+		allocator(const allocator<T1>&);
+		~allocator();
 
-		void			deallocate(pointer p, size_type amount)
-		{
-			// DO TO: Check what happens here if p in NULL
-			::operator delete(p, amount  * sizeof(value_type));
-		}
-
-		void			construct(pointer p, const_reference value)
-		{
-			::new(static_cast<void*>(p)) value_type(value);
-		}
-
-		void			destroy(pointer p)
-		{
-			p->~value_type();
-		}
-
-		size_type		max_size()
-		{
-			return (size_type(-1) / sizeof(value_type));
-		}
-
+		pointer			address(reference x) const throw();
+		const_pointer	address(const_reference x) const throw();
+		pointer			allocate(size_type n, const void* = static_cast<const void*>(0)) throw(std::bad_alloc);
+		void			deallocate(pointer p /*, size_type amount*/) throw();
+		void			construct(pointer p, const_reference value) throw(std::bad_alloc);
+		void			destroy(pointer p) throw();
+		size_type		max_size() throw();
 		template <typename T1>
 		friend bool		operator==(const allocator&, const allocator<T1>&) { return (true); }
 		template <typename T1>
 		friend bool		operator!=(const allocator&, const allocator<T1>&) { return (false); }
 	};
 
-	template <typename T1, typename T2>
-	inline bool		operator==(const allocator<T1>&, const allocator<T2>&) { return(true); }
+	template <typename T>
+	allocator<T>::allocator()
+	{ }
+
+	template <typename T>
+	allocator<T>::allocator(const allocator&)
+	{ }
+
+	template <typename T>
+	template <typename T1>
+	allocator<T>::allocator(const allocator<T1>&)
+	{ }
+
+	template <typename T>
+	allocator<T>::~allocator()
+	{ }
+	
+	template <typename T>
+	typename allocator<T>::pointer
+	allocator<T>::address(reference x) const
+	throw()
+	{ return (std::addressof(x)); }
+
+	template <typename T>
+	typename allocator<T>::const_pointer
+	allocator<T>::address(const_reference x) const
+	throw()
+	{ return (std::addressof(x)); }
+	
+	template <typename T>
+	typename allocator<T>::pointer
+	allocator<T>::allocate(size_type n, const void*)
+	throw(::std::bad_alloc)
+	{
+		if (n > max_size())
+			throw std::bad_alloc();
+		return (static_cast<pointer>(::operator new(n * sizeof(value_type))));
+	}
+
+	template <typename T>
+	void
+	allocator<T>::deallocate(pointer p /*, size_type amount*/)
+	throw()
+	{
+		// DO TO: Check what happens here if p in NULL
+		::operator delete(p/*, size_type(amount  * sizeof(value_type))*/);
+	}
+
+	template <typename T>
+	void
+	allocator<T>::construct(pointer p, const_reference value)
+	throw(::std::bad_alloc)
+	{ ::new(static_cast<void*>(p)) value_type(value); }
+
+	template <typename T>
+	void
+	allocator<T>::destroy(pointer p)
+	throw()
+	{ p->~value_type(); }
+
+	template <typename T>
+	typename allocator<T>::size_type
+	allocator<T>::max_size() throw()
+	{ return (size_type(-1) / sizeof(value_type)); }
 
 	template <typename T1, typename T2>
-	inline bool		operator!=(const allocator<T1>&, const allocator<T2>&) { return (false); }
+	inline bool
+	operator==(const allocator<T1>&, const allocator<T2>&)
+	{ return(true); }
+
+	template <typename T1, typename T2>
+	inline bool
+	operator!=(const allocator<T1>&, const allocator<T2>&)
+	{ return (false); }
 };
