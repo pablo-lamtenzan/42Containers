@@ -69,12 +69,12 @@ namespace FT_NAMESPACE
 		typedef	value_type*		Node_ptr;
 		typedef Node_ptr*		Map_ptr;
 
-		/**
-		 * 	@brief get_node_size
-		 * 
-		 * 	Fast-use of the MACROS.
-		*/
-		size_type				get_node_size() { return (FT_DEQUE_BUFF_SIZE(sizeof(value_type)); }
+		/* Auxiliar functions */
+
+		private:
+
+		inline size_type		get_node_size() throw();
+		void					it_change_node(Map_ptr new_node) throw();
 
 		/* Core:
 		* (see: futher explenation in deque class)
@@ -88,235 +88,369 @@ namespace FT_NAMESPACE
 		Node_ptr		tail;
 		Map_ptr			node;
 
-		/**
-		 * 	@brief Default Constructor
-		*/
-		deque_iterator() : curr(), head(), tail(), node() { }
-
-		/**
-		 * 	@brief Constructor
-		 * 
-		 * 	@param pos The index in the deque.
-		 * 	@param map The index node in the map.
-		*/
-		deque_iterator(Node_ptr pos, Map_ptr map)
-		: curr(pos), head(*map), tail(Node_ptr(*map + difference_type(get_node_size()))), node(map) { }
-
-		/**
-		 * 	@brief Conversion iterator to const_iterator Constructor.
-		*/
-		deque_iterator(const_iterator& other)
-		: curr(other.curr), head(other.head), tail(other.tail), node(other.node) { }
-
-		/**
-		 * 	@brief Change node
-		 *
-		 * 	@param new_node The new host node.
-		 *
-		 * 	Migrates all the control data core to @a new_node
-		 * 	execpt @c curr.
-		*/
-		void		it_change_node(Map_ptr new_node)
-		{
-			node = new_node;
-			head = *node;
-			tail = Node_ptr(head + difference_type(get_node_size()));
-		}
+		/* Member functions */
 
 		public:
 
-		//@{
-		/**
-		 * 	@brief deque_iterator overload operators
-		*/
-		reference		operator*() const
-		{
-			return (*curr);
-		}
+		deque_iterator();
+		deque_iterator(Node_ptr pos, Map_ptr map);
+		deque_iterator(const_iterator& other);
 
-		pointer			operator->()
-		{
-			return (curr);
-		}
+		/* Requires read/write iterators */
+		inline reference	operator*() const;
+		inline pointer		operator->();
 
-		Self&			operator++()
-		{
-			if (++curr == tail)
-			{
-				it_change_node(node + 1);
-				curr = head;
-			}
-			return (*this);
-		}
+		/* Requires forward iterators */
+		Self&				operator++();
+		Self				operator++(int);
 
-		Self			operator++(int)
-		{
-			Self tmp = *this;
-			++(*this);
-			return (tmp);
-		}
+		/* Requires bidirectional iterators */
+		Self&				operator--();
+		Self				operator--(int);
 
-		Self&			operator--()
-		{
-			if (--curr == tail)
-			{
-				it_change_node(node - 1);
-				curr = head;
-			}
-			return (*this);
-		}
+		/* Requires ramdom access iterators */
+		Self&				operator+=(difference_type n);
+		inline Self&		operator-=(difference_type n);
+		inline reference	operator[](difference_type n) const;
 
-		Self			operator--(int)
-		{
-			Self tmp = *this;
-			--(*this);
-			return (tmp);
-		}
-
-		Self&			operator+=(difference_type n)
-		{
-			const difference_type amount = n + (curr - head);
-
-			/* Smaller than the remening space in the curr node */
-			if (amount >= 0 && amount < difference_type(get_node_size()))
-				curr += amount;
-			/* Or need to change fill more node(s) */
-			else 
-			{
-				// Handle addition or substraction
-				const difference_type map_index = amount > 0
-					? amount / difference_type(get_node_size())
-					: -difference_type(amount - 1);
-				it_change_node(node + map_index);
-				/* Update the current index */
-				curr = head + (amount - map_index * difference_type(get_node_size()));
-			}
-		}
-
-		Self&			operator-=(difference_type n)
-		{
-			return (*this -= -n );
-		}
-
-		reference		operator[](difference_type n) const
-		{
-			return (*(this + n));
-		}
-
-		/**
-		 * 	@brief Boolean operators
-		 * 
-		 * 	@param lhs A %deque_iterator.
-		 * 	@param rhs A %deque_iterator with the same type of @p lhs.
-		 * 	@return The result of the requested operation.
-		*/
-		friend bool		operator==(const_reference lhs, const_reference rhs)
-		{
-			return (lhs.curr == rhs.curr);
-		}
-
-		friend bool		operator!=(const_reference lhs, const_reference rhs)
-		{
-			return (lhs.curr != rhs.curr);
-		}
-
-		friend bool		operator<(const_reference lhs, const_reference rhs)
-		{
-			return (lhs.curr < rhs.curr);
-		}
-
-		friend bool		operator<=(const_reference lhs, const_reference rhs)
-		{
-			return (lhs.curr <= rhs.curr);
-		}
-
-		friend bool		operator>(const_reference lhs, const_reference rhs)
-		{
-			return (lhs.curr > rhs.curr);
-		}
-
-		friend bool		operator>=(const_reference lhs, const_reference rhs)
-		{
-			return (lhs.curr >= rhs.curr);
-		}
-
-		/**
-		 * 	@brief Boolean operators
-		 * 
-		 * 	@tparam _T_Ref a reference to T that could be const or mutable.
-		 * 	@tparam _T_Ptr a pointer to T that could be const or mutable.
-		 * 	@param lhs A %deque_iterator.
-		 * 	@param rhs A %deque_iterator.
-		 * 	@return The result of the requested operation.
-		 * 
-		 * 	Note: One of both is a const_iterator.
-		*/
-		template <typename _T_Ref, typename _T_Ptr>
-		friend bool		operator==(const_reference lhs, const deque_iterator<T, _T_Ref, _T_Ptr>&  rhs)
-		{
-			return (lhs.curr == rhs.curr);
-		}
-
-		template <typename _T_Ref, typename _T_Ptr>
-		friend bool		operator!=(const_reference lhs, const deque_iterator<T, _T_Ref, _T_Ptr>& rhs)
-		{
-			return (lhs.curr != rhs.curr);
-		}
-
-		template <typename _T_Ref, typename _T_Ptr>
-		friend bool		operator<(const_reference lhs, const deque_iterator<T, _T_Ref, _T_Ptr>& rhs)
-		{
-			return (lhs.curr < rhs.curr);
-		}
-
-		template <typename _T_Ref, typename _T_Ptr>
-		friend bool		operator<=(const_reference lhs, const deque_iterator<T, _T_Ref, _T_Ptr>& rhs)
-		{
-			return (lhs.curr <= rhs.curr);
-		}
-
-		template <typename _T_Ref, typename _T_Ptr>
-		friend bool		operator>(const_reference lhs, const deque_iterator<T, _T_Ref, _T_Ptr>& rhs)
-		{
-			return (lhs.curr > rhs.curr);
-		}
-
-		template <typename _T_Ref, typename _T_Ptr>
-		friend bool		operator>=(const_reference lhs, const deque_iterator<T, _T_Ref, _T_Ptr>& rhs)
-		{
-			return (lhs.curr >= rhs.curr);
-		}
-
-		/**
-		 * 	@brief operator-+
-		 * 
-		 * 	@return The arithmetic operation between @p lhs and @p rhs.
-		*/
-		template <typename _T_Ref, typename _T_Ptr>
-		friend difference_type	operator-(const_reference lhs, deque_iterator<T, _T_Ref, _T_Ptr>& rhs)
-		{
-			return (difference_type(difference_type(get_node_size()) * difference_type(lhs.node - rhs.node - 1) + difference_type(lhs.curr - lhs.head) + difference_type(rhs.tail - rhs.curr)));
-		}
-
-		friend Self				operator-(const_reference lhs, difference_type n)
-		{
-			Self tmp = lhs;
-			tmp -= n;
-			return (tmp);
-		}
-
-		friend Self				operator+(const_reference x, difference_type n)
-		{
-			Self tmp = x;
-			tmp += n;
-			return (tmp);
-		}
-
-		friend Self				operator+(difference_type n, const_reference x)
-		{
-			return (x + n);
-		}
+		/* Non members */
+		friend bool				operator==(const Self&, const Self&);
+		friend bool				operator<(const Self&, const Self&);
+		template <typename _T, typename _T_Ref, typename _T_Ptr>
+		friend bool				operator==(const Self&, const deque_iterator<_T, _T_Ref, _T_Ptr>&);
+		template <typename _T, typename _T_Ref, typename _T_Ptr>
+		friend bool				operator<(const Self&, const deque_iterator<_T, _T_Ref, _T_Ptr>&);
+		// TO DO: Decide if i want / need those at friend
+		template <typename _T, typename _T_Ref, typename _T_Ptr>
+		friend difference_type	operator-(const Self&, deque_iterator<_T, _T_Ref, _T_Ptr>&);
+		friend Self				operator-(const Self&, difference_type);
+		friend Self				operator+(const Self&, difference_type);
+		friend Self				operator+(difference_type, const Self&);
 	};
+
+	////////////////////////
+	// Auxiliar functions //
+	////////////////////////
+
+	/**
+	 * 	@brief get_node_size
+	 * 
+	 * 	Fast-use of the MACROS.
+	*/
+	template <class T, typename Ref_T, typename Ptr_T>
+	typename deque_iterator<T, Ref_T, Ptr_T>::size_type
+	deque_iterator<T, Ref_T, Ptr_T>::get_node_size()
+	throw()
+	{ return (FT_DEQUE_BUFF_SIZE(sizeof(value_type)); }
+
+	/**
+	 * 	@brief Change node
+	 *
+	 * 	@param new_node The new host node.
+	 *
+	 * 	Migrates all the control data core to @a new_node
+	 * 	execpt @c curr.
+	*/
+	template <class T, typename Ref_T, typename Ptr_T>
+	void
+	deque_iterator<T, Ref_T, Ptr_T>::it_change_node(Map_ptr new_node)
+	throw()
+	{
+		node = new_node;
+		head = *node;
+		tail = Node_ptr(head + difference_type(get_node_size()));
+	}
+
+	//////////////////////
+	// Member functions //
+	//////////////////////
+
+	/**
+	 * 	@brief Default Constructor
+	*/
+	template <class T, typename Ref_T, typename Ptr_T>
+	deque_iterator<T, Ref_T, Ptr_T>::deque_iterator()
+	: curr(), head(), tail(), node()
+	{ }
+
+	/**
+	 * 	@brief Constructor
+	 * 
+	 * 	@param pos The index in the deque.
+	 * 	@param map The index node in the map.
+	*/
+	template <class T, typename Ref_T, typename Ptr_T>
+	deque_iterator<T, Ref_T, Ptr_T>::deque_iterator(Node_ptr pos, Map_ptr map)
+	: curr(pos), head(*map), tail(Node_ptr(*map + difference_type(get_node_size()))), node(map)
+	{ }
+
+	/**
+	 * 	@brief Conversion iterator to const_iterator Constructor.
+	*/
+	template <class T, typename Ref_T, typename Ptr_T>
+	deque_iterator<T, Ref_T, Ptr_T>::deque_iterator(const_iterator& other)
+	: curr(other.curr), head(other.head), tail(other.tail), node(other.node)
+	{ }
+
+	///////////////////////////////////
+	// Requires read/write iterators //
+	///////////////////////////////////
+
+	//@{
+	/**
+	 * 	@brief deque_iterator overload operators
+	*/
+	template <class T, typename Ref_T, typename Ptr_T>
+	typename deque_iterator<T, Ref_T, Ptr_T>::reference
+	deque_iterator<T, Ref_T, Ptr_T>::operator*() const
+	{ return (*curr); }
+
+	template <class T, typename Ref_T, typename Ptr_T>
+	typename deque_iterator<T, Ref_T, Ptr_T>::pointer
+	deque_iterator<T, Ref_T, Ptr_T>::operator->()
+	{ return (curr); }
+
+	////////////////////////////////
+	// Requires forward iterators //
+	////////////////////////////////
+
+	template <class T, typename Ref_T, typename Ptr_T>
+	typename deque_iterator<T, Ref_T, Ptr_T>::Self&
+	deque_iterator<T, Ref_T, Ptr_T>::operator++()
+	{
+		if (++curr == tail)
+		{
+			it_change_node(node + 1);
+			curr = head;
+		}
+		return (*this);
+	}
+
+	template <class T, typename Ref_T, typename Ptr_T>
+	typename deque_iterator<T, Ref_T, Ptr_T>::Self
+	deque_iterator<T, Ref_T, Ptr_T>::operator++(int)
+	{
+		Self tmp = *this;
+		++(*this);
+		return (tmp);
+	}
+
+	//////////////////////////////////////
+	// Requires bidirectional iterators //
+	//////////////////////////////////////
+
+	template <class T, typename Ref_T, typename Ptr_T>
+	typename deque_iterator<T, Ref_T, Ptr_T>::Self&
+	deque_iterator<T, Ref_T, Ptr_T>::operator--()
+	{
+		if (--curr == tail)
+		{
+			it_change_node(node - 1);
+			curr = head;
+		}
+		return (*this);
+	}
+
+	template <class T, typename Ref_T, typename Ptr_T>
+	typename deque_iterator<T, Ref_T, Ptr_T>::Self
+	deque_iterator<T, Ref_T, Ptr_T>::operator--(int)
+	{
+		Self tmp = *this;
+		--(*this);
+		return (tmp);
+	}
+
+	//////////////////////////////////////
+	// Requires random access iterators //
+	//////////////////////////////////////
+
+	template <class T, typename Ref_T, typename Ptr_T>
+	typename deque_iterator<T, Ref_T, Ptr_T>::Self&
+	deque_iterator<T, Ref_T, Ptr_T>::operator+=(difference_type n)
+	{
+		const difference_type amount = n + (curr - head);
+
+		/* Smaller than the remening space in the curr node */
+		if (amount >= 0 && amount < difference_type(get_node_size()))
+			curr += amount;
+		/* Or need to change fill more node(s) */
+		else 
+		{
+			// Handle addition or substraction
+			const difference_type map_index = amount > 0
+				? amount / difference_type(get_node_size())
+				: -difference_type(amount - 1);
+			it_change_node(node + map_index);
+			/* Update the current index */
+			curr = head + (amount - map_index * difference_type(get_node_size()));
+		}
+	}
+
+	template <class T, typename Ref_T, typename Ptr_T>
+	typename deque_iterator<T, Ref_T, Ptr_T>::Self&
+	deque_iterator<T, Ref_T, Ptr_T>::operator-=(difference_type n)
+	{ return (*this -= -n ); }
+
+	template <class T, typename Ref_T, typename Ptr_T>
+	typename deque_iterator<T, Ref_T, Ptr_T>::reference
+	deque_iterator<T, Ref_T, Ptr_T>::operator[](difference_type n) const
+	{ return (*(this + n)); }
+	//@}
+
+	/////////////////
+	// Non members //
+	/////////////////
+
+	//@{
+	/**
+	 * 	@brief Boolean operators
+	 * 
+	 * 	@param lhs A %deque_iterator.
+	 * 	@param rhs A %deque_iterator with the same type of @p lhs.
+	 * 	@return The result of the requested operation.
+	*/
+	template <class T, typename Ref_T, typename Ptr_T>
+	inline bool
+	operator==(const typename deque_iterator<T, Ref_T, Ptr_T>::Self& lhs,
+	const typename deque_iterator<T, Ref_T, Ptr_T>::Self& rhs)
+	{ return (lhs.curr == rhs.curr); }
+
+	template <class T, typename Ref_T, typename Ptr_T>
+	inline bool
+	operator<(const typename deque_iterator<T, Ref_T, Ptr_T>::Self& lhs,
+	const typename deque_iterator<T, Ref_T, Ptr_T>::Self& rhs)
+	{ return (lhs.curr < rhs.curr); }
+
+	template <class T, typename Ref_T, typename Ptr_T>
+	inline bool
+	operator!=(const typename deque_iterator<T, Ref_T, Ptr_T>::Self& lhs,
+	const typename deque_iterator<T, Ref_T, Ptr_T>::Self& rhs)
+	{ return (!(lhs == rhs)); }
+
+	template <class T, typename Ref_T, typename Ptr_T>
+	inline bool
+	operator>(const typename deque_iterator<T, Ref_T, Ptr_T>::Self& lhs,
+	const typename deque_iterator<T, Ref_T, Ptr_T>::Self& rhs)
+	{ return (rhs < lhs); }
+
+	template <class T, typename Ref_T, typename Ptr_T>
+	inline bool
+	operator<=(const typename deque_iterator<T, Ref_T, Ptr_T>::Self& lhs,
+	const typename deque_iterator<T, Ref_T, Ptr_T>::Self& rhs)
+	{ return (!(lhs > rhs)); }
+
+	template <class T, typename Ref_T, typename Ptr_T>
+	inline bool
+	operator>=(const typename deque_iterator<T, Ref_T, Ptr_T>::Self& lhs,
+	const typename deque_iterator<T, Ref_T, Ptr_T>::Self& rhs)
+	{ return (!(lhs < rhs)); }
+	//@}
+
+	//@{
+	/**
+	 * 	@brief Boolean operators
+	 * 
+	 * 	@tparam _T_Ref a reference to T that could be const or mutable.
+	 * 	@tparam _T_Ptr a pointer to T that could be const or mutable.
+	 * 	@param lhs A %deque_iterator.
+	 * 	@param rhs A %deque_iterator.
+	 * 	@return The result of the requested operation.
+	 * 
+	 * 	Note: One of both is a const_iterator.
+	*/
+	template <class T, typename Ref_T, typename Ptr_T>
+	template <typename _T, typename _T_Ref, typename _T_Ptr>
+	inline bool
+	operator==(const typename deque_iterator<T, Ref_T, Ptr_T>::Self& lhs,
+	const deque_iterator<_T, _T_Ref, _T_Ptr>& rhs)
+	{ return (lhs.curr == rhs.curr); }
+
+	template <class T, typename Ref_T, typename Ptr_T>
+	template <typename _T, typename _T_Ref, typename _T_Ptr>
+	inline bool
+	operator<(const typename deque_iterator<T, Ref_T, Ptr_T>::Self& lhs,
+	const deque_iterator<_T, _T_Ref, _T_Ptr>& rhs)
+	{ return (lhs.curr < rhs.curr); }
+
+	template <class T, typename Ref_T, typename Ptr_T>
+	template <typename _T, typename _T_Ref, typename _T_Ptr>
+	inline bool
+	operator!=(const typename deque_iterator<T, Ref_T, Ptr_T>::Self& lhs,
+	const deque_iterator<_T, _T_Ref, _T_Ptr>& rhs)
+	{ return (!(lhs == rhs)); }
+
+	template <class T, typename Ref_T, typename Ptr_T>
+	template <typename _T, typename _T_Ref, typename _T_Ptr>
+	inline bool
+	operator>(const typename deque_iterator<T, Ref_T, Ptr_T>::Self& lhs,
+	const deque_iterator<_T, _T_Ref, _T_Ptr>& rhs)
+	{ return (rhs < lhs); }
+
+	template <class T, typename Ref_T, typename Ptr_T>
+	template <typename _T, typename _T_Ref, typename _T_Ptr>
+	inline bool
+	operator<=(const typename deque_iterator<T, Ref_T, Ptr_T>::Self& lhs,
+	const deque_iterator<_T, _T_Ref, _T_Ptr>& rhs)
+	{ return (!(lsh > rhs)); }
+
+	template <class T, typename Ref_T, typename Ptr_T>
+	template <typename _T, typename _T_Ref, typename _T_Ptr>
+	inline bool
+	operator>=(const typename deque_iterator<T, Ref_T, Ptr_T>::Self& lhs,
+	const deque_iterator<_T, _T_Ref, _T_Ptr>& rhs)
+	{ return (!(lhs < rhs)); }
+	//@}
+
+	/**
+	 * 	@brief operator-+
+	 * 
+	 * 	@return The arithmetic operation between @p lhs and @p rhs.
+	*/
+	// TO DO: No not need to typedef if the functions is friend
+	template <class T, typename Ref_T, typename Ptr_T>
+	template <typename _T, typename _T_Ref, typename _T_Ptr>
+	inline typename deque_iterator<T, Ref_T, Ptr_T>::difference_type
+	operator-(const typename deque_iterator<T, Ref_T, Ptr_T>::Self& lhs,
+	deque_iterator<_T, _T_Ref, _T_Ptr>& rhs)
+	{
+		// TO DO: No not need to typedef if the functions is friend
+		return (difference_type(difference_type(get_node_size()) *
+		difference_type(lhs.node - rhs.node - 1) + difference_type(lhs.curr - lhs.head)
+		+ difference_type(rhs.tail - rhs.curr)));
+	}
+
+	// TO DO: No not need to typedef if the functions is friend
+	template <class T, typename Ref_T, typename Ptr_T>
+	inline typename deque_iterator<T, Ref_T, Ptr_T>::Self
+	operator-(const typename deque_iterator<T, Ref_T, Ptr_T>::Self& lhs,
+	typename deque_iterator<T, Ref_T, Ptr_T>::difference_type n)
+	{
+		Self tmp = lhs;
+		tmp -= n;
+		return (tmp);
+	}
+
+	// TO DO: No not need to typedef if the functions is friend
+	template <class T, typename Ref_T, typename Ptr_T>
+	inline typename deque_iterator<T, Ref_T, Ptr_T>::Self
+	operator+(const typename deque_iterator<T, Ref_T, Ptr_T>::Self& x,
+	typename deque_iterator<T, Ref_T, Ptr_T>::difference_type n)
+	{
+		Self tmp = x;
+		tmp += n;
+		return (tmp);
+	}
+
+	// TO DO: No not need to typedef if the functions is friend
+	template <class T, typename Ref_T, typename Ptr_T>
+	inline typename deque_iterator<T, Ref_T, Ptr_T>::Self
+	operator+(typename deque_iterator<T, Ref_T, Ptr_T>::difference_type n,
+	const typename deque_iterator<T, Ref_T, Ptr_T>::Self& x)
+	{ return (x + n); }
+
+	////////////////
+	// Deque Base //
+	////////////////
 
 	/**
 	 * 	@brief deque_algorithm
@@ -351,134 +485,173 @@ namespace FT_NAMESPACE
 		 * head -> A %deque_iterator at the front of the deque.
 		 * tail -> A %deque_iterator at the back of the deque.
 		 * map -> An array of pointer to arrays of T.
-		 * map_size -> The size of the map. */
+		 * map_size -> The size of the map.
+		*/
 		iterator		head;
 		iterator		tail;
 		Map_ptr			map;
 		size_type		map_size;
-
 		allocator_type	memory;
 		enum { map_initial_size = 8 };
 
-		/* Constructor */
-
-		/**
-		 * 	@brief Default Constructor
-		*/
-		deque_algorithm() : head(), tail(), map(), map_size() { }
-
-		deque_algorithm(const allocator_type& alloc) : memory(alloc) { }
+		/* Import member */
 
 		using iterator::get_node_size;
 
-		/**
-		 * 	@brief Allocate node
-		 * 
-		 * 	Fast use of allocator.
-		*/
-		pointer		alg_allocate_node()
-		{
-			return (memory.allocate(get_node_size()))
-		}
+		/* Member functions */
 
-		/**
-		 * 	@brief Deallocate node
-		 * 
-		 * 	Fast use deallocator
-		*/
-		void		alg_deallocate_node(pointer p)
-		{
-			memory.deallocate(p, get_node_size());
-		}
+		public:
 
-		/**
-		 * 	@brief Allocate map
-		 * 
-		 * 	Fast use of allocator.
-		*/
-		pointer		alg_allocate_map(size_type n)
-		{
-			return (memory.allocate(n));
-		}
+		deque_algorithm();
+		deque_algorithm(const allocator_type& alloc);
 
-		/**
-		 * 	@brief Deallocate map
-		 * 
-		 * 	Fast use deallocator
-		*/
-		void		alg_deallocate_map(pointer p, size_type n)
-		{
-			memory.deallocate(p, n);
-		}
-
-		/**
-		 * 	@brief Destroy nodes
-		 * 
-		 * 	@param first A Map_ptr.
-		 * 	@param last A Map_ptr.
-		 * 
-		 * 	Deallocates the nodes in range @p first - @p last.
-		*/
-		void		alg_destroy_nodes(Map_ptr first, Map_ptr last)
-		{
-			for (Map_ptr i = first ; i < last ; i++)
-				alg_deallocate_node(*i);
-		}
-
-		/**
-		 * 	@brief Create nodes
-		 * 
-		 * 	@param first A Map_ptr.
-		 * 	@param last A Map_ptr.
-		 * 	
-		 * 	Allocates nodes in range @p first - @p last.
-		 * 
-		 * 	@throw std::bad_alloc.
-		*/
-		void		alg_create_nodes(Map_ptr first, Map_ptr last)
-		{
-			Map_ptr	curr;
-
-			try {
-				for (curr = first ; curr < last ; curr++)
-					curr = alg_allocate_node();
-			} catch(std::bad_alloc& e) {
-				alg_destroy_nodes(first, curr);
-				throw;
-			}
-		}
-
-		/**
-		 * 	@brief Itatialise map
-		 * 
-		 * 	@param n The len of the %deque.
-		 * 
-		 * 	@throw std::bad_alloc.
-		*/
-		void		alg_init_map(size_type n)
-		{
-			const size_type		num_nodes = (n / get_node_size()) + 1;
-
-			map_size = size_type(FT_MAX(map_initial_size, num_nodes + 2));
-			map = alg_allocate_map(map_size);
-
-			Map_ptr		map_first = (map  + map_size - num_nodes) / 2;
-			Map_ptr		map_last = map_first + num_nodes;
-
-			try {
-				alg_create_nodes(map_first, map_last);
-			}
-			catch (std::bad_alloc& e) { 
-				alg_deallocate_map(map, map_size);
-				throw;
-			}
-
-			head.it_change_node(map_first);
-			tail.it_change_node(map_last - 1);
-			head.curr = head.head;
-			tail.curr = tail.head + num_nodes % get_node_size();
-		}
+		/* Memory handlers */
+		inline pointer	alg_allocate_node() throw(std::bad_alloc);
+		inline void		alg_deallocate_node(pointer p) throw();
+		inline pointer	alg_allocate_map(size_type n) throw(std::bad_alloc);
+		inline void		alg_deallocate_map(pointer p, size_type n) throw();
+		inline void		alg_destroy_nodes(Map_ptr first, Map_ptr last) throw();
+		void			alg_create_nodes(Map_ptr first, Map_ptr last) throw(std::bad_alloc);
+		void			alg_init_map(size_type n) throw(std::bad_alloc);
 	};
+
+	/**
+	 * 	@brief Default Constructor
+	*/
+	template <class T, class Allocator>
+	deque_algorithm<T, Allocator>::deque_algorithm()
+	: head(), tail(), map(), map_size(), memory()
+	{ }
+
+	template <class T, class Allocator>
+	deque_algorithm<T, Allocator>::deque_algorithm(const allocator_type& alloc)
+	: head(), tail(), map(), map_size(), memory(alloc)
+	{ }
+
+	/**
+	 * 	@brief Allocate node
+	 * 
+	 * 	Fast use of allocator.
+	*/
+	template <class T, class Allocator>
+	typename deque_algorithm<T, Allocator>::pointer
+	deque_algorithm<T, Allocator>::alg_allocate_node()
+	throw(std::bad_alloc)
+	{ return (memory.allocate(get_node_size())) }
+
+	/**
+	 * 	@brief Deallocate node
+	 * 
+	 * 	Fast use deallocator
+	*/
+	template <class T, class Allocator>
+	void
+	deque_algorithm<T, Allocator>::alg_deallocate_node(pointer p)
+	throw()
+	{ memory.deallocate(p, get_node_size()); }
+
+	/**
+	 * 	@brief Allocate map
+	 * 
+	 * 	Fast use of allocator.
+	*/
+	template <class T, class Allocator>
+	typename deque_algorithm<T, Allocator>::pointer
+	deque_algorithm<T, Allocator>::alg_allocate_map(size_type n)
+	throw(std::bad_alloc)
+	{ return (memory.allocate(n)); }
+
+	/**
+	 * 	@brief Deallocate map
+	 * 
+	 * 	Fast use deallocator
+	*/
+	template <class T, class Allocator>
+	void
+	deque_algorithm<T, Allocator>::alg_deallocate_map(pointer p, size_type n)
+	throw()
+	{ memory.deallocate(p, n); }
+
+	/**
+	 * 	@brief Destroy nodes
+	 * 
+	 * 	@param first A Map_ptr.
+	 * 	@param last A Map_ptr.
+	 * 
+	 * 	Deallocates the nodes in range @p first - @p last.
+	*/
+	template <class T, class Allocator>
+	void
+	deque_algorithm<T, Allocator>::alg_destroy_nodes(Map_ptr first, Map_ptr last)
+	throw()
+	{
+		for (Map_ptr i = first ; i < last ; i++)
+			alg_deallocate_node(*i);
+	}
+
+	/**
+	 * 	@brief Create nodes
+	 * 
+	 * 	@param first A Map_ptr.
+	 * 	@param last A Map_ptr.
+	 * 	
+	 * 	Allocates nodes in range @p first - @p last.
+	 * 
+	 * 	@throw std::bad_alloc.
+	*/
+	template <class T, class Allocator>
+	void
+	deque_algorithm<T, Allocator>::alg_create_nodes(Map_ptr first, Map_ptr last)
+	throw(std::bad_alloc)
+	{
+		Map_ptr	curr;
+
+		try {
+			for (curr = first ; curr < last ; curr++)
+				curr = alg_allocate_node();
+		} catch(std::bad_alloc&) {
+			alg_destroy_nodes(first, curr);
+			throw;
+		}
+	}
+
+	/**
+	 * 	@brief Itatialise map
+	 * 
+	 * 	@param n The len of the %deque.
+	 * 
+	 * 	@throw std::bad_alloc.
+	*/
+	template <class T, class Allocator>
+	void
+	deque_algorithm<T, Allocator>::alg_init_map(size_type n)
+	throw(std::bad_alloc)
+	{
+		const size_type		num_nodes = (n / get_node_size()) + 1;
+
+		map_size = size_type(FT_MAX(map_initial_size, num_nodes + 2));
+		map = alg_allocate_map(map_size);
+
+		Map_ptr		map_first = (map  + map_size - num_nodes) / 2;
+		Map_ptr		map_last = map_first + num_nodes;
+
+		try {
+			alg_create_nodes(map_first, map_last);
+		}
+		catch (std::bad_alloc&) { 
+			alg_deallocate_map(map, map_size);
+			throw;
+		}
+
+		head.it_change_node(map_first);
+		tail.it_change_node(map_last - 1);
+		head.curr = head.head;
+		tail.curr = tail.head + num_nodes % get_node_size();
+	}
+
+	/////////////////
+	// Deque class //
+	/////////////////
 
 	/**
 	 * 	@brief Deque
