@@ -68,26 +68,26 @@ namespace FT_NAMESPACE
 		template <typename Iter>
 		normal_iterator(const normal_iterator<Iter, typename enable_if<(are_same<Iter, typename container_type::pointer>::type), container_type>::type>& i);
 
-		const iterator_type&	base() const;
+		inline const iterator_type&		base() const;
 
 		/* Require read/write iterators */
-		reference				operator*() const;
-		pointer					operator->() const;
+		inline reference				operator*() const;
+		inline pointer					operator->() const;
 	
 		/* Requires forward iterators */
-		normal_iterator&		operator++();
-		normal_iterator			operator++(int);
+		inline normal_iterator&			operator++();
+		inline normal_iterator			operator++(int);
 	
 		/* Requires bidirectional iterators */
-		normal_iterator&		operator--();
-		normal_iterator			operator--(int);
+		inline normal_iterator&			operator--();
+		inline normal_iterator			operator--(int);
 
 		/* Require random access iterators */
-		reference				operator[](difference_type n);
-		normal_iterator&		operator+=(difference_type n);
-		normal_iterator			operator+(difference_type n);
-		normal_iterator&		operator-=(difference_type n);
-		normal_iterator			operator-(difference_type n);
+		inline reference				operator[](difference_type n);
+		inline normal_iterator&			operator+=(difference_type n);
+		inline normal_iterator			operator+(difference_type n);
+		inline normal_iterator&			operator-=(difference_type n);
+		inline normal_iterator			operator-(difference_type n);
 	};
 
 	/**
