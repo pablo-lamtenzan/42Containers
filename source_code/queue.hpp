@@ -74,7 +74,7 @@ namespace FT_NAMESPACE
 	 * 	@return A reference to the first element in %queue.
 	*/
 	template <class T, class Container>
-	typename queue<T, Container>::reference
+	inline typename queue<T, Container>::reference
 	queue<T, Container>::front()
 	{ return (c.front()); }
 
@@ -84,7 +84,7 @@ namespace FT_NAMESPACE
 	 * 	@return A const reference to the first element in %queue.
 	*/
 	template <class T, class Container>
-	typename queue<T, Container>::const_reference
+	inline typename queue<T, Container>::const_reference
 	queue<T, Container>::front() const
 	{ return (c.front()); }
 
@@ -94,7 +94,7 @@ namespace FT_NAMESPACE
 	 * 	@return A reference to the last element in %queue.
 	*/
 	template <class T, class Container>
-	typename queue<T, Container>::reference
+	inline typename queue<T, Container>::reference
 	queue<T, Container>::back()
 	{ return (c.back()); }
 
@@ -104,7 +104,7 @@ namespace FT_NAMESPACE
 	 * 	@return A const reference to the last element in %queue.
 	*/
 	template <class T, class Container>
-	typename queue<T, Container>::const_reference
+	inline typename queue<T, Container>::const_reference
 	queue<T, Container>::back() const
 	{ return (c.back()); }
 
@@ -118,7 +118,7 @@ namespace FT_NAMESPACE
 	 * 	@return True if %queue is empty.
 	*/
 	template <class T, class Container>
-	bool
+	inline bool
 	queue<T, Container>::empty() const
 	{ return (c.empty()); }
 
@@ -128,7 +128,7 @@ namespace FT_NAMESPACE
 	 * 	@return The amount of elements holded by %queue.
 	*/
 	template <class T, class Container>
-	typename queue<T, Container>::size_type
+	inline typename queue<T, Container>::size_type
 	queue<T, Container>::size() const
 	{ return (c.size()); }
 
@@ -142,7 +142,7 @@ namespace FT_NAMESPACE
 	 * 	Prappend one element in the top of %stack.
 	*/
 	template <class T, class Container>
-	void
+	inline void
 	queue<T, Container>::push(const_reference value)
 	{ c.push_back(); }
 
@@ -152,7 +152,7 @@ namespace FT_NAMESPACE
 	 * 	Removes the element located at the top of %stack.
 	*/
 	template <class T, class Container>
-	void
+	inline void
 	queue<T, Container>::pop()
 	{ c.pop_front(); }
 

@@ -72,7 +72,7 @@ namespace FT_NAMESPACE
 	 * 	@return A reference to the first element in %stack.
 	*/
 	template <class T, class Container>
-	typename stack<T, Container>::reference
+	inline typename stack<T, Container>::reference
 	stack<T, Container>::top()
 	{ return (c.back()); }
 
@@ -82,7 +82,7 @@ namespace FT_NAMESPACE
 	 * 	@return A const reference to the first element in %stack.
 	*/
 	template <class T, class Container>
-	typename stack<T, Container>::const_reference
+	inline typename stack<T, Container>::const_reference
 	stack<T, Container>::top() const
 	{ return (c.back()); }
 
@@ -96,7 +96,7 @@ namespace FT_NAMESPACE
 	 * 	@return True if %stack is empty.
 	*/
 	template <class T, class Container>
-	bool
+	inline bool
 	stack<T, Container>::empty() const
 	{ return (c.empty()); }
 
@@ -106,7 +106,7 @@ namespace FT_NAMESPACE
 	 * 	@return The amount of elements holded by %stack
 	*/
 	template <class T, class Container>
-	typename stack<T, Container>::size_type
+	inline typename stack<T, Container>::size_type
 	stack<T, Container>::size() const
 	{ return (c.size()); }
 
@@ -120,7 +120,7 @@ namespace FT_NAMESPACE
 	 * 	Preppend one element in the top of %stack.
 	*/
 	template <class T, class Container>
-	void
+	inline void
 	stack<T, Container>::push(const_reference value)
 	{ c.push_back(value); }
 
@@ -130,7 +130,7 @@ namespace FT_NAMESPACE
 	 * 	Removes the element located at the top of %stack.
 	*/
 	template <class T, class Container>
-	void
+	inline void
 	stack<T, Container>::pop()
 	{ c.pop_back(); }
 
