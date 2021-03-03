@@ -68,26 +68,26 @@ namespace FT_NAMESPACE
 		template <typename Iter>
 		normal_iterator(const normal_iterator<Iter, typename enable_if<(are_same<Iter, typename container_type::pointer>::type), container_type>::type>& i);
 
-		inline const iterator_type&		base() const;
+		const iterator_type&		base() const;
 
 		/* Require read/write iterators */
-		inline reference				operator*() const;
-		inline pointer					operator->() const;
+		reference				operator*() const;
+		pointer					operator->() const;
 	
 		/* Requires forward iterators */
-		inline normal_iterator&			operator++();
-		inline normal_iterator			operator++(int);
+		normal_iterator&		operator++();
+		normal_iterator			operator++(int);
 	
 		/* Requires bidirectional iterators */
-		inline normal_iterator&			operator--();
-		inline normal_iterator			operator--(int);
+		normal_iterator&		operator--();
+		normal_iterator			operator--(int);
 
 		/* Require random access iterators */
-		inline reference				operator[](difference_type n);
-		inline normal_iterator&			operator+=(difference_type n);
-		inline normal_iterator			operator+(difference_type n);
-		inline normal_iterator&			operator-=(difference_type n);
-		inline normal_iterator			operator-(difference_type n);
+		reference				operator[](difference_type n);
+		normal_iterator&		operator+=(difference_type n);
+		normal_iterator			operator+(difference_type n);
+		normal_iterator&		operator-=(difference_type n);
+		normal_iterator			operator-(difference_type n);
 	};
 
 	/**
@@ -120,7 +120,7 @@ namespace FT_NAMESPACE
 	 * 	@return @c it the underlying work iterator.
 	*/
 	template <typename Iterator, typename Container>
-	const typename normal_iterator<Iterator, Container>::iterator_type&
+	inline const typename normal_iterator<Iterator, Container>::iterator_type&
 	normal_iterator<Iterator, Container>::base() const
 	{ return (it); }
 
@@ -134,7 +134,7 @@ namespace FT_NAMESPACE
 	 *	@return A reference to @c it.
 	*/
 	template <typename Iterator, typename Container>
-	typename normal_iterator<Iterator, Container>::reference
+	inline typename normal_iterator<Iterator, Container>::reference
 	normal_iterator<Iterator, Container>::operator*() const
 	{ return (*it); }
 
@@ -144,7 +144,7 @@ namespace FT_NAMESPACE
 	 *	@return A pointer to @c it.
 	*/
 	template <typename Iterator, typename Container>
-	typename normal_iterator<Iterator, Container>::pointer
+	inline typename normal_iterator<Iterator, Container>::pointer
 	normal_iterator<Iterator, Container>::operator->() const
 	{ return (it); }
 
@@ -160,7 +160,7 @@ namespace FT_NAMESPACE
 	 * 	Pre-increment @c it.
 	*/
 	template <typename Iterator, typename Container>
-	normal_iterator<Iterator, Container>&
+	inline normal_iterator<Iterator, Container>&
 	normal_iterator<Iterator, Container>::operator++()
 	{
 		it++;
@@ -175,7 +175,7 @@ namespace FT_NAMESPACE
 	 * 	Post-increment @c it.
 	*/
 	template <typename Iterator, typename Container>
-	normal_iterator<Iterator, Container>
+	inline normal_iterator<Iterator, Container>
 	normal_iterator<Iterator, Container>::operator++(int)
 	{ return (normal_iterator(it++)); }
 
@@ -191,7 +191,7 @@ namespace FT_NAMESPACE
 	 * 	Pre-decrements @c it.
 	*/
 	template <typename Iterator, typename Container>
-	normal_iterator<Iterator, Container>&
+	inline normal_iterator<Iterator, Container>&
 	normal_iterator<Iterator, Container>::operator--()
 	{
 		it--;
@@ -206,7 +206,7 @@ namespace FT_NAMESPACE
 	 * 	Post-decrements @c it.
 	*/
 	template <typename Iterator, typename Container>
-	normal_iterator<Iterator, Container>
+	inline normal_iterator<Iterator, Container>
 	normal_iterator<Iterator, Container>::operator--(int)
 	{ return (normal_iterator(it--)); }
 
@@ -220,7 +220,7 @@ namespace FT_NAMESPACE
 	 *	@return a reference to @c it at @a n index
 	*/
 	template <typename Iterator, typename Container>
-	typename normal_iterator<Iterator, Container>::reference
+	inline typename normal_iterator<Iterator, Container>::reference
 	normal_iterator<Iterator, Container>::operator[](difference_type n)
 	{ return (it[n]); }
 
@@ -232,7 +232,7 @@ namespace FT_NAMESPACE
 	 * 	pre-increment @c it by @a n steps
 	*/
 	template <typename Iterator, typename Container>
-	normal_iterator<Iterator, Container>&
+	inline normal_iterator<Iterator, Container>&
 	normal_iterator<Iterator, Container>::operator+=(difference_type n)
 	{
 		it += n;
@@ -246,7 +246,7 @@ namespace FT_NAMESPACE
 	 *	to @c it incremented by @a n steps.
 	*/
 	template <typename Iterator, typename Container>
-	normal_iterator<Iterator, Container>
+	inline normal_iterator<Iterator, Container>
 	normal_iterator<Iterator, Container>::operator+(difference_type n)
 	{ return (normal_iterator(it + n)); }
 
@@ -258,7 +258,7 @@ namespace FT_NAMESPACE
 	 * 	pre-decrement @c it by @a n steps
 	*/
 	template <typename Iterator, typename Container>
-	normal_iterator<Iterator, Container>&
+	inline normal_iterator<Iterator, Container>&
 	normal_iterator<Iterator, Container>::operator-=(difference_type n)
 	{
 		it -= n;
@@ -272,7 +272,7 @@ namespace FT_NAMESPACE
 	 *	to @c it decremented by @a n steps.
 	*/
 	template <typename Iterator, typename Container>
-	normal_iterator<Iterator, Container>
+	inline normal_iterator<Iterator, Container>
 	normal_iterator<Iterator, Container>::operator-(difference_type n)
 	{ return (normal_iterator(it - n)); }
 
@@ -429,14 +429,14 @@ namespace FT_NAMESPACE
 		~vector_algorithm();
 
 		/* Fast type basic operations */
-		inline void			alg_copy_data(const vector_algorithm& other) throw();
-		inline void			alg_swap_data(vector_algorithm& other) throw();
-		inline pointer		alg_allocate(size_type n) throw(std::bad_alloc);
-		inline void			alg_deallocate(pointer p) throw();
+		void			alg_copy_data(const vector_algorithm& other) throw();
+		void			alg_swap_data(vector_algorithm& other) throw();
+		pointer			alg_allocate(size_type n) throw(std::bad_alloc);
+		void			alg_deallocate(pointer p) throw();
 
 		protected:
 
-		inline void			alg_reserve(size_type n) throw(std::bad_alloc);
+		void			alg_reserve(size_type n) throw(std::bad_alloc);
 	};
 
 	//@{
@@ -504,7 +504,7 @@ namespace FT_NAMESPACE
 	 * 	@c head, @c tail and @c storage.
 	*/
 	template <class T, class Alloc>
-	void
+	inline void
 	vector_algorithm<T, Alloc>::alg_copy_data(const vector_algorithm& other)
 	throw()
 	{
@@ -522,7 +522,7 @@ namespace FT_NAMESPACE
 	 * 	@c head, @c tail and @c storage.
 	*/
 	template <class T, class Alloc>
-	void
+	inline void
 	vector_algorithm<T, Alloc>::alg_swap_data(vector_algorithm& other)
 	throw()
 	{
@@ -542,7 +542,7 @@ namespace FT_NAMESPACE
 	 * 	A fast-use allocator.
 	*/
 	template <class T, class Alloc>
-	typename vector_algorithm<T, Alloc>::pointer
+	inline typename vector_algorithm<T, Alloc>::pointer
 	vector_algorithm<T, Alloc>::alg_allocate(size_type n)
 	throw(std::bad_alloc)
 	{ return (long(n) >= 0 ? memory.allocate(n) : pointer()); }
@@ -558,7 +558,7 @@ namespace FT_NAMESPACE
 	 * 	A fast-use deallocator.
 	*/
 	template <class T, class Alloc>
-	void
+	inline void
 	vector_algorithm<T, Alloc>::alg_deallocate(pointer p)
 	throw()
 	{ memory.deallocate(p); }
@@ -630,10 +630,10 @@ namespace FT_NAMESPACE
 
 		private:
 
-		inline void		vec_cpy(const vector& other, size_type n) throw(std::bad_alloc);
-		inline void		vec_array_copy(pointer dest, const_pointer src, size_type n) throw();
-		inline void		vec_set(pointer dest, const_reference value, size_type n) throw(std::bad_alloc);
-		inline void		vec_clear() throw();
+		void		vec_cpy(const vector& other, size_type n) throw(std::bad_alloc);
+		void		vec_array_copy(pointer dest, const_pointer src, size_type n) throw();
+		void		vec_set(pointer dest, const_reference value, size_type n) throw(std::bad_alloc);
+		void		vec_clear() throw();
 
 		/* Member functions */
 
@@ -710,7 +710,7 @@ namespace FT_NAMESPACE
 	 * 	Note: @a n must be <= @c other.capacity() and @c this->capacity().
 	*/
 	template <class T, class Allocator>
-	void
+	inline void
 	vector<T, Allocator>::vec_cpy(const vector& other, size_type n)
 	throw(std::bad_alloc)
 	{
@@ -728,7 +728,7 @@ namespace FT_NAMESPACE
 	 * 	Copies @p n elements from @p src to @p dest.
 	*/
 	template <class T, class Allocator>
-	void
+	inline void
 	vector<T, Allocator>::vec_array_copy(pointer dest, const_pointer src, size_type n)
 	throw()
 	{
@@ -748,7 +748,7 @@ namespace FT_NAMESPACE
 	 * 	Note: @a dest + @a n must be <= @c this->capacity().
 	 */
 	template <class T, class Allocator>
-	void
+	inline void
 	vector<T, Allocator>::vec_set(pointer dest, const_reference value, size_type n)
 	throw(std::bad_alloc)
 	{
@@ -765,7 +765,7 @@ namespace FT_NAMESPACE
 	 * 	Destructs the elements of @c *this without deallocating @c head.
 	*/
 	template <class T, class Allocator>
-	void
+	inline void
 	vector<T, Allocator>::vec_clear()
 	throw()
 	{
@@ -913,7 +913,7 @@ namespace FT_NAMESPACE
 	 *	@return A reference to the data at @a n index.
 	*/
 	template <class T, class Allocator>
-	typename vector<T, Allocator>::reference
+	inline typename vector<T, Allocator>::reference
 	vector<T, Allocator>::operator[](size_type n)
 	{ return (*(head + n)); }
 
@@ -924,7 +924,7 @@ namespace FT_NAMESPACE
 	 *	@return A const reference to the data at @a n index.
 	*/
 	template <class T, class Allocator>
-	typename vector<T, Allocator>::const_reference
+	inline typename vector<T, Allocator>::const_reference
 	vector<T, Allocator>::operator[](size_type n) const
 	{ return (*(head + n)); }
 
@@ -937,7 +937,7 @@ namespace FT_NAMESPACE
 	 * 	@throw std::out_of_range if @c n > @c this->size().
 	*/
 	template <class T, class Allocator>
-	typename vector<T, Allocator>::reference
+	inline typename vector<T, Allocator>::reference
 	vector<T, Allocator>::at(size_type n)
 	{
 		// TO DO: out of range
@@ -955,7 +955,7 @@ namespace FT_NAMESPACE
 	 * 	@throw std::out_of_range if @c n > @c this->size().
 	*/
 	template <class T, class Allocator>
-	typename vector<T, Allocator>::const_reference
+	inline typename vector<T, Allocator>::const_reference
 	vector<T, Allocator>::at(size_type n) const
 	{
 		// TO DO: out of range
@@ -970,7 +970,7 @@ namespace FT_NAMESPACE
 	 * 	@return A reference to the first element in %vector.
 	 */
 	template <class T, class Allocator>
-	typename vector<T, Allocator>::reference
+	inline typename vector<T, Allocator>::reference
 	vector<T, Allocator>::front()
 	{ return (*begin()); }
 
@@ -980,7 +980,7 @@ namespace FT_NAMESPACE
 	 * 	@return A const reference to the first element in %vector.
 	 */
 	template <class T, class Allocator>
-	typename vector<T, Allocator>::const_reference
+	inline typename vector<T, Allocator>::const_reference
 	vector<T, Allocator>::front() const
 	{ return (*begin()); }
 
@@ -990,7 +990,7 @@ namespace FT_NAMESPACE
 	 * 	@return A reference to the first element in %vector.
 	 */
 	template <class T, class Allocator>
-	typename vector<T, Allocator>::reference
+	inline typename vector<T, Allocator>::reference
 	vector<T, Allocator>::back()
 	{ return (*end()); }
 
@@ -1000,7 +1000,7 @@ namespace FT_NAMESPACE
 	 * 	@return A const reference to the first element in %vector.
 	 */
 	template <class T, class Allocator>
-	typename vector<T, Allocator>::const_reference
+	inline typename vector<T, Allocator>::const_reference
 	vector<T, Allocator>::back() const
 	{ return (*end()); }
 
@@ -1010,7 +1010,7 @@ namespace FT_NAMESPACE
 	 * 	@return a pointer such @c this->data() + @c this->size() is a valid range.
 	*/
 	template <class T, class Allocator>
-	typename vector<T, Allocator>::pointer
+	inline typename vector<T, Allocator>::pointer
 	vector<T, Allocator>::data()
 	{
 		// TO DO: Check what happens if %vector is empty
@@ -1023,7 +1023,7 @@ namespace FT_NAMESPACE
 	 * 	@return a const pointer such @c this->data() + @c this->size() is a valid range.
 	*/
 	template <class T, class Allocator>
-	typename vector<T, Allocator>::const_pointer
+	inline typename vector<T, Allocator>::const_pointer
 	vector<T, Allocator>::data() const
 	{
 		// TO DO: Check what happens if %vector is empty
@@ -1040,7 +1040,7 @@ namespace FT_NAMESPACE
 	 * 	Return an iterator to the first element in %vector.
 	*/
 	template <class T, class Allocator>
-	typename vector<T, Allocator>::iterator
+	inline typename vector<T, Allocator>::iterator
 	vector<T, Allocator>::begin()
 	{ return (iterator(head)); }
 
@@ -1050,7 +1050,7 @@ namespace FT_NAMESPACE
 	 * 	Return a const iterator to the first element in %vector.
 	*/
 	template <class T, class Allocator>
-	typename vector<T, Allocator>::const_iterator
+	inline typename vector<T, Allocator>::const_iterator
 	vector<T, Allocator>::begin() const
 	{ return (const_iterator(head)); }
 
@@ -1060,7 +1060,7 @@ namespace FT_NAMESPACE
 	 * 	Return an iterator to the last element in %vector.
 	*/
 	template <class T, class Allocator>
-	typename vector<T, Allocator>::iterator
+	inline typename vector<T, Allocator>::iterator
 	vector<T, Allocator>::end()
 	{ return (iterator(tail)); }
 
@@ -1070,7 +1070,7 @@ namespace FT_NAMESPACE
 	 * 	Return a const iterator to the last element in %vector.
 	*/
 	template <class T, class Allocator>
-	typename vector<T, Allocator>::const_iterator
+	inline typename vector<T, Allocator>::const_iterator
 	vector<T, Allocator>::end() const
 	{ return (const_iterator(tail)); }
 
@@ -1080,7 +1080,7 @@ namespace FT_NAMESPACE
 	 * 	Return a reverse iterator to the first element in %vector.
 	*/
 	template <class T, class Allocator>
-	typename vector<T, Allocator>::reverse_iterator
+	inline typename vector<T, Allocator>::reverse_iterator
 	vector<T, Allocator>::rbegin()
 	{ return (reverse_iterator(head)); }
 
@@ -1090,7 +1090,7 @@ namespace FT_NAMESPACE
 	 * 	Return a const reverse iterator to the first element in %vector.
 	*/
 	template <class T, class Allocator>
-	typename vector<T, Allocator>::const_reverse_iterator
+	inline typename vector<T, Allocator>::const_reverse_iterator
 	vector<T, Allocator>::rbegin() const
 	{ return (const_reverse_iterator(head)); }
 
@@ -1110,7 +1110,7 @@ namespace FT_NAMESPACE
 	 * 	Return a const reverse iterator to the last element into %vector.
 	*/
 	template <class T, class Allocator>
-	typename vector<T, Allocator>::const_reverse_iterator
+	inline typename vector<T, Allocator>::const_reverse_iterator
 	vector<T, Allocator>::rend() const
 	{ return (const_reverse_iterator(tail)); }
 
@@ -1124,7 +1124,7 @@ namespace FT_NAMESPACE
 	 * 	@return True if the vector is empty.
 	*/
 	template <class T, class Allocator>
-	bool
+	inline bool
 	vector<T, Allocator>::empty() const
 	{ return (begin() == end()); }
 
@@ -1134,7 +1134,7 @@ namespace FT_NAMESPACE
 	 * 	@return The number of elements in %vector.
 	*/
 	template <class T, class Allocator>
-	typename vector<T, Allocator>::size_type
+	inline typename vector<T, Allocator>::size_type
 	vector<T, Allocator>::size() const
 	{ return (size_type(tail - head)); }
 
@@ -1144,7 +1144,7 @@ namespace FT_NAMESPACE
 	 * 	@return The largest amount of T elements that %vector supports.
 	*/
 	template <class T, class Allocator>
-	typename vector<T, Allocator>::size_type
+	inline typename vector<T, Allocator>::size_type
 	vector<T, Allocator>::max_size() const
 	{ return (size_type(std::numeric_limits<size_type>::max() / sizeof(value_type))); }
 
@@ -1183,7 +1183,7 @@ namespace FT_NAMESPACE
 	 * 	@return The maximun number of element that %vector can hold.
 	*/
 	template <class T, class Allocator>
-	typename vector<T, Allocator>::size_type
+	inline typename vector<T, Allocator>::size_type
 	vector<T, Allocator>::capacity() const
 	{ return (size_type(storage - head)); }
 
@@ -1197,7 +1197,7 @@ namespace FT_NAMESPACE
 	 * 	Destroys all the elements that %vector hold.
 	*/
 	template <class T, class Allocator>
-	void
+	inline void
 	vector<T, Allocator>::clear()
 	{ vec_clear(); }
 
@@ -1237,7 +1237,7 @@ namespace FT_NAMESPACE
 	 * 	Insert @c value at @c index (before the current element that is holds at @c index before the call)
 	*/
 	template <class T, class Allocator>
-	typename vector<T, Allocator>::iterator
+	inline typename vector<T, Allocator>::iterator
 	vector<T, Allocator>::insert(const_iterator pos, const_reference value)
 	{
 		insert(pos, size_type(1), value);
@@ -1313,7 +1313,7 @@ namespace FT_NAMESPACE
 	 * 	Remove an element at the index @a pos.
 	*/
 	template <class T, class Allocator>
-	typename vector<T, Allocator>::iterator
+	inline typename vector<T, Allocator>::iterator
 	vector<T, Allocator>::erase(iterator pos)
 	{ return (erase(pos, pos + 1)); }
 
@@ -1326,7 +1326,7 @@ namespace FT_NAMESPACE
 	 * 	Append @c x to underliying work array @c head at index @c tail + 1.
 	*/
 	template <class T, class Allocator>
-	void
+	inline void
 	vector<T, Allocator>::push_back(const_reference x)
 	{
 		if (size_type(++tail) > capacity())
@@ -1340,7 +1340,7 @@ namespace FT_NAMESPACE
 	 * 	Removes the last element of the underliying work array @c head at index @c tail.
 	*/
 	template <class T, class Allocator>
-	void
+	inline void
 	vector<T, Allocator>::pop_back()
 	{
 		if (!empty())
@@ -1385,7 +1385,7 @@ namespace FT_NAMESPACE
 	 * 	Swap the underlying work data of @c *this and @a other.
 	*/
 	template <class T, class Allocator>
-	void
+	inline void
 	vector<T, Allocator>::swap(vector& other)
 	{ alg_swap_data(other); }
 

@@ -76,19 +76,19 @@ namespace FT_NAMESPACE
 	{ }
 	
 	template <typename T>
-	typename allocator<T>::pointer
+	inline typename allocator<T>::pointer
 	allocator<T>::address(reference x) const
 	throw()
 	{ return (std::addressof(x)); }
 
 	template <typename T>
-	typename allocator<T>::const_pointer
+	inline typename allocator<T>::const_pointer
 	allocator<T>::address(const_reference x) const
 	throw()
 	{ return (std::addressof(x)); }
 	
 	template <typename T>
-	typename allocator<T>::pointer
+	inline typename allocator<T>::pointer
 	allocator<T>::allocate(size_type n, const void*)
 	throw(::std::bad_alloc)
 	{
@@ -98,7 +98,7 @@ namespace FT_NAMESPACE
 	}
 
 	template <typename T>
-	void
+	inline void
 	allocator<T>::deallocate(pointer p /*, size_type amount*/)
 	throw()
 	{
@@ -107,19 +107,19 @@ namespace FT_NAMESPACE
 	}
 
 	template <typename T>
-	void
+	inline void
 	allocator<T>::construct(pointer p, const_reference value)
 	throw(::std::bad_alloc)
 	{ ::new(static_cast<void*>(p)) value_type(value); }
 
 	template <typename T>
-	void
+	inline void
 	allocator<T>::destroy(pointer p)
 	throw()
 	{ p->~value_type(); }
 
 	template <typename T>
-	typename allocator<T>::size_type
+	inline typename allocator<T>::size_type
 	allocator<T>::max_size() throw()
 	{ return (size_type(-1) / sizeof(value_type)); }
 
