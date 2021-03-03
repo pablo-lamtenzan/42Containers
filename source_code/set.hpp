@@ -189,7 +189,7 @@ namespace FT_NAMESPACE
 	 * 	Perform a deep copy if @p other into @c *this.
 	*/
 	template <class Key, class Compare, class Alloc>
-	set<Key, Compare, Alloc>&
+	inline set<Key, Compare, Alloc>&
 	set<Key, Compare, Alloc>::operator=(const set& other)
 	{
 		tree = other.tree;
@@ -206,7 +206,7 @@ namespace FT_NAMESPACE
 	 * 	@return An iterator pointing to the first element of @c *this.
 	*/
 	template <class Key, class Compare, class Alloc>
-	typename set<Key, Compare, Alloc>::iterator
+	inline typename set<Key, Compare, Alloc>::iterator
 	set<Key, Compare, Alloc>::begin() const 
 	{ return (tree.begin()); }
 
@@ -216,7 +216,7 @@ namespace FT_NAMESPACE
 	 * 	@return An iterator pointing to the last element of @c *this.
 	*/
 	template <class Key, class Compare, class Alloc>
-	typename set<Key, Compare, Alloc>::iterator
+	inline typename set<Key, Compare, Alloc>::iterator
 	set<Key, Compare, Alloc>::end() const
 	{ return (tree.end()); }
 
@@ -226,7 +226,7 @@ namespace FT_NAMESPACE
 	 * 	@return A revese iterator pointing to the first element of @c *this.
 	*/
 	template <class Key, class Compare, class Alloc>
-	typename set<Key, Compare, Alloc>::iterator
+	inline typename set<Key, Compare, Alloc>::iterator
 	set<Key, Compare, Alloc>::rbegin() const 
 	{ return (tree.rbegin()); }
 
@@ -236,7 +236,7 @@ namespace FT_NAMESPACE
 	 * 	@return An iterator pointing to the last element of @c *this.
 	*/
 	template <class Key, class Compare, class Alloc>
-	typename set<Key, Compare, Alloc>::iterator
+	inline typename set<Key, Compare, Alloc>::iterator
 	set<Key, Compare, Alloc>::rend() const
 	{ return (tree.rend()); }
 
@@ -250,7 +250,7 @@ namespace FT_NAMESPACE
 	 * 	@return True if the %set is empty.
 	*/
 	template <class Key, class Compare, class Alloc>
-	bool
+	inline bool
 	set<Key, Compare, Alloc>::empty() const
 	{ return (tree.empty()); }
 
@@ -260,7 +260,7 @@ namespace FT_NAMESPACE
 	 * 	@return The size of the %set.
 	*/
 	template <class Key, class Compare, class Alloc>
-	typename set<Key, Compare, Alloc>::size_type
+	inline typename set<Key, Compare, Alloc>::size_type
 	set<Key, Compare, Alloc>::size() const
 	{ return (tree.size()); }
 
@@ -270,7 +270,7 @@ namespace FT_NAMESPACE
 	 * 	@return The maximum number of element type Key that @c *this can hold.
 	*/
 	template <class Key, class Compare, class Alloc>
-	typename set<Key, Compare, Alloc>::size_type
+	inline typename set<Key, Compare, Alloc>::size_type
 	set<Key, Compare, Alloc>::max_size() const
 	{ return (tree.max_size()); }
 
@@ -284,7 +284,7 @@ namespace FT_NAMESPACE
 	 * 	Empty @c *this.
 	*/
 	template <class Key, class Compare, class Alloc>
-	void
+	inline void
 	set<Key, Compare, Alloc>::clear() const
 	{ tree.clear(); }
 
@@ -297,7 +297,7 @@ namespace FT_NAMESPACE
 	 * 	If the insertion is not possible the bool in the returned pair is false.
 	*/
 	template <class Key, class Compare, class Alloc>
-	std::pair<typename set<Key, Compare, Alloc>::iterator, bool>
+	inline ::std::pair<typename set<Key, Compare, Alloc>::iterator, bool>
 	insert(const_reference& value)
 	{ return (tree.aux_insert_unique(value)); }
 
@@ -312,7 +312,7 @@ namespace FT_NAMESPACE
 	 * 		This function perform the same operation as insert(const_reference) signature.
 	*/
 	template <class Key, class Compare, class Alloc>
-	typename set<Key, Compare, Alloc>::iterator
+	inline typename set<Key, Compare, Alloc>::iterator
 	set<Key, Compare, Alloc>::insert(const_iterator position, const_reference value)
 	{ return (tree.aux_insert_unique(position, value)); }
 
@@ -327,7 +327,7 @@ namespace FT_NAMESPACE
 	*/
 	template <class Key, class Compare, class Alloc>
 	template <typename InputIt>
-	typename set<Key, Compare, Alloc>::iterator
+	inline typename set<Key, Compare, Alloc>::iterator
 	set<Key, Compare, Alloc>::insert(InputIt first, InputIt last)
 	{ return (tree.aux_insert_range_unique(first, last)); }
 
@@ -341,7 +341,7 @@ namespace FT_NAMESPACE
 	 * 		 * 	Erase the element holded at @p position.
 	*/
 	template <class Key, class Compare, class Alloc>
-	typename set<Key, Compare, Alloc>::iterator
+	inline typename set<Key, Compare, Alloc>::iterator
 	set<Key, Compare, Alloc>::erase(iterator position)
 	{ return (tree.erase(position)); }
 
@@ -355,7 +355,7 @@ namespace FT_NAMESPACE
 	 * 	Perform an eresion of all the element matching with the key @p k.
 	*/
 	template <class Key, class Compare, class Alloc>
-	typename set<Key, Compare, Alloc>::size_type
+	inline typename set<Key, Compare, Alloc>::size_type
 	set<Key, Compare, Alloc>::erase(const key_type& k)
 	{ return (tree.erase(k)); }
 
@@ -368,7 +368,7 @@ namespace FT_NAMESPACE
 	 * 	Perform an erersion in range @p first - @p last.
 	*/
 	template <class Key, class Compare, class Alloc>
-	void
+	inline void
 	set<Key, Compare, Alloc>::erase(iterator first, iterator last)
 	{ tree.erase(first, last); }
 
@@ -380,7 +380,7 @@ namespace FT_NAMESPACE
 	 * 	Perform a swap between @c *this and @p other.
 	*/
 	template <class Key, class Compare, class Alloc>
-	void
+	inline void
 	set<Key, Compare, Alloc>::swap(const set& other)
 	{ tree.swap(other.tree); }
 
@@ -398,7 +398,7 @@ namespace FT_NAMESPACE
 	 * 		will always be 0 or 1.
 	*/
 	template <class Key, class Compare, class Alloc>
-	typename set<Key, Compare, Alloc>::size_type
+	inline typename set<Key, Compare, Alloc>::size_type
 	set<Key, Compare, Alloc>::count(const key_type& k) const
 	{ return (tree.count(k)); }
 
@@ -409,7 +409,7 @@ namespace FT_NAMESPACE
 	 * 	@return An iterator pointing to the maching key with @p k.
 	*/
 	template <class Key, class Compare, class Alloc>
-	typename set<Key, Compare, Alloc>::iterator
+	inline typename set<Key, Compare, Alloc>::iterator
 	find(cost key_type& k)
 	{ return (tree.find(k)); }
 
@@ -420,7 +420,7 @@ namespace FT_NAMESPACE
 	 * 	@return An iterator pointing to the maching key with @p k.
 	*/
 	template <class Key, class Compare, class Alloc>
-	typename set<Key, Compare, Alloc>::const_iterator
+	inline typename set<Key, Compare, Alloc>::const_iterator
 	set<Key, Compare, Alloc>::find(cost key_type& k) const
 	{ return (tree.find(k)); }
 
@@ -431,7 +431,7 @@ namespace FT_NAMESPACE
 	 * 		that match with the given key @p k.
 	*/
 	template <class Key, class Compare, class Alloc>
-	std::pair<typename set<Key, Compare, Alloc>::iterator, typename set<Key, Compare, Alloc>::iterator>
+	inline std::pair<typename set<Key, Compare, Alloc>::iterator, typename set<Key, Compare, Alloc>::iterator>
 	set<Key, Compare, Alloc>::equal_range(const key_type& k)
 	{ return (tree.equal_range(k)); }
 
@@ -442,7 +442,7 @@ namespace FT_NAMESPACE
 	 * 		that match with the given key @p k.
 	*/
 	template <class Key, class Compare, class Alloc>
-	std::pair<typename set<Key, Compare, Alloc>::const_iterator, typename set<Key, Compare, Alloc>::const_iterator>
+	inline std::pair<typename set<Key, Compare, Alloc>::const_iterator, typename set<Key, Compare, Alloc>::const_iterator>
 	set<Key, Compare, Alloc>::equal_range(const key_type& k) const
 	{ return (tree.equal_range(k)); }
 
@@ -453,7 +453,7 @@ namespace FT_NAMESPACE
 	 * 		matching with with the key @p k.
 	*/
 	template <class Key, class Compare, class Alloc>
-	typename set<Key, Compare, Alloc>::iterator
+	inline typename set<Key, Compare, Alloc>::iterator
 	set<Key, Compare, Alloc>::lower_bound(const key_type& k)
 	{ return (tree.lower_bound(k)); }
 
@@ -464,7 +464,7 @@ namespace FT_NAMESPACE
 	 * 		matching with with the key @p k.
 	*/
 	template <class Key, class Compare, class Alloc>
-	typename set<Key, Compare, Alloc>::const_iterator
+	inline typename set<Key, Compare, Alloc>::const_iterator
 	set<Key, Compare, Alloc>::lower_bound(const key_type& k) const
 	{ return (tree.lower_bound(k)); }
 
@@ -475,7 +475,7 @@ namespace FT_NAMESPACE
 	 * 		matching with with the key @p k.
 	*/
 	template <class Key, class Compare, class Alloc>
-	typename set<Key, Compare, Alloc>::iterator
+	inline typename set<Key, Compare, Alloc>::iterator
 	set<Key, Compare, Alloc>::upper_bound(const key_type& k)
 	{ return (tree.upper_bound(k)); }
 
@@ -486,7 +486,7 @@ namespace FT_NAMESPACE
 	 * 		matching with with the key @p k.
 	*/
 	template <class Key, class Compare, class Alloc>
-	typename set<Key, Compare, Alloc>::const_iterator
+	inline typename set<Key, Compare, Alloc>::const_iterator
 	set<Key, Compare, Alloc>::upper_bound(const key_type& k) const
 	{ return (tree.upper_bound(k)); }
 
@@ -500,7 +500,7 @@ namespace FT_NAMESPACE
 	 * 	@return The comparison objetc which was used to construct @c *this.
 	*/
 	template <class Key, class Compare, class Alloc>
-	typename set<Key, Compare, Alloc>::key_compare
+	inline typename set<Key, Compare, Alloc>::key_compare
 	set<Key, Compare, Alloc>::key_comp() const
 	{ return (tree.key_comp()); }
 
@@ -510,7 +510,7 @@ namespace FT_NAMESPACE
 	 * 	@return The comparison object which was used to construct @c *this.
 	*/
 	template <class Key, class Compare, class Alloc>
-	typename set<Key, Compare, Alloc>::key_compare
+	inline typename set<Key, Compare, Alloc>::key_compare
 	set<Key, Compare, Alloc>::value_comp() const
 	{ return (tree.key_comp()); }
 

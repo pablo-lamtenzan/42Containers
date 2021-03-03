@@ -16,8 +16,8 @@ namespace FT_NAMESPACE
 	 * 
 	 * 	TO DO
 	*/
-	template <typename Key, typename T, typename Compare = std::less<Key>,
-	typename Alloc = allocator<std::pair<const Key, T>>>
+	template <typename Key, typename T, typename Compare = ::std::less<Key>,
+	typename Alloc = allocator<::std::pair<const Key, T>>>
 	class map
 	{
 		/* Member types */
@@ -105,7 +105,7 @@ namespace FT_NAMESPACE
 
 		/* Modifiers */
 		void					clear() const;
-		std::pair<iterator, bool>	insert(const_reference pair);
+		::std::pair<iterator, bool>	insert(const_reference pair);
 		iterator				insert(iterator pos, const_reference pair);
 		template <typename InputIt>
 		void					insert(InputIt first, InputIt last);
@@ -117,7 +117,7 @@ namespace FT_NAMESPACE
 		/* Lookup */
 		iterator				find(const key_type& k);
 		// TO DO: add count
-		std::pair<iterator, iterator>	equal_range(const key_type& k);
+		::std::pair<iterator, iterator>	equal_range(const key_type& k);
 		iterator				lower_bound(const key_type& k);
 		const_iterator			lower_bound(const key_type& k) const;
 		iterator				upper_bound(const key_type& k);
@@ -280,7 +280,7 @@ namespace FT_NAMESPACE
 	 * 	@return An iterator to the first element holded by %map.
 	*/
 	template <class Key, class T, class Compare, class Alloc>
-	typename map<Key, T, Compare, Alloc>::iterator
+	inline typename map<Key, T, Compare, Alloc>::iterator
 	map<Key, T, Compare, Alloc>::begin()
 	{ return (tree.begin()); }
 
@@ -290,7 +290,7 @@ namespace FT_NAMESPACE
 	 * 	@return A const iterator to the first element holded by %map.
 	*/
 	template <class Key, class T, class Compare, class Alloc>
-	typename map<Key, T, Compare, Alloc>::const_iterator
+	inline typename map<Key, T, Compare, Alloc>::const_iterator
 	map<Key, T, Compare, Alloc>::begin() const
 	{ return (tree.begin()); }
 
@@ -300,7 +300,7 @@ namespace FT_NAMESPACE
 	 * 	@return An iterator to the last element holded by %map.
 	*/
 	template <class Key, class T, class Compare, class Alloc>
-	typename map<Key, T, Compare, Alloc>::iterator
+	inline typename map<Key, T, Compare, Alloc>::iterator
 	map<Key, T, Compare, Alloc>::end()
 	{ return (tree.end()); }
 
@@ -310,7 +310,7 @@ namespace FT_NAMESPACE
 	 * 	@return A const iterator to the last element holded by %map.
 	*/
 	template <class Key, class T, class Compare, class Alloc>
-	typename map<Key, T, Compare, Alloc>::const_iterator
+	inline typename map<Key, T, Compare, Alloc>::const_iterator
 	map<Key, T, Compare, Alloc>::end() const
 	{ return (tree.end()); }
 
@@ -320,7 +320,7 @@ namespace FT_NAMESPACE
 	 * 	@return A reverse iterator to the first element holded by %map.
 	*/
 	template <class Key, class T, class Compare, class Alloc>
-	typename map<Key, T, Compare, Alloc>::reverse_iterator
+	inline typename map<Key, T, Compare, Alloc>::reverse_iterator
 	map<Key, T, Compare, Alloc>::rbegin()
 	{ return (tree.begin()); }
 
@@ -330,7 +330,7 @@ namespace FT_NAMESPACE
 	 * 	@return A const reverse iterator to the first element holded by %map.
 	*/
 	template <class Key, class T, class Compare, class Alloc>
-	typename map<Key, T, Compare, Alloc>::const_reverse_iterator
+	inline typename map<Key, T, Compare, Alloc>::const_reverse_iterator
 	map<Key, T, Compare, Alloc>::rbegin() const
 	{ return (tree.rbegin()); }
 
@@ -340,7 +340,7 @@ namespace FT_NAMESPACE
 	 * 	@return A reverse iterator to the last element holded by %map.
 	*/
 	template <class Key, class T, class Compare, class Alloc>
-	typename map<Key, T, Compare, Alloc>::reverse_iterator
+	inline typename map<Key, T, Compare, Alloc>::reverse_iterator
 	map<Key, T, Compare, Alloc>::rend()
 	{ return (tree.rend()); }
 
@@ -350,7 +350,7 @@ namespace FT_NAMESPACE
 	 * 	@return A const reverse iterator to the last element holded by %map.
 	*/
 	template <class Key, class T, class Compare, class Alloc>
-	typename map<Key, T, Compare, Alloc>::const_reverse_iterator
+	inline typename map<Key, T, Compare, Alloc>::const_reverse_iterator
 	map<Key, T, Compare, Alloc>::rend() const
 	{ return (tree.rend()); }
 
@@ -364,7 +364,7 @@ namespace FT_NAMESPACE
 	 * 	@return True if the %map is empty.
 	*/
 	template <class Key, class T, class Compare, class Alloc>
-	bool
+	inline bool
 	map<Key, T, Compare, Alloc>::empty() const
 	{ return (tree.empty()); }
 
@@ -374,7 +374,7 @@ namespace FT_NAMESPACE
 	 * 	@return The size of %map.
 	*/
 	template <class Key, class T, class Compare, class Alloc>
-	typename map<Key, T, Compare, Alloc>::size_type
+	inline typename map<Key, T, Compare, Alloc>::size_type
 	map<Key, T, Compare, Alloc>::size() const
 	{ return (tree.size()); }
 
@@ -384,7 +384,7 @@ namespace FT_NAMESPACE
 	 * 	@return The maximum amount of T elements %map can hold.
 	*/
 	template <class Key, class T, class Compare, class Alloc>
-	typename map<Key, T, Compare, Alloc>::size_type
+	inline typename map<Key, T, Compare, Alloc>::size_type
 	map<Key, T, Compare, Alloc>::max_size() const
 	{ return (tree.max_size()); }
 
@@ -398,7 +398,7 @@ namespace FT_NAMESPACE
 	 * 	Empty the %map.
 	*/
 	template <class Key, class T, class Compare, class Alloc>
-	void
+	inline void
 	map<Key, T, Compare, Alloc>::clear() const
 	{ tree.clear(); }
 
@@ -410,7 +410,7 @@ namespace FT_NAMESPACE
 	 * 	Attemps to insert @p pair into the %map.
 	*/
 	template <class Key, class T, class Compare, class Alloc>
-	std::pair<typename map<Key, T, Compare, Alloc>::iterator, bool>
+	inline ::std::pair<typename map<Key, T, Compare, Alloc>::iterator, bool>
 	map<Key, T, Compare, Alloc>::insert(const_reference pair)
 	{ return (tree.aux_insert_unique(pair)); }
 
@@ -424,7 +424,7 @@ namespace FT_NAMESPACE
 	 * 	Attemps to insert @p pair into %map at @p pos index.
 	*/
 	template <class Key, class T, class Compare, class Alloc>
-	typename map<Key, T, Compare, Alloc>::iterator
+	inline typename map<Key, T, Compare, Alloc>::iterator
 	map<Key, T, Compare, Alloc>::insert(iterator pos, const_reference pair)
 	{ return (tree.aux_insert_unique(pos, pair)); }
 
@@ -439,7 +439,7 @@ namespace FT_NAMESPACE
 	*/
 	template <class Key, class T, class Compare, class Alloc>
 	template <typename InputIt>
-	void
+	inline void
 	map<Key, T, Compare, Alloc>::insert(InputIt first, InputIt last)
 	{ tree.aux_insert_range_unique(first, last); }
 
@@ -451,7 +451,7 @@ namespace FT_NAMESPACE
 	 * 	Removes the node at @p pos index.
 	*/
 	template <class Key, class T, class Compare, class Alloc>
-	void
+	inline void
 	map<Key, T, Compare, Alloc>::erase(iterator pos)
 	{ tree.erase(pos); }
 
@@ -465,7 +465,7 @@ namespace FT_NAMESPACE
 	 * 	Removes to element maching with @p k key.
 	*/
 	template <class Key, class T, class Compare, class Alloc>
-	typename map<Key, T, Compare, Alloc>::size_type
+	inline typename map<Key, T, Compare, Alloc>::size_type
 	map<Key, T, Compare, Alloc>::erase(const key_type& k)
 	{ return (tree.erase(k)); }
 
@@ -478,7 +478,7 @@ namespace FT_NAMESPACE
 	 * 	Removes the nodes in range @p first - @p last.
 	*/
 	template <class Key, class T, class Compare, class Alloc>
-	void
+	inline void
 	map<Key, T, Compare, Alloc>::erase(iterator first, iterator last)
 	{ return (tree.erase(first, last)); }
 
@@ -488,7 +488,7 @@ namespace FT_NAMESPACE
 	 * 	@param other A %map with the same type of @c *this.
 	*/
 	template <class Key, class T, class Compare, class Alloc>
-	void
+	inline void
 	map<Key, T, Compare, Alloc>::swap(const map& other)
 	{ tree.swap(other.tree); }
 
@@ -504,7 +504,7 @@ namespace FT_NAMESPACE
 	 * 	@return An iterator pointing to the pair maching with @p k key.
 	*/
 	template <class Key, class T, class Compare, class Alloc>
-	typename map<Key, T, Compare, Alloc>::iterator
+	inline typename map<Key, T, Compare, Alloc>::iterator
 	map<Key, T, Compare, Alloc>::find(const key_type& k)
 	{ return (tree.find(k)); }
 
@@ -516,7 +516,7 @@ namespace FT_NAMESPACE
 	 * 	@return A pair of iterators pointing to the maching @p k value.
 	*/
 	template <class Key, class T, class Compare, class Alloc>
-	std::pair<typename map<Key, T, Compare, Alloc>::iterator, typename map<Key, T, Compare, Alloc>::iterator>
+	inline ::std::pair<typename map<Key, T, Compare, Alloc>::iterator, typename map<Key, T, Compare, Alloc>::iterator>
 	map<Key, T, Compare, Alloc>::equal_range(const key_type& k)
 	{ return (tree.equal_range(k)); }
 
@@ -529,7 +529,7 @@ namespace FT_NAMESPACE
 	 * 	maching with the @p k key.
 	*/
 	template <class Key, class T, class Compare, class Alloc>
-	typename map<Key, T, Compare, Alloc>::iterator
+	inline typename map<Key, T, Compare, Alloc>::iterator
 	map<Key, T, Compare, Alloc>::lower_bound(const key_type& k)
 	{ return (tree.lower_bound(k)); }
 
@@ -542,7 +542,7 @@ namespace FT_NAMESPACE
 	 * 	maching with the @p k key.
 	*/
 	template <class Key, class T, class Compare, class Alloc>
-	typename map<Key, T, Compare, Alloc>::const_iterator
+	inline typename map<Key, T, Compare, Alloc>::const_iterator
 	map<Key, T, Compare, Alloc>::lower_bound(const key_type& k) const
 	{ return (tree.lower_bound(k)); }
 
@@ -555,7 +555,7 @@ namespace FT_NAMESPACE
 	 * 	maching with the @p k key.
 	*/
 	template <class Key, class T, class Compare, class Alloc>
-	typename map<Key, T, Compare, Alloc>::iterator
+	inline typename map<Key, T, Compare, Alloc>::iterator
 	map<Key, T, Compare, Alloc>::upper_bound(const key_type& k)
 	{ return (tree.upper_bound(k)); }
 
@@ -568,7 +568,7 @@ namespace FT_NAMESPACE
 	 * 	maching with the @p k key.
 	*/
 	template <class Key, class T, class Compare, class Alloc>
-	typename map<Key, T, Compare, Alloc>::const_iterator
+	inline typename map<Key, T, Compare, Alloc>::const_iterator
 	map<Key, T, Compare, Alloc>::upper_bound(const key_type& k) const
 	{ return (tree.upper_bound(k)); }
 
@@ -582,7 +582,7 @@ namespace FT_NAMESPACE
 	 * 	@return The comparison key object holded by @c *this.
 	*/
 	template <class Key, class T, class Compare, class Alloc>
-	typename map<Key, T, Compare, Alloc>::key_compare
+	inline typename map<Key, T, Compare, Alloc>::key_compare
 	map<Key, T, Compare, Alloc>::key_comp() const
 	{ return (tree.key_comp()); }
 
@@ -592,7 +592,7 @@ namespace FT_NAMESPACE
 	 * 	@return The value comparison object.
 	*/
 	template <class Key, class T, class Compare, class Alloc>
-	typename map<Key, T, Compare, Alloc>::value_compare
+	inline typename map<Key, T, Compare, Alloc>::value_compare
 	map<Key, T, Compare, Alloc>::value_comp() const
 	{ return (value_compare(tree.key_comp())); }
 
