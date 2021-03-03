@@ -81,8 +81,8 @@ namespace FT_NAMESPACE
 
 		/* Member fucntions */
 
-		inline pointer			Node_get_value_ptr() throw();
-		inline const_pointer	Node_get_value_ptr() const throw();
+		pointer			Node_get_value_ptr() throw();
+		const_pointer	Node_get_value_ptr() const throw();
 	};
 
 	//@{
@@ -92,13 +92,13 @@ namespace FT_NAMESPACE
 	 * 	@return A pointer to the value holded by the node.
 	*/
 	template <typename Val>
-	typename RBT_Node<Val>::pointer
+	inline typename RBT_Node<Val>::pointer
 	RBT_Node<Val>::Node_get_value_ptr()
 	throw()
 	{ return (std::addressof(value)); }
 
 	template <typename Val>
-	typename RBT_Node<Val>::const_pointer
+	inline typename RBT_Node<Val>::const_pointer
 	RBT_Node<Val>::Node_get_value_ptr() const
 	throw()
 	{ return (std::addressof(value)); }
@@ -128,7 +128,7 @@ namespace FT_NAMESPACE
 		/* Member functions */
 
 		RBT_Header();
-		inline void Node_reset() throw();
+		void Node_reset() throw();
 	};
 
 	/**
@@ -147,7 +147,7 @@ namespace FT_NAMESPACE
 	 * Set @c *this to it empty state.
 	*/
 	template <typename T>
-	void
+	inline void
 	RBT_Header<T>::Node_reset() throw()
 	{
 		parent = NULL;
@@ -402,20 +402,20 @@ namespace FT_NAMESPACE
 		RBT_iterator(Const_Self& it);
 
 		/* Requires read/write iterators */
-		inline reference		operator*() const;
-		inline pointer			operator->() const;
+		reference		operator*() const;
+		pointer			operator->() const;
 
 		/* Require forward iterators */
-		inline Self&			operator++();
-		inline Const_Self&		operator++() const;
-		inline Self				operator++(int);
-		inline Const_Self		operator++(int) const;
+		Self&			operator++();
+		Const_Self&		operator++() const;
+		Self			operator++(int);
+		Const_Self		operator++(int) const;
 
 		/* Require bidirectional iterators */
-		inline Self&			operator--();
-		inline Const_Self&		operator--() const;
-		inline Self				operator--(int);
-		inline Const_Self		operator--(int) const;
+		Self&			operator--();
+		Const_Self&		operator--() const;
+		Self			operator--(int);
+		Const_Self		operator--(int) const;
 
 		/* Non members */
 		friend bool	operator==(const Self&, const Self&);
@@ -453,12 +453,12 @@ namespace FT_NAMESPACE
 	///////////////////////////////////
 
 	template <class T, class T_Ref, class T_Ptr>
-	typename RBT_iterator<T, T_Ref, T_Ptr>::reference
+	inline typename RBT_iterator<T, T_Ref, T_Ptr>::reference
 	RBT_iterator<T, T_Ref, T_Ptr>::operator*() const
 	{ return (*static_cast<Link_type>(node)->Node_get_value_ptr()); }
 
 	template <class T, class T_Ref, class T_Ptr>
-	typename RBT_iterator<T, T_Ref, T_Ptr>::pointer
+	inline typename RBT_iterator<T, T_Ref, T_Ptr>::pointer
 	RBT_iterator<T, T_Ref, T_Ptr>::operator->() const
 	{ return (static_cast<Link_type>(node)->Node_get_value_ptr()); }
 
@@ -467,7 +467,7 @@ namespace FT_NAMESPACE
 	////////////////////////////////
 
 	template <class T, class T_Ref, class T_Ptr>
-	typename RBT_iterator<T, T_Ref, T_Ptr>::Self&
+	inline typename RBT_iterator<T, T_Ref, T_Ptr>::Self&
 	RBT_iterator<T, T_Ref, T_Ptr>::operator++()
 	{
 		node = RBT_increment(node);
@@ -475,7 +475,7 @@ namespace FT_NAMESPACE
 	}
 
 	template <class T, class T_Ref, class T_Ptr>
-	typename RBT_iterator<T, T_Ref, T_Ptr>::Const_Self&
+	inline typename RBT_iterator<T, T_Ref, T_Ptr>::Const_Self&
 	RBT_iterator<T, T_Ref, T_Ptr>::operator++() const
 	{
 		node = RBT_increment(node);
@@ -483,7 +483,7 @@ namespace FT_NAMESPACE
 	}
 
 	template <class T, class T_Ref, class T_Ptr>
-	typename RBT_iterator<T, T_Ref, T_Ptr>::Self
+	inline typename RBT_iterator<T, T_Ref, T_Ptr>::Self
 	RBT_iterator<T, T_Ref, T_Ptr>::operator++(int)
 	{
 		Self tmp = *this;
@@ -492,7 +492,7 @@ namespace FT_NAMESPACE
 	}
 
 	template <class T, class T_Ref, class T_Ptr>
-	typename RBT_iterator<T, T_Ref, T_Ptr>::Const_Self
+	inline typename RBT_iterator<T, T_Ref, T_Ptr>::Const_Self
 	RBT_iterator<T, T_Ref, T_Ptr>::operator++(int) const
 	{
 		Self tmp = *this;
@@ -505,7 +505,7 @@ namespace FT_NAMESPACE
 	//////////////////////////////////////
 
 	template <class T, class T_Ref, class T_Ptr>
-	typename RBT_iterator<T, T_Ref, T_Ptr>::Self&
+	inline typename RBT_iterator<T, T_Ref, T_Ptr>::Self&
 	RBT_iterator<T, T_Ref, T_Ptr>::operator--()
 	{
 		node = RBT_decrement(node);
@@ -513,7 +513,7 @@ namespace FT_NAMESPACE
 	}
 
 	template <class T, class T_Ref, class T_Ptr>
-	typename RBT_iterator<T, T_Ref, T_Ptr>::Const_Self&
+	inline typename RBT_iterator<T, T_Ref, T_Ptr>::Const_Self&
 	RBT_iterator<T, T_Ref, T_Ptr>::operator--() const
 	{
 		node = RBT_decrement(node);
@@ -521,7 +521,7 @@ namespace FT_NAMESPACE
 	}
 
 	template <class T, class T_Ref, class T_Ptr>
-	typename RBT_iterator<T, T_Ref, T_Ptr>::Self
+	inline typename RBT_iterator<T, T_Ref, T_Ptr>::Self
 	RBT_iterator<T, T_Ref, T_Ptr>::operator--(int)
 	{
 		Self tmp = *this;
@@ -530,7 +530,7 @@ namespace FT_NAMESPACE
 	}
 
 	template <class T, class T_Ref, class T_Ptr>
-	typename RBT_iterator<T, T_Ref, T_Ptr>::Const_Self
+	inline typename RBT_iterator<T, T_Ref, T_Ptr>::Const_Self
 	RBT_iterator<T, T_Ref, T_Ptr>::operator--(int) const
 	{
 		Self tmp = *this;
@@ -696,25 +696,25 @@ namespace FT_NAMESPACE
 		protected:
 
 		/* Fast type / readable basic operations */
-		inline Node_Ptr&				get_root() throw();
-		inline Const_Node_Ptr&			get_root() const throw();
-		inline Node_Ptr&				get_leftmost() throw();
-		inline Const_Node_Ptr&			get_leftmost() const throw();
-		inline Node_Ptr&				get_rightmost() throw();
-		inline Const_Node_Ptr&			get_rightmost() const throw();
-		inline Link_type				get_begin() throw();
-		inline Const_Link_type			get_begin() const throw();
-		inline Node_ptr&				get_end() throw();
-		inline Const_Node_Ptr&			get_end() const throw();
+		Node_Ptr&						get_root() throw();
+		Const_Node_Ptr&					get_root() const throw();
+		Node_Ptr&						get_leftmost() throw();
+		Const_Node_Ptr&					get_leftmost() const throw();
+		Node_Ptr&						get_rightmost() throw();
+		Const_Node_Ptr&					get_rightmost() const throw();
+		Link_type						get_begin() throw();
+		Const_Link_type					get_begin() const throw();
+		Node_ptr&						get_end() throw();
+		Const_Node_Ptr&					get_end() const throw();
 
 		/* Memory handlers */
-		inline Link_type				get_node() throw(std::bad_alloc);
-		inline void						put_node(Link_type p) throw();
+		Link_type						get_node() throw(std::bad_alloc);
+		void							put_node(Link_type p) throw();
 		void							construct_node(Link_type target,
 										const_reference value) throw(std::bad_alloc);
-		inline Link_type				create_node(const_reference value) throw(std::bad_alloc):
-		inline void						destroy_node(Link_type p) throw();
-		inline void						drop_node(Link_type p) throw();
+		Link_type						create_node(const_reference value) throw(std::bad_alloc):
+		void							destroy_node(Link_type p) throw();
+		void							drop_node(Link_type p) throw();
 		template <typename NodeGen>
 		Link_type						clone_node(Const_Link_type src, NodeGen& node_gen) throw();
 
@@ -724,7 +724,7 @@ namespace FT_NAMESPACE
 										NodeGen&) throw(std::bad_alloc);
 		template <typename NodeGen>
 		Link_type						aux_copy(const RedBlackTree& src, NodeGen& gen) throw(std::bad_alloc);
-		inline Link_type				aux_copy(const RedBlackTree& src) throw(std::bad_alloc);
+		Link_type						aux_copy(const RedBlackTree& src) throw(std::bad_alloc);
 
 		/* Rebalancing handlers */
 		void 							aux_insert_and_rebalance(bool insert_left, Node_Ptr target,
@@ -742,12 +742,12 @@ namespace FT_NAMESPACE
 		template <typename NodeGen>
 		iterator						aux_insert_unique(const_iterator pos, const_reference value,
 										NodeGen&) throw(std::bad_alloc);
-		inline iterator					aux_insert_unique(const_iterator pos, const_reference value)
+		iterator						aux_insert_unique(const_iterator pos, const_reference value)
 										throw(std::bad_alloc);
 		template <typename NodeGen>
 		iterator						aux_insert_equal(const_iterator pos, const_reference value,
 										NodeGen&) throw(std::bad_alloc);
-		inline iterator					aux_insert_equal(const_iterator pos, const_reference value)
+		iterator						aux_insert_equal(const_iterator pos, const_reference value)
 										throw(std::bad_alloc);
 		template <typename InputIt>
 		void							aux_insert_range_unique(InputIt first, InputIt last) throw(std::bad_alloc);
@@ -799,28 +799,27 @@ namespace FT_NAMESPACE
 		RedBlackTree&					operator=(const RedBlackTree& other);
 
 		/* Iterators */
-		inline iterator					begin();
-		inline const_iterator			begin() const;
-		inline iterator					end();
-		inline const_iterator			end() const;
-		inline reverse_iterator			rbegin();
-		inline const_reverse_iterator	rbegin() const;
-		inline reverse_iterator			rend();
-		inline const_reverse_iterator	rend() const;
+		iterator						begin();
+		const_iterator					begin() const;
+		iterator						end();
+		const_iterator					end() const;
+		reverse_iterator				rbegin();
+		const_reverse_iterator			rbegin() const;
+		reverse_iterator				rend();
+		const_reverse_iterator			rend() const;
 
 		/* Capacity */
-		inline bool						empty() const;
-		inline size_type				size() const;
-		inline size_type				max_size() const;
+		bool							empty() const;
+		size_type						size() const;
+		size_type						max_size() const;
 
 		/* Modifiers */
-		// TO DO Insert ?!?!?!!? (how did i forgot this ? lmao)
-		inline void						clear();
-		inline void						erase(iterator pos);
-		inline void						erase(const_iterator pos);
+		void							clear();
+		void							erase(iterator pos);
+		void							erase(const_iterator pos);
 		size_type						erase(const key_type& k);
-		inline void						erase(iterator first, iterator last);
-		inline void						erase(const_iterator first, const_iterator last);
+		void							erase(iterator first, iterator last);
+		void							erase(const_iterator first, const_iterator last);
 		void							swap(RedBlackTree& other);
 
 		/* Lookup*/
@@ -829,13 +828,13 @@ namespace FT_NAMESPACE
 		const_iterator					find(const key_type& k) const;
 		std::pair<iterator, iterator>				equal_range(const key_type& k);
 		std::pair<const_iterator, const_iterator>	equal_range(const key_type& k) const;
-		inline iterator					lower_bound(const key_type& k);
-		inline const_iterator			lower_bound(const key_type& k) const;
-		inline iterator					upper_bound(const key_type& k);
-		inline const_iterator			upper_bound(const key_type& k) const;
+		iterator						lower_bound(const key_type& k);
+		const_iterator					lower_bound(const key_type& k) const;
+		iterator						upper_bound(const key_type& k);
+		const_iterator					upper_bound(const key_type& k) const;
 
 		/* Observers */
-		inline Compare					key_comp() const;
+		Compare							key_comp() const;
 		// TO DO: value_comp
 
 		/* Non members */
@@ -848,61 +847,61 @@ namespace FT_NAMESPACE
 	///////////////////////////////////////////
 
 	template <class K, class V, class KV, class C, class A>
-	typename RedBlackTree<K, V, KV, C, A>::Node_Ptr&
+	inline typename RedBlackTree<K, V, KV, C, A>::Node_Ptr&
 	RedBlackTree<K, V, KV, C, A>::get_root()
 	throw()
 	{ return (header.parent); }
 		
 	template <class K, class V, class KV, class C, class A>
-	typename RedBlackTree<K, V, KV, C, A>::Const_Node_Ptr&
+	inline typename RedBlackTree<K, V, KV, C, A>::Const_Node_Ptr&
 	RedBlackTree<K, V, KV, C, A>::get_root() const
 	throw()
 	{ return (header.parent); }
 
 	template <class K, class V, class KV, class C, class A>
-	typename RedBlackTree<K, V, KV, C, A>::Node_Ptr&
+	inline typename RedBlackTree<K, V, KV, C, A>::Node_Ptr&
 	RedBlackTree<K, V, KV, C, A>::get_leftmost()
 	throw()
 	{ return (header.left); }
 
 	template <class K, class V, class KV, class C, class A>
-	typename RedBlackTree<K, V, KV, C, A>::Const_Node_Ptr&
+	inline typename RedBlackTree<K, V, KV, C, A>::Const_Node_Ptr&
 	RedBlackTree<K, V, KV, C, A>::get_leftmost() const
 	throw()
 	{ return (header.left); }
 
 	template <class K, class V, class KV, class C, class A>
-	typename RedBlackTree<K, V, KV, C, A>::Node_Ptr&
+	inline typename RedBlackTree<K, V, KV, C, A>::Node_Ptr&
 	RedBlackTree<K, V, KV, C, A>::get_rightmost()
 	throw()
 	{ return (header.right); }
 
 	template <class K, class V, class KV, class C, class A>
-	typename RedBlackTree<K, V, KV, C, A>::Const_Node_Ptr&
+	inline typename RedBlackTree<K, V, KV, C, A>::Const_Node_Ptr&
 	RedBlackTree<K, V, KV, C, A>::get_rightmost() const
 	throw()
 	{ return (header.right); }
 
 	template <class K, class V, class KV, class C, class A>
-	typename RedBlackTree<K, V, KV, C, A>::Link_type
+	inline typename RedBlackTree<K, V, KV, C, A>::Link_type
 	RedBlackTree<K, V, KV, C, A>::get_begin()
 	throw()
 	{ return (static_cast<Link_type>(header.parent)); }
 
 	template <class K, class V, class KV, class C, class A>
-	typename RedBlackTree<K, V, KV, C, A>::Const_Link_type
+	inline typename RedBlackTree<K, V, KV, C, A>::Const_Link_type
 	RedBlackTree<K, V, KV, C, A>::get_begin() const
 	throw()
 	{ return (static_cast<Const_Link_type>(header.parent)); }
 
 	template <class K, class V, class KV, class C, class A>
-	typename RedBlackTree<K, V, KV, C, A>::Node_ptr&
+	inline typename RedBlackTree<K, V, KV, C, A>::Node_ptr&
 	RedBlackTree<K, V, KV, C, A>::get_end()
 	throw()
 	{ return (&header); }
 
 	template <class K, class V, class KV, class C, class A>
-	typename RedBlackTree<K, V, KV, C, A>::Const_Node_Ptr&
+	inline typename RedBlackTree<K, V, KV, C, A>::Const_Node_Ptr&
 	RedBlackTree<K, V, KV, C, A>::get_end() const
 	throw()
 	{ return (&header); }
@@ -971,14 +970,14 @@ namespace FT_NAMESPACE
 	/////////////////////
 
 	template <class K, class V, class KV, class C, class A>
-	typename RedBlackTree<K, V, KV, C, A>::Link_type
+	inline typename RedBlackTree<K, V, KV, C, A>::Link_type
 	RedBlackTree<K, V, KV, C, A>::get_node()
 	throw(::std::bad_alloc)
 	{ return (memory.allocate(1ul)); }
 
 
 	template <class K, class V, class KV, class C, class A>
-	void
+	inline void
 	RedBlackTree<K, V, KV, C, A>::put_node(Link_type p)
 	throw()
 	{ memory.deallocate(p); }
@@ -993,7 +992,7 @@ namespace FT_NAMESPACE
 	 * 	Fast type + exeption tryer node constructor.
 	*/
 	template <class K, class V, class KV, class C, class A>
-	void
+	inline void
 	RedBlackTree<K, V, KV, C, A>::construct_node(Link_type target, const_reference value)
 	throw(::std::bad_alloc)
 	{
@@ -1014,7 +1013,7 @@ namespace FT_NAMESPACE
 	 *	@return A pointer to a node holding an constructed instance of @p value.
 	*/
 	template <class K, class V, class KV, class C, class A>
-	typename RedBlackTree<K, V, KV, C, A>::Link_type
+	inline typename RedBlackTree<K, V, KV, C, A>::Link_type
 	RedBlackTree<K, V, KV, C, A>::create_node(const_reference value)
 	throw(::std::bad_alloc)
 	{
@@ -1029,7 +1028,7 @@ namespace FT_NAMESPACE
 	 * 	@param p A pointer to the node where is the data to destroy.
 	*/
 	template <class K, class V, class KV, class C, class A>
-	void
+	inline void
 	RedBlackTree<K, V, KV, C, A>::destroy_node(Link_type p)
 	throw()
 	{ memory.destroy(p->Node_get_value_ptr()); }
@@ -1042,7 +1041,7 @@ namespace FT_NAMESPACE
 	 * 	Destroys the data holded and deallocate the node.
 	*/
 	template <class K, class V, class KV, class C, class A>
-	void
+	inline void
 	RedBlackTree<K, V, KV, C, A>::drop_node(Link_type p)
 	throw()
 	{
@@ -1061,7 +1060,7 @@ namespace FT_NAMESPACE
 	*/
 	template <class K, class V, class KV, class C, class A>
 	template <typename NodeGen>
-	typename RedBlackTree<K, V, KV, C, A>::Link_type
+	inline typename RedBlackTree<K, V, KV, C, A>::Link_type
 	RedBlackTree<K, V, KV, C, A>::clone_node(Const_Link_type src, NodeGen& node_gen)
 	throw()
 	{
@@ -1153,7 +1152,7 @@ namespace FT_NAMESPACE
 	}
 
 	template <class K, class V, class KV, class C, class A>
-	RedBlackTree<K, V, KV, C, A>::Link_type
+	inline typename RedBlackTree<K, V, KV, C, A>::Link_type
 	RedBlackTree<K, V, KV, C, A>::aux_copy(const RedBlackTree& src)
 	throw(::std::bad_alloc)
 	{
@@ -1749,7 +1748,7 @@ namespace FT_NAMESPACE
 	}
 
 	template <class K, class V, class KV, class C, class A>
-	typename RedBlackTree<K, V, KV, C, A>::iterator
+	inline typename RedBlackTree<K, V, KV, C, A>::iterator
 	RedBlackTree<K, V, KV, C, A>::aux_insert_unique(const_iterator pos, const_reference value)
 	throw(::std::bad_alloc)
 	{
@@ -1775,7 +1774,7 @@ namespace FT_NAMESPACE
 	}
 
 	template <class K, class V, class KV, class C, class A>
-	typename RedBlackTree<K, V, KV, C, A>::iterator
+	inline typename RedBlackTree<K, V, KV, C, A>::iterator
 	RedBlackTree<K, V, KV, C, A>::aux_insert_equal(const_iterator pos, const_reference value)
 	throw(::std::bad_alloc)
 	{
@@ -1785,7 +1784,7 @@ namespace FT_NAMESPACE
 
 	template <class K, class V, class KV, class C, class A>
 	template <typename InputIt>
-	void
+	inline void
 	RedBlackTree<K, V, KV, C, A>::aux_insert_range_unique(InputIt first, InputIt last)
 	throw(::std::bad_alloc)
 	{
@@ -1796,7 +1795,7 @@ namespace FT_NAMESPACE
 
 	template <class K, class V, class KV, class C, class A>
 	template <typename InputIt>
-	void
+	inline void
 	RedBlackTree<K, V, KV, C, A>::aux_insert_range_equal(InputIt first, InputIt last)
 	throw(::std::bad_alloc)
 	{
@@ -2159,7 +2158,7 @@ namespace FT_NAMESPACE
 	 * 	@return An iterator to the first position.
 	*/
 	template <class K, class V, class KV, class C, class A>
-	typename RedBlackTree<K, V, KV, C, A>::iterator
+	inline typename RedBlackTree<K, V, KV, C, A>::iterator
 	RedBlackTree<K, V, KV, C, A>::begin()
 	{ return (iterator(get_leftmost())); }
 
@@ -2169,7 +2168,7 @@ namespace FT_NAMESPACE
 	 * 	@return A const iterator to the first position.
 	*/
 	template <class K, class V, class KV, class C, class A>
-	RedBlackTree<K, V, KV, C, A>::const_iterator
+	inline typename RedBlackTree<K, V, KV, C, A>::const_iterator
 	begin() const
 	{ return (const_iterator(get_leftmost())); }
 
@@ -2179,7 +2178,7 @@ namespace FT_NAMESPACE
 	 * 	@return An iterator to the last position.
 	*/
 	template <class K, class V, class KV, class C, class A>
-	typename RedBlackTree<K, V, KV, C, A>::iterator
+	inline typename RedBlackTree<K, V, KV, C, A>::iterator
 	RedBlackTree<K, V, KV, C, A>::end()
 	{ return (iterator(&header)); }
 
@@ -2189,7 +2188,7 @@ namespace FT_NAMESPACE
 	 * 	@return A const iterator to the last position.
 	*/
 	template <class K, class V, class KV, class C, class A>
-	typename RedBlackTree<K, V, KV, C, A>::const_iterator
+	inline typename RedBlackTree<K, V, KV, C, A>::const_iterator
 	RedBlackTree<K, V, KV, C, A>::end() const
 	{ return (const_iterator(&header)); }
 
@@ -2199,10 +2198,9 @@ namespace FT_NAMESPACE
 	 * 	@return A reverse iterator to the last position.
 	*/
 	template <class K, class V, class KV, class C, class A>
-	reverse_iterator	rbegin()
-	{
-		return (reverse_iterator(end()));
-	}
+	inline typename RedBlackTree<K, V, KV, C, A>::reverse_iterator
+	RedBlackTree<K, V, KV, C, A>::rbegin()
+	{ return (reverse_iterator(end())); }
 
 	/**
 	 * 	@brief rbegin
@@ -2210,7 +2208,7 @@ namespace FT_NAMESPACE
 	 * 	@return A const reverse iterator to the last position.
 	*/
 	template <class K, class V, class KV, class C, class A>
-	typename RedBlackTree<K, V, KV, C, A>::const_reverse_iterator
+	inline typename RedBlackTree<K, V, KV, C, A>::const_reverse_iterator
 	RedBlackTree<K, V, KV, C, A>::rbegin() const
 	{ return (const_reverse_iterator(end())); }
 
@@ -2220,7 +2218,7 @@ namespace FT_NAMESPACE
 	 * 	@return A reverse iterator to the first position.
 	*/
 	template <class K, class V, class KV, class C, class A>
-	typename RedBlackTree<K, V, KV, C, A>::reverse_iterator
+	inline typename RedBlackTree<K, V, KV, C, A>::reverse_iterator
 	RedBlackTree<K, V, KV, C, A>::rend()
 	{ return (reverse_iterator(begin())); }
 
@@ -2230,7 +2228,7 @@ namespace FT_NAMESPACE
 	 * 	@return A const reverse iterator to the first position.
 	*/
 	template <class K, class V, class KV, class C, class A>
-	typename RedBlackTree<K, V, KV, C, A>::const_reverse_iterator
+	inline typename RedBlackTree<K, V, KV, C, A>::const_reverse_iterator
 	RedBlackTree<K, V, KV, C, A>::rend() const
 	{ return (const_reverse_iterator(begin())); }
 
@@ -2244,7 +2242,7 @@ namespace FT_NAMESPACE
 	 * 	@return True if the %RedBlackTree is empty.
 	*/
 	template <class K, class V, class KV, class C, class A>
-	bool
+	inline bool
 	RedBlackTree<K, V, KV, C, A>::empty() const
 	{ return (count == 0); }
 
@@ -2254,7 +2252,7 @@ namespace FT_NAMESPACE
 	 * 	@return The number of nodes holded by the %RBT.
 	*/
 	template <class K, class V, class KV, class C, class A>
-	typename RedBlackTree<K, V, KV, C, A>::size_type
+	inline typename RedBlackTree<K, V, KV, C, A>::size_type
 	RedBlackTree<K, V, KV, C, A>::size() const
 	{ return (count); }
 
@@ -2264,7 +2262,7 @@ namespace FT_NAMESPACE
 	 * 	@return The maximun number of elemens that %RBT can hold.
 	*/
 	template <class K, class V, class KV, class C, class A>
-	typename RedBlackTree<K, V, KV, C, A>::size_type
+	inline typename RedBlackTree<K, V, KV, C, A>::size_type
 	RedBlackTree<K, V, KV, C, A>::max_size() const
 	{ return (size_type(std::numeric_limits<size_type>::max() / sizeof(value_type))); }
 
@@ -2278,7 +2276,7 @@ namespace FT_NAMESPACE
 	 * 	Empty the %RBT.
 	*/
 	template <class K, class V, class KV, class C, class A>
-	void
+	inline void
 	RedBlackTree<K, V, KV, C, A>::clear()
 	{
 		aux_erase(begin());
@@ -2293,7 +2291,7 @@ namespace FT_NAMESPACE
 	 * 	Removes the values holded at @p pos.
 	*/
 	template <class K, class V, class KV, class C, class A>
-	void
+	inline void
 	RedBlackTree<K, V, KV, C, A>::erase(iterator pos)
 	{ aux_erase(pos); }
 
@@ -2305,7 +2303,7 @@ namespace FT_NAMESPACE
 	 * 	Removes the values holded at @p pos.
 	*/
 	template <class K, class V, class KV, class C, class A>
-	void
+	inline void
 	RedBlackTree<K, V, KV, C, A>::erase(const_iterator pos)
 	{ aux_erase(pos); }
 
@@ -2336,7 +2334,7 @@ namespace FT_NAMESPACE
 	 * 	Removes the values in range @p first - @p last.
 	*/
 	template <class K, class V, class KV, class C, class A>
-	void
+	inline void
 	RedBlackTree<K, V, KV, C, A>::erase(iterator first, iterator last)
 	{ aux_erase(first, last); }
 
@@ -2349,7 +2347,7 @@ namespace FT_NAMESPACE
 	 * 	Removes the values in range @p first - @p last.
 	*/
 	template <class K, class V, class KV, class C, class A>
-	void
+	inline void
 	RedBlackTree<K, V, KV, C, A>::erase(const_iterator first, const_iterator last)
 	{ aux_erase(first, last); }
 
@@ -2376,7 +2374,7 @@ namespace FT_NAMESPACE
 	 * 	@return The number of matches with the key @p k.
 	*/
 	template <class K, class V, class KV, class C, class A>
-	typename RedBlackTree<K, V, KV, C, A>::size_type
+	inline typename RedBlackTree<K, V, KV, C, A>::size_type
 	RedBlackTree<K, V, KV, C, A>::count(const key_type& k) const
 	{
 		std::pair<const_iterator, const_iterator> match = equal_range(k);
@@ -2520,22 +2518,22 @@ namespace FT_NAMESPACE
 	}
 
 	template <class K, class V, class KV, class C, class A>
-	typename RedBlackTree<K, V, KV, C, A>::iterator
+	inline typename RedBlackTree<K, V, KV, C, A>::iterator
 	RedBlackTree<K, V, KV, C, A>::lower_bound(const key_type& k)
 	{ return (aux_lower_bound(get_begin(), get_end(), k)); }
 
 	template <class K, class V, class KV, class C, class A>
-	typename RedBlackTree<K, V, KV, C, A>::const_iterator
+	inline typename RedBlackTree<K, V, KV, C, A>::const_iterator
 	RedBlackTree<K, V, KV, C, A>::lower_bound(const key_type& k) const
 	{ return (aux_lower_bound(get_begin(), get_end(), k)); }
 
 	template <class K, class V, class KV, class C, class A>
-	typename RedBlackTree<K, V, KV, C, A>::iterator
+	inline typename RedBlackTree<K, V, KV, C, A>::iterator
 	upper_bound(const key_type& k)
 	{ return (aux_upper_bound(get_begin(), get_end(), k)); }
 
 	template <class K, class V, class KV, class C, class A>
-	typename RedBlackTree<K, V, KV, C, A>::const_iterator
+	inline typename RedBlackTree<K, V, KV, C, A>::const_iterator
 	RedBlackTree<K, V, KV, C, A>::upper_bound(const key_type& k) const
 	{ return (aux_upper_bound(get_begin(), get_end(), k)); }
 
@@ -2549,7 +2547,7 @@ namespace FT_NAMESPACE
 	 * 	@return The %RedBlackTree key compare.
 	*/
 	template <class K, class V, class KV, class C, class A>
-	typename RedBlackTree<K, V, KV, C, A>::Compare
+	inline typename RedBlackTree<K, V, KV, C, A>::Compare
 	RedBlackTree<K, V, KV, C, A>::key_comp() const
 	{ return (key_compare); }
 
