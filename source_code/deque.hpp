@@ -97,21 +97,21 @@ namespace FT_NAMESPACE
 		deque_iterator(const_iterator& other);
 
 		/* Requires read/write iterators */
-		inline reference	operator*() const;
-		inline pointer		operator->();
+		reference				operator*() const;
+		pointer					operator->();
 
 		/* Requires forward iterators */
-		Self&				operator++();
-		Self				operator++(int);
+		Self&					operator++();
+		Self					operator++(int);
 
 		/* Requires bidirectional iterators */
-		Self&				operator--();
-		Self				operator--(int);
+		Self&					operator--();
+		Self					operator--(int);
 
 		/* Requires ramdom access iterators */
-		Self&				operator+=(difference_type n);
-		inline Self&		operator-=(difference_type n);
-		inline reference	operator[](difference_type n) const;
+		Self&					operator+=(difference_type n);
+		Self&					operator-=(difference_type n);
+		reference				operator[](difference_type n) const;
 
 		/* Non members */
 		friend bool				operator==(const Self&, const Self&);
@@ -139,7 +139,7 @@ namespace FT_NAMESPACE
 	*/
 	template <class T, typename Ref_T, typename Ptr_T>
 	typename deque_iterator<T, Ref_T, Ptr_T>::size_type
-	deque_iterator<T, Ref_T, Ptr_T>::get_node_size()
+	inline deque_iterator<T, Ref_T, Ptr_T>::get_node_size()
 	throw()
 	{ return (FT_DEQUE_BUFF_SIZE(sizeof(value_type)); }
 
@@ -152,7 +152,7 @@ namespace FT_NAMESPACE
 	 * 	execpt @c curr.
 	*/
 	template <class T, typename Ref_T, typename Ptr_T>
-	void
+	inline void
 	deque_iterator<T, Ref_T, Ptr_T>::it_change_node(Map_ptr new_node)
 	throw()
 	{
@@ -201,12 +201,12 @@ namespace FT_NAMESPACE
 	 * 	@brief deque_iterator overload operators
 	*/
 	template <class T, typename Ref_T, typename Ptr_T>
-	typename deque_iterator<T, Ref_T, Ptr_T>::reference
+	inline typename deque_iterator<T, Ref_T, Ptr_T>::reference
 	deque_iterator<T, Ref_T, Ptr_T>::operator*() const
 	{ return (*curr); }
 
 	template <class T, typename Ref_T, typename Ptr_T>
-	typename deque_iterator<T, Ref_T, Ptr_T>::pointer
+	inline typename deque_iterator<T, Ref_T, Ptr_T>::pointer
 	deque_iterator<T, Ref_T, Ptr_T>::operator->()
 	{ return (curr); }
 
@@ -215,7 +215,7 @@ namespace FT_NAMESPACE
 	////////////////////////////////
 
 	template <class T, typename Ref_T, typename Ptr_T>
-	typename deque_iterator<T, Ref_T, Ptr_T>::Self&
+	inline typename deque_iterator<T, Ref_T, Ptr_T>::Self&
 	deque_iterator<T, Ref_T, Ptr_T>::operator++()
 	{
 		if (++curr == tail)
@@ -227,7 +227,7 @@ namespace FT_NAMESPACE
 	}
 
 	template <class T, typename Ref_T, typename Ptr_T>
-	typename deque_iterator<T, Ref_T, Ptr_T>::Self
+	inline typename deque_iterator<T, Ref_T, Ptr_T>::Self
 	deque_iterator<T, Ref_T, Ptr_T>::operator++(int)
 	{
 		Self tmp = *this;
@@ -240,7 +240,7 @@ namespace FT_NAMESPACE
 	//////////////////////////////////////
 
 	template <class T, typename Ref_T, typename Ptr_T>
-	typename deque_iterator<T, Ref_T, Ptr_T>::Self&
+	inline typename deque_iterator<T, Ref_T, Ptr_T>::Self&
 	deque_iterator<T, Ref_T, Ptr_T>::operator--()
 	{
 		if (--curr == tail)
@@ -252,7 +252,7 @@ namespace FT_NAMESPACE
 	}
 
 	template <class T, typename Ref_T, typename Ptr_T>
-	typename deque_iterator<T, Ref_T, Ptr_T>::Self
+	inline typename deque_iterator<T, Ref_T, Ptr_T>::Self
 	deque_iterator<T, Ref_T, Ptr_T>::operator--(int)
 	{
 		Self tmp = *this;
@@ -287,7 +287,7 @@ namespace FT_NAMESPACE
 	}
 
 	template <class T, typename Ref_T, typename Ptr_T>
-	typename deque_iterator<T, Ref_T, Ptr_T>::Self&
+	inline typename deque_iterator<T, Ref_T, Ptr_T>::Self&
 	deque_iterator<T, Ref_T, Ptr_T>::operator-=(difference_type n)
 	{ return (*this -= -n ); }
 
@@ -506,13 +506,13 @@ namespace FT_NAMESPACE
 		deque_algorithm(const allocator_type& alloc);
 
 		/* Memory handlers */
-		inline pointer	alg_allocate_node() throw(std::bad_alloc);
-		inline void		alg_deallocate_node(pointer p) throw();
-		inline pointer	alg_allocate_map(size_type n) throw(std::bad_alloc);
-		inline void		alg_deallocate_map(pointer p, size_type n) throw();
-		inline void		alg_destroy_nodes(Map_ptr first, Map_ptr last) throw();
-		void			alg_create_nodes(Map_ptr first, Map_ptr last) throw(std::bad_alloc);
-		void			alg_init_map(size_type n) throw(std::bad_alloc);
+		pointer		alg_allocate_node() throw(std::bad_alloc);
+		void		alg_deallocate_node(pointer p) throw();
+		pointer		alg_allocate_map(size_type n) throw(std::bad_alloc);
+		void		alg_deallocate_map(pointer p, size_type n) throw();
+		void		alg_destroy_nodes(Map_ptr first, Map_ptr last) throw();
+		void		alg_create_nodes(Map_ptr first, Map_ptr last) throw(std::bad_alloc);
+		void		alg_init_map(size_type n) throw(std::bad_alloc);
 	};
 
 	/**
@@ -528,15 +528,19 @@ namespace FT_NAMESPACE
 	: head(), tail(), map(), map_size(), memory(alloc)
 	{ }
 
+	/////////////////////
+	// Memory handlers //
+	/////////////////////
+
 	/**
 	 * 	@brief Allocate node
 	 * 
 	 * 	Fast use of allocator.
 	*/
 	template <class T, class Allocator>
-	typename deque_algorithm<T, Allocator>::pointer
+	inline typename deque_algorithm<T, Allocator>::pointer
 	deque_algorithm<T, Allocator>::alg_allocate_node()
-	throw(std::bad_alloc)
+	throw(::std::bad_alloc)
 	{ return (memory.allocate(get_node_size())) }
 
 	/**
@@ -545,7 +549,7 @@ namespace FT_NAMESPACE
 	 * 	Fast use deallocator
 	*/
 	template <class T, class Allocator>
-	void
+	inline void
 	deque_algorithm<T, Allocator>::alg_deallocate_node(pointer p)
 	throw()
 	{ memory.deallocate(p, get_node_size()); }
@@ -556,9 +560,9 @@ namespace FT_NAMESPACE
 	 * 	Fast use of allocator.
 	*/
 	template <class T, class Allocator>
-	typename deque_algorithm<T, Allocator>::pointer
+	inline typename deque_algorithm<T, Allocator>::pointer
 	deque_algorithm<T, Allocator>::alg_allocate_map(size_type n)
-	throw(std::bad_alloc)
+	throw(::std::bad_alloc)
 	{ return (memory.allocate(n)); }
 
 	/**
@@ -567,7 +571,7 @@ namespace FT_NAMESPACE
 	 * 	Fast use deallocator
 	*/
 	template <class T, class Allocator>
-	void
+	inline void
 	deque_algorithm<T, Allocator>::alg_deallocate_map(pointer p, size_type n)
 	throw()
 	{ memory.deallocate(p, n); }
@@ -581,7 +585,7 @@ namespace FT_NAMESPACE
 	 * 	Deallocates the nodes in range @p first - @p last.
 	*/
 	template <class T, class Allocator>
-	void
+	inline void
 	deque_algorithm<T, Allocator>::alg_destroy_nodes(Map_ptr first, Map_ptr last)
 	throw()
 	{
@@ -602,7 +606,7 @@ namespace FT_NAMESPACE
 	template <class T, class Allocator>
 	void
 	deque_algorithm<T, Allocator>::alg_create_nodes(Map_ptr first, Map_ptr last)
-	throw(std::bad_alloc)
+	throw(::std::bad_alloc)
 	{
 		Map_ptr	curr;
 
@@ -625,7 +629,7 @@ namespace FT_NAMESPACE
 	template <class T, class Allocator>
 	void
 	deque_algorithm<T, Allocator>::alg_init_map(size_type n)
-	throw(std::bad_alloc)
+	throw(::std::bad_alloc)
 	{
 		const size_type		num_nodes = (n / get_node_size()) + 1;
 
@@ -699,10 +703,14 @@ namespace FT_NAMESPACE
 		typedef typename Base::const_reference	const_reference;
 		typedef value_type*						pointer;
 		typedef typename Base::const_pointer	const_pointer;
+
 		typedef typename Base::iterator			iterator;
 		typedef typename Base::const_iterator	const_iterator;
-		typedef reverse_iterator<iterator>			reverse_iterator;
+
 		typedef reverse_iterator<const_iterator>	const_reverse_iterator;
+		typedef reverse_iterator<iterator>			reverse_iterator;
+		
+		/* Import fast typing Base members */
 
 		using iterator::get_node_size;
 		using Base::alg_allocate_node;
@@ -723,544 +731,642 @@ namespace FT_NAMESPACE
 
 		private:
 
-		/**
-		 * 	@brief destruct node in range
-		 * 
-		 * 	@param first A pointer to T.
-		 * 	@param last A pointer to T.
-		 * 
-		 * 	Destructs elements in a node range @p first - @p last.
-		*/
-		static void		dq_destroy_node_in_range(Node_ptr first, Node_ptr last)
-		{
-			for (Node_ptr i = first ; i < last ; i++)
-				memory.destroy(i);
-		}
+		void		dq_destroy_node_in_range(Node_ptr first, Node_ptr last) throw();
+		void		dq_destroy_node(Node_ptr target) throw();
+		void		dq_destroy_in_range(iterator first, iterator last) throw();
 
-		/**
-		 * 	@brief destruct and deallocate a node
-		 * 
-		 * 	@param target The node that each element will be destroyed.
-		*/
-		static void		dq_destroy_node(Node_ptr target)
-		{
-			dq_destroy_node_in_range(target, Node_ptr(target + get_node_size()));
-			alg_deallocate_node(target);
-		}
-
-		/**
-		 * 	@brief destroy in range
-		 * 
-		 * 	@param firts An %iterator.
-		 * 	@param last An %interator.
-		 * 
-		 * 	Destroys whatever is between @p first and @p last.
-		*/
-		static void		dq_destroy_in_range(iterator first, iterator last)
-		{
-			/* Destroy all nodes except the edges */
-			for (Map_ptr i = first.node + 1 ; i < last.node ; i++)
-				dq_destroy_node(*i);
-			/* Destroy the remaining ranges in the edges:
-				- first.curr - firts.tail
-				- last.head - last.curr */
-			if (first.node != last.node)
-			{
-				dq_destroy_node_in_range(first.curr, first.tail);
-				alg_deallocate_node(first);
-				dq_destroy_node_in_range(last.head, last.curr);
-				alg_deallocate_node(last);
-			}
-			else
-			{
-				dq_destroy_node_in_range(first.curr, last.curr);
-				alg_deallocate_node(first);
-			}
-		}
+		/* Member functions */
 
 		public:
-		/**
-		 * 	@brief Default Constructor
-		*/
-		deque() { }
 
-		/**
-		 * 	@brief Constructor
-		 * 
-		 * 	@param n The number of elements holded by the %deque.
-		 * 	@param value The default value of each element.
-		 * 	@param alloc An allocator type.
-		*/
-		explicit deque(size_type n, const_reference value = value_type(), const allocator_type& alloc = allocator_type())
-		: Base(alloc)
-		{
-			alg_init_map(n);
-			assign(head, tail, value); // TO DO: Use it if it definition of assign exist
-		}
-
-		/**
-		 * 	@brief Copy Constructor
-		 *
-		 * @param other A %deque with same T of @c *this.
-		*/
-		deque(const deque& other) : base(other.memory)
-		{
-			alg_init_map(other.size()); // Or capacity ?
-			assign(other.begin(), other.end());
-		}
-
-		/**
-		 * 	@brief Range Constructor
-		 * 
-		 * 	@tparam InputIt An input iterator.
-		 * 	@param first An InputIt.
-		 * 	@param end An InputIt
-		 * 	@param Alloc An allocator type.
-		 * 
-		 * 	Init a deque with the values holded in range @p first - @p last.
-		*/
+		deque();
+		explicit deque(size_type n, const_reference value = value_type(), const allocator_type& alloc = allocator_type());
+		deque(const deque& other);
 		template <typename InputIt>
-		deque(InputIt first, InputIt last, const allocator_type) : Base(alloc)
-		{
-			assign(first, last);
-		}
-
-		/**
-		 * @brief Destructor
-		*/
-		deque()
-		{
-			dq_destroy_in_range(begin(), end());
-		}
-
-		/**
-		 * 	@brief operator=
-		 * 
-		 * 	@param other A deque.
-		 * 	@return @c *this.
-		*/
-		deque& 			operator=(const deque& other)
-		{
-			dq_destroy_in_range(begin(), end());
-			// copy form copy constructor
-			alg_init_map(other.size()); // Or capacity ?
-			assign(other.begin(), other.end());
-		}
-
-		/**
-		 * 	@brief assign
-		 * 
-		 * 	@tparam InputIt An input iterator.
-		 * 	@param first An InputIt.
-		 * 	@param last An InputIt.
-		 * 
-		 * 	Fills the copy with elements in range @p first - @p last.
-		*/
+		deque(InputIt first, InputIt last, const allocator_type);
+		~deque();
+		deque& 					operator=(const deque& other);
 		template <typename InputIt>
-		void				assign(InputIt first, InputIt last)
+		void					assign(InputIt first, InputIt last);
+
+		/* Element access */
+		reference				operator[](size_type n);
+		const_reference			operator[](size_type n) const;
+		reference				at(size_type n);
+		const_reference			at(size_type n) const;
+		reference				front();
+		const_reference			front() const;
+		reference				back();
+		const_reference			back() const;
+
+		/* Iterators */
+		iterator				begin();
+		const_iterator			begin() const;
+		iterator				end();
+		const_iterator			end() const;
+		reverse_iterator		rbegin();
+		const_reverse_iterator	rbegin() const;
+		reverse_iterator		rend():
+		const_reverse_iterator	rend() const;
+
+		/* Capacity */
+		size_type				size() const;
+		size_type				max_size() const;
+		void					resize(size_type new_size, const_reference value = value_type());
+		bool					empty() const;
+
+		/* Modifiers */
+		void					push_front(const_reference x);
+		void					push_back(const_reference x);
+		void					pop_front();
+		void					pop_back();
+		iterator				insert(const_iterator pos, const_reference value);
+		void					insert(const_iterator pos, value_type amount, const_reference value);
+		template <typename InputIt>
+		iterator				insert(const_iterator pos, InputIt first, InputIt last);
+		iterator				erase(iterator pos);
+		iterator				erase(iterator first, iterator last);
+		void					swap(const deque& other);
+	};
+
+	///////////////////////////////
+	// Auxiliar member functions //
+	///////////////////////////////
+
+	/**
+	 * 	@brief destruct node in range
+	 * 
+	 * 	@param first A pointer to T.
+	 * 	@param last A pointer to T.
+	 * 
+	 * 	Destructs elements in a node range @p first - @p last.
+	*/
+	template <class T, class Allocator>
+	inline void
+	deque<T, Allocator>::dq_destroy_node_in_range(Node_ptr first, Node_ptr last)
+	throw()
+	{
+		for (Node_ptr i = first ; i < last ; i++)
+			memory.destroy(i);
+	}
+
+	/**
+	 * 	@brief destruct and deallocate a node
+	 * 
+	 * 	@param target The node that each element will be destroyed.
+	*/
+	template <class T, class Allocator>
+	inline void
+	deque<T, Allocator>::dq_destroy_node(Node_ptr target)
+	throw()
+	{
+		dq_destroy_node_in_range(target, Node_ptr(target + get_node_size()));
+		alg_deallocate_node(target);
+	}
+
+	/**
+	 * 	@brief destroy in range
+	 * 
+	 * 	@param firts An %iterator.
+	 * 	@param last An %interator.
+	 * 
+	 * 	Destroys whatever is between @p first and @p last.
+	*/
+	template <class T, class Allocator>
+	void
+	deque<T, Allocator>::dq_destroy_in_range(iterator first, iterator last)
+	throw()
+	{
+		/* Destroy all nodes except the edges */
+		for (Map_ptr i = first.node + 1 ; i < last.node ; i++)
+			dq_destroy_node(*i);
+		/* Destroy the remaining ranges in the edges:
+			- first.curr - firts.tail
+			- last.head - last.curr */
+		if (first.node != last.node)
 		{
-			// TO DO:
+			dq_destroy_node_in_range(first.curr, first.tail);
+			alg_deallocate_node(first);
+			dq_destroy_node_in_range(last.head, last.curr);
+			alg_deallocate_node(last);
+		}
+		else
+		{
+			dq_destroy_node_in_range(first.curr, last.curr);
+			alg_deallocate_node(first);
+		}
+	}
 
-			/*
-			 1) Need the number of nodes between first and last
+	//////////////////////
+	// Member functions //
+	//////////////////////
 
-			 const size_type s = last - first // need it ?
+	/**
+	 * 	@brief Default Constructor
+	*/
+	template <class T, class Allocator>
+	deque<T, Allocator>::deque()
+	{ }
+
+	/**
+	 * 	@brief Constructor
+	 * 
+	 * 	@param n The number of elements holded by the %deque.
+	 * 	@param value The default value of each element.
+	 * 	@param alloc An allocator type.
+	*/
+	template <class T, class Allocator>
+	deque<T, Allocator>::deque(size_type n, const_reference value = value_type(), const allocator_type& alloc)
+	: Base(alloc)
+	{
+		alg_init_map(n);
+		assign(head, tail, value); // TO DO: Use it if it definition of assign exist
+	}
+
+	/**
+	 * 	@brief Copy Constructor
+	 *
+	 * @param other A %deque with same T of @c *this.
+	*/
+	template <class T, class Allocator>
+	deque<T, Allocator>::deque(const deque& other)
+	: base(other.memory)
+	{
+		alg_init_map(other.size()); // Or capacity ?
+		assign(other.begin(), other.end());
+	}
+
+	/**
+	 * 	@brief Range Constructor
+	 * 
+	 * 	@tparam InputIt An input iterator.
+	 * 	@param first An InputIt.
+	 * 	@param end An InputIt
+	 * 	@param Alloc An allocator type.
+	 * 
+	 * 	Init a deque with the values holded in range @p first - @p last.
+	*/
+	template <class T, class Allocator>
+	template <typename InputIt>
+	deque<T, Allocator>::deque(InputIt first, InputIt last, const allocator_type)
+	: Base(alloc)
+	{ assign(first, last); }
+
+	/**
+	 * @brief Destructor
+	*/
+	template <class T, class Allocator>
+	deque<T, Allocator>::~deque()
+	{ dq_destroy_in_range(begin(), end()); }
+
+	/**
+	 * 	@brief operator=
+	 * 
+	 * 	@param other A deque.
+	 * 	@return @c *this.
+	*/
+	template <class T, class Allocator>
+	deque<T, Allocator>&
+	deque<T, Allocator>::operator=(const deque& other)
+	{
+		dq_destroy_in_range(begin(), end());
+		// copy form copy constructor
+		alg_init_map(other.size()); // Or capacity ?
+		assign(other.begin(), other.end());
+	}
+
+	/**
+	 * 	@brief assign
+	 * 
+	 * 	@tparam InputIt An input iterator.
+	 * 	@param first An InputIt.
+	 * 	@param last An InputIt.
+	 * 
+	 * 	Fills the copy with elements in range @p first - @p last.
+	*/
+	template <class T, class Allocator>
+	template <typename InputIt>
+	void
+	deque<T, Allocator>::assign(InputIt first, InputIt last)
+	{
+		// TO DO:
+
+		/*
+		 1) Need the number of nodes between first and last
+
+		 const size_type s = last - first // need it ?
 			 
-			 2 ) for (node = first ; node < last ; node ++) // Map_ptr
-			 		{
-						for (__node = *node ; __node < get_node_size() ; __node++) // Node_ptr
-							memory.construct(__node, node)
-					}
+		 2 ) for (node = first ; node < last ; node ++) // Map_ptr
+		 		{
+					for (__node = *node ; __node < get_node_size() ; __node++) // Node_ptr
+						memory.construct(__node, node)
+				}
 			
-			Notes: - Do it using function no scracth code
-					- First and Last node are spetial remember (do like dq_destroy_in_range)
-			*/
-		}
-
-		/**
-		 * 	@brief begin
-		 * 
-		 * 	@return An iterator to the first element in the %deque.
+		Notes: - Do it using function no scracth code
+				- First and Last node are spetial remember (do like dq_destroy_in_range)
 		*/
-		iterator		begin()
-		{
-			return (head);
-		}
+	}
 
-		/**
-		 * 	@brief begin
-		 * 
-		 * 	@return A const iterator to the first element in the %deque.
+	////////////////////
+	// Element access //
+	////////////////////
+
+	/**
+	 * 	@brief operator[]
+	 * 
+	 * 	@param n An index
+	 * 
+	 * 	@return A reference to the value indexed at @p n.
+	*/
+	template <class T, class Allocator>
+	inline typename deque<T, Allocator>::reference
+	deque<T, Allocator>::operator[](size_type n)
+	{ return (head[difference_type(n)]); }
+
+	/**
+	 * 	@brief operator[]
+	 * 
+	 * 	@param n An index
+	 * 
+	 * 	@return A const reference to the value indexed at @p n.
+	*/
+	template <class T, class Allocator>
+	inline typename deque<T, Allocator>::const_reference
+	deque<T, Allocator>::operator[](size_type n) const
+	{ return (head[difference_type(n)]); }
+
+	/**
+	 * 	@brief at
+	 * 
+	 * 	@param n An index
+	 * 
+	 * 	@return A reference to the value indexed at @p n.
+	 * 	@throw std::out_of_range if @p n > @c this->size().
+	*/
+	template <class T, class Allocator>
+	inline typename deque<T, Allocator>::reference
+	deque<T, Allocator>::at(size_type n)
+	{
+		if (n > size())
+			throw std::out_of_range(std::string("deque::_M_range_check: __n "
+			       "(which is %zu)>= this->size() "
+			       "(which is %zu)"), n, size()); // TO DO: Need a printf
+		return (head[difference_type(n)]);
+	}
+
+	/**
+	 * 	@brief at
+	 * 
+	 * 	@param n An index
+	 * 
+	 * 	@return A const reference to the value indexed at @p n.
+	 * 	@throw std::out_of_range if @p n > @c this->size().
+	*/
+	template <class T, class Allocator>
+	inline typename deque<T, Allocator>::const_reference
+	deque<T, Allocator>::at(size_type n) const
+	{
+		if (n > size())
+			throw std::out_of_range(std::string("deque::_M_range_check: __n "
+			       "(which is %zu)>= this->size() "
+			       "(which is %zu)"), n, size()); // TO DO: Need a printf
+		return (head[difference_type(n)]);
+	}
+
+	/**
+	 * 	@brief front
+	 * 
+	 * 	@return A reference to the first element in the %deque.
+	*/
+	template <class T, class Allocator>
+	inline typename deque<T, Allocator>::reference
+	deque<T, Allocator>::front()
+	{ return (reference(*begin())); }
+
+	/**
+	 * 	@brief front
+	 * 
+	 * 	@return A const reference to the first element in the %deque.
+	*/
+	template <class T, class Allocator>
+	inline typename deque<T, Allocator>::const_reference
+	deque<T, Allocator>::front() const
+	{ return (const_reference(*begin())); }
+
+	/**
+	 * 	@brief back
+	 * 
+	 * 	@return A reference to the last element in the %deque.
+	*/
+	template <class T, class Allocator>
+	inline typename deque<T, Allocator>::reference
+	deque<T, Allocator>::back()
+	{ return (reference(*--end())); }
+
+	/**
+	 * 	@brief back
+	 * 
+	 * 	@return A const reference to the last element in the %deque.
+	*/
+	template <class T, class Allocator>
+	inline typename deque<T, Allocator>::const_reference
+	deque<T, Allocator>::back() const
+	{ return (const_reference(*--end())); }
+
+	///////////////
+	// Iterators //
+	///////////////
+
+	/**
+	 * 	@brief begin
+	 * 
+	 * 	@return An iterator to the first element in the %deque.
+	*/
+	template <class T, class Allocator>
+	inline typename deque<T, Allocator>::iterator
+	deque<T, Allocator>::begin()
+	{ return (head); }
+
+	/**
+	 * 	@brief begin
+	 * 
+	 * 	@return A const iterator to the first element in the %deque.
+	*/
+	template <class T, class Allocator>
+	inline typename deque<T, Allocator>::const_iterator
+	deque<T, Allocator>::begin() const
+	{ return (head); }
+
+	/**
+	 * 	@brief end
+	 * 
+	 * 	@return An iterator to the last element in the %deque.
+	*/
+	template <class T, class Allocator>
+	inline typename deque<T, Allocator>::iterator
+	deque<T, Allocator>::end()
+	{ return (tail); }
+
+	/**
+	 * 	@brief end
+	 * 
+	 * 	@return A const iterator to the last element in the %deque.
+	*/
+	template <class T, class Allocator>
+	inline typename deque<T, Allocator>::const_iterator
+	deque<T, Allocator>::end() const
+	{ return (tail); }
+
+	/**
+	 * 	@brief rbegin
+	 * 
+	 * 	@return A reverse iterator to the first element in the %deque.
+	*/
+	template <class T, class Allocator>
+	inline typename deque<T, Allocator>::reverse_iterator
+	deque<T, Allocator>::rbegin()
+	{ return (reverse_iterator(end() - 1)); }
+
+	/**
+	 * 	@brief rbegin
+	 * 
+	 * 	@return A const reverse iterator to the first element in the %deque.
+	*/
+	template <class T, class Allocator>
+	inline typename deque<T, Allocator>::const_reverse_iterator
+	deque<T, Allocator>::rbegin() const
+	{ return (const_reverse_iterator(end() - 1)); }
+
+	/**
+	 * 	@brief rend
+	 * 
+	 * 	@return A reverse iterator to the last element in the %deque.
+	*/
+	template <class T, class Allocator>
+	inline typename deque<T, Allocator>::reverse_iterator
+	deque<T, Allocator>::rend()
+	{ return (reverse_iterator(begin())); }
+
+	/**
+	 * 	@brief rend
+	 * 
+	 * 	@return A const reverse iterator to the last element in the %deque.
+	*/
+	template <class T, class Allocator>
+	inline typename deque<T, Allocator>::const_reverse_iterator
+	deque<T, Allocator>::rend() const
+	{ return (const_reverse_iterator(begin())); }
+
+	//////////////
+	// Capacity //
+	//////////////
+
+	/**
+	 * 	@brief size
+	 * 
+	 * 	@return The current number of element holded by the %deque.
+	*/
+	template <class T, class Allocator>
+	inline typename deque<T, Allocator>::size_type
+	deque<T, Allocator>::size() const
+	{ return (size_type(tail - head)); }
+
+	/**
+	 * 	@brief max size
+	 * 
+	 * 	@return The maximun amount of element that the %deque can hold.
+	*/
+	template <class T, class Allocator>
+	inline typename deque<T, Allocator>::size_type
+	deque<T, Allocator>::max_size() const
+	{ return (size_type(std::numeric_limits<size_type>::max() / sizeof(value_type))); }
+
+	/**
+	 * 	@brief resize
+	 * 
+	 * 	@param new_size The new size.
+	 * 	@param value A T type value.
+	 * 
+	 * 	Change the size of the %deque.
+	 * 	Note: if @p new_size > @c this->size() the new elements are itialised with @a value.
+	*/
+	template <class T, class Allocator>
+	void
+	deque<T, Allocator>::resize(size_type new_size, const_reference value)
+	{
+		// TO DO:
+
+		/*
+			if (new cap > size())
+				append value elems
+			else
+				remove_elems
 		*/
-		const_iterator	begin() const
+	}
+
+	/**
+	 * 	@brief empty
+	 * 
+	 * 	@return True if the @c *this is empty.
+	*/
+	template <class T, class Allocator>
+	inline bool
+	deque<T, Allocator>::empty() const
+	{ return (begin() == end()); }
+
+	///////////////
+	// Modifiers //
+	///////////////
+
+	/**
+	 * 	@brief push front
+	 * 
+	 *	@param x A T element.
+	 *
+	 * 	Prepend @p x.
+	*/
+	template <class T, class Allocator>
+	inline void
+	deque<T, Allocator>::push_front(const_reference x)
+	{
+		if (head.curr == head.head)
 		{
-			return (head);
+			// TO DO: Resize front ?
+			// To check
 		}
+		else
+			memory.construct(head.curr - 1, x);
+		head.curr--;
+	}
 
-		/**
-		 * 	@brief end
-		 * 
-		 * 	@return An iterator to the last element in the %deque.
-		*/
-		iterator		end()
+	/**
+	 * 	@brief push back
+	 * 
+	 *	@param x A T element.
+	 *
+	 * 	Append @p x.
+	*/
+	template <class T, class Allocator>
+	inline void
+	deque<T, Allocator>::push_back(const_reference x)
+	{
+		if (tail.curr == tail.tail - 1)
+			resize(size_type(size() * 2)); // DO TO: The amount of bytes each time i resize
+		memory.construct(tail.curr++, x);
+	}
+
+	/**
+	 * 	@brief pop front
+	 * 
+	 * 	@removes the first element.
+	*/
+	template <class T, class Allocator>
+	inline void
+	deque<T, Allocator>::pop_front()
+	{
+		if (!empty())
 		{
-			return (tail);
-		}
-
-		/**
-		 * 	@brief end
-		 * 
-		 * 	@return A const iterator to the last element in the %deque.
-		*/
-		const_iterator			end() const
-		{
-			return (tail);
-		}
-
-		/**
-		 * 	@brief rbegin
-		 * 
-		 * 	@return A reverse iterator to the first element in the %deque.
-		*/
-		reverse_iterator		rbegin()
-		{
-			return (reverse_iterator(end() - 1));
-		}
-
-		/**
-		 * 	@brief rbegin
-		 * 
-		 * 	@return A const reverse iterator to the first element in the %deque.
-		*/
-		const_reverse_iterator	rbegin() const
-		{
-			return (const_reverse_iterator(end() - 1));
-		}
-
-		/**
-		 * 	@brief rend
-		 * 
-		 * 	@return A reverse iterator to the last element in the %deque.
-		*/
-		reverse_iterator		rend()
-		{
-			return (reverse_iterator(begin()));
-		}
-
-		/**
-		 * 	@brief rend
-		 * 
-		 * 	@return A const reverse iterator to the last element in the %deque.
-		*/
-		const_reverse_iterator	rend() const
-		{
-			return (const_reverse_iterator(begin()));
-		}
-
-		/**
-		 * 	@brief size
-		 * 
-		 * 	@return The current number of element holded by the %deque.
-		*/
-		size_type		size() const
-		{
-			return (size_type(tail - head));
-		}
-
-		/**
-		 * 	@brief max size
-		 * 
-		 * 	@return The maximun amount of element that the %deque can hold.
-		*/
-		size_type		max_size() const
-		{
-			return (size_type(std::numeric_limits<size_type>::max() / sizeof(value_type)));
-		}
-
-		/**
-		 * 	@brief resize
-		 * 
-		 * 	@param new_size The new size.
-		 * 
-		 * 	Change the size of the %deque.
-		 * 	Note: if @p new_size > @c this->size() the new elements are unitialised.
-		*/
-		void			resize(size_type new_size)
-		{
-			// TO DO:
-
-			/*
-				if (new cap > size())
-					append unititilised elems
-				else
-					remove_elems
-			*/
-		}
-
-		/**
-		 * 	@brief resize
-		 * 
-		 * 	@param new_size The new size.
-		 * 	@param value A T type value.
-		 * 
-		 * 	Change the size of the %deque.
-		 * 	Note: if @p new_size > @c this->size() the new elements are itialised with @a value.
-		*/
-		void			resize(size_type new_size, const_reference value = value_type())
-		{
-			// TO DO:
-
-			/*
-				if (new cap > size())
-					append value elems
-				else
-					remove_elems
-			*/
-		}
-
-		/**
-		 * 	@brief empty
-		 * 
-		 * 	@return True if the @c *this is empty.
-		*/
-		bool			empty() const
-		{
-			return (begin() == end());
-		}
-
-		/**
-		 * 	@brief operator[]
-		 * 
-		 * 	@param n An index
-		 * 
-		 * 	@return A reference to the value indexed at @p n.
-		*/
-		reference		operator[](size_type n)
-		{
-			return (head[difference_type(n)]);
-		}
-
-		/**
-		 * 	@brief operator[]
-		 * 
-		 * 	@param n An index
-		 * 
-		 * 	@return A const reference to the value indexed at @p n.
-		*/
-		const_reference		operator[](size_type n)
-		{
-			return (head[difference_type(n)]);
-		}
-
-		/**
-		 * 	@brief at
-		 * 
-		 * 	@param n An index
-		 * 
-		 * 	@return A reference to the value indexed at @p n.
-		 * 	@throw std::out_of_range if @p n > @c this->size().
-		*/
-		reference		at(size_type n)
-		{
-			if (n > size())
-				throw std::out_of_range(std::string("deque::_M_range_check: __n "
-				       "(which is %zu)>= this->size() "
-				       "(which is %zu)"), n, size()); // TO DO: Need a printf
-			return (head[difference_type(n)]);
-		}
-
-		/**
-		 * 	@brief at
-		 * 
-		 * 	@param n An index
-		 * 
-		 * 	@return A const reference to the value indexed at @p n.
-		 * 	@throw std::out_of_range if @p n > @c this->size().
-		*/
-		const_reference		at(size_type n)
-		{
-			if (n > size())
-				throw std::out_of_range(std::string("deque::_M_range_check: __n "
-				       "(which is %zu)>= this->size() "
-				       "(which is %zu)"), n, size()); // TO DO: Need a printf
-			return (head[difference_type(n)]);
-		}
-
-		/**
-		 * 	@brief front
-		 * 
-		 * 	@return A reference to the first element in the %deque.
-		*/
-		reference			front()
-		{
-			return (reference(*begin()));
-		}
-
-		/**
-		 * 	@brief front
-		 * 
-		 * 	@return A const reference to the first element in the %deque.
-		*/
-		const_reference		front() const
-		{
-			return (const_reference(*begin()));
-		}
-
-		/**
-		 * 	@brief back
-		 * 
-		 * 	@return A reference to the last element in the %deque.
-		*/
-		reference			back()
-		{
-			return (reference(*--end()));
-		}
-
-		/**
-		 * 	@brief back
-		 * 
-		 * 	@return A const reference to the last element in the %deque.
-		*/
-		const_reference		back() const
-		{
-			return (const_reference(*--end()));
-		}
-
-		/**
-		 * 	@brief push front
-		 * 
-		 *	@param x A T element.
-		 *
-		 * 	Prepend @p x.
-		*/
-		void				push_front(const_reference x)
-		{
-			if (head.curr == head.head)
+			if (head.curr == head.tail - 1)
 			{
-				// TO DO: Resize front ?
-				// To check
+				// Check this tail - 1 is the first element ?
 			}
 			else
-				memory.construct(head.curr - 1, x);
-			head.curr--;
+				memory.destroy(head.curr++);
 		}
+	}
 
-		/**
-		 * 	@brief push back
-		 * 
-		 *	@param x A T element.
-		 *
-		 * 	Append @p x.
-		*/
-		void				push_back(const_reference x)
+	/**
+	 * 	@brief pop back
+	 * 
+	 * 	@removes the first element.
+	*/
+	template <class T, class Allocator>
+	inline void
+	deque<T, Allocator>::pop_back()
+	{
+		if (!empty())
 		{
-			if (tail.curr == tail.tail - 1)
-				resize(size_type(size() * 2)); // DO TO: The amount of bytes each time i resize
-			memory.construct(tail.curr++, x);
-		}
-
-		/**
-		 * 	@brief pop front
-		 * 
-		 * 	@removes the first element.
-		*/
-		void				pop_front()
-		{
-			if (!empty())
+			/* Check if is the begining of a node */
+			if (tail.curr == tail.head)
 			{
-				if (head.curr == head.tail - 1)
-				{
-					// Check this tail - 1 is the first element ?
-				}
-				else
-					memory.destroy(head.curr++);
+				// TO DO: Change node --> tail = tail - 1
+				// TO DO: Update curr = head.tail - 1
+				// Check if more operations are needed
 			}
+			else
+				memory.destroy(head.curr--);
 		}
+	}
 
-		/**
-		 * 	@brief pop back
-		 * 
-		 * 	@removes the first element.
-		*/
-		void				pop_back()
-		{
-			if (!empty())
-			{
-				/* Check if is the begining of a node */
-				if (tail.curr == tail.head)
-				{
-					// TO DO: Change node --> tail = tail - 1
-					// TO DO: Update curr = head.tail - 1
-					// Check if more operations are needed
-				}
-				else
-					memory.destroy(head.curr--);
-			}
-		}
+	/**
+	 * 	@brief insert
+	 * 
+	 * 	@param index A const interator into %deque.
+	 * 	@param value The iserted value.
+	 * 	@return An iterator to the inserted data.
+	 * 
+	 * 	Insert @c value at @c index (before the current element that is holds at @c index before the call).
+	*/
+	template <class T, class Allocator>
+	inline typename deque<T, Allocator>::iterator
+	deque<T, Allocator>::insert(const_iterator pos, const_reference value)
+	{
+		insert(pos, size_type(1), value);
+		return (iterator((*this)[pos]));
+	}
 
-		// Insert dependecy
-		void				insert(const_iterator pos, value_type amount, const_reference value);
+	template <class T, class Allocator>
+	void
+	deque<T, Allocator>::insert(const_iterator pos, value_type amount, const_reference value)
+	{
+		// TO DO: Today i m so fcking tired
+	}
 
-		/**
-		 * 	@brief insert
-		 * 
-		 * 	@param index A const interator into %deque.
-		 * 	@param value The iserted value.
-		 * 	@return An iterator to the inserted data.
-		 * 
-		 * 	Insert @c value at @c index (before the current element that is holds at @c index before the call).
-		*/
-		iterator			insert(const_iterator pos, const_reference value)
-		{
-			insert(pos, size_type(1), value);
-			return (iterator((*this)[pos]));
-		}
-
-		void				insert(const_iterator pos, value_type amount, const_reference value)
-		{
-			// TO DO: Today i m so fcking tired
-		}
-
-		template <typename InputIt>
-		iterator			insert(const_iterator pos, InputIt first, Inputit last)
-		{
-			// TO DO: Today i m so fcking tired
-		}
+	template <class T, class Allocator>
+	template <typename InputIt>
+	typename deque<T, Allocator>::iterator
+	deque<T, Allocator>::insert(const_iterator pos, InputIt first, Inputit last)
+	{
+		// TO DO: Today i m so fcking tired
+	}
 
 
-		// Erase dependecy
-		iterator			erase(iterator first, iterator last)
 
-		/**
-		 * 	@brief erase
-		 * 
-		 * 	@param pos The target iterator.
-		 * 	@return An iterator pointing to the next element.
-		 * 
-		 * 	Remove an element at the index @a pos.
-		*/
-		iterator			erase(iterator pos)
-		{
-			return (erase(pos, pos + 1));
-		}
+	/**
+	 * 	@brief erase
+	 * 
+	 * 	@param pos The target iterator.
+	 * 	@return An iterator pointing to the next element.
+	 * 
+	 * 	Remove an element at the index @a pos.
+	*/
+	template <class T, class Allocator>
+	inline typename deque<T, Allocator>::iterator
+	deque<T, Allocator>::erase(iterator pos)
+	{ return (erase(pos, pos + 1)); }
 
-		iterator			erase(iterator first, iterator last)
-		{
-			// TO DO: Today i m so fcking tired
-		}
+	template <class T, class Allocator>
+	typename deque<T, Allocator>::iterator
+	deque<T, Allocator>::erase(iterator first, iterator last)
+	{
+		// TO DO: Today i m so fcking tired
+	}
 
-		/**
-		 * 	@brief swap
-		 * 
-		 *	@param other A %vector.
-		 *
-		 * 	Swap the underlying work data of @c *this and @a other.
-		*/
-		void			swap(const vector& other)
-		{
-			alg_swap_data(other); // TO DO Implement this fct lke i did in vector
-		}
-	};
+	/**
+	 * 	@brief swap
+	 * 
+	 *	@param other A %vector.
+	 *
+	 * 	Swap the underlying work data of @c *this and @a other.
+	*/
+	template <class T, class Allocator>
+	inline void
+	deque<T, Allocator>::swap(const deque& other)
+	{ alg_swap_data(other); // TO DO Implement this fct lke i did in vector }
+
+	/////////////////
+	// Non members //
+	/////////////////
 
 	//@{
 	/** @brief Boolean operators
@@ -1271,45 +1377,40 @@ namespace FT_NAMESPACE
 	 * 	@return A boolean that is the result of the requested boolean operation.
 	*/
 	template <class T, class Allocator>
-	inline bool			operator==(const deque<T, Allocator>& lhs, const deque<T, Allocator>& rhs)
+	inline bool
+	operator==(const deque<T, Allocator>& lhs, const deque<T, Allocator>& rhs)
 	{
 		// TO DO: Is it worth it to implement std::equal ? 
 		return (lhs.size() == rhs.size() && std::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
 	}
 
 	template <class T, class Allocator>
-	inline bool			operator<(const deque<T, Allocator>& lhs, const deque<T, Allocator>& rhs)
-	{
-		return (std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end())));
-	}
+	inline bool
+	operator<(const deque<T, Allocator>& lhs, const deque<T, Allocator>& rhs)
+	{ return (std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()))); }
 
 	template <class T, class Allocator>
-	inline bool			operator!=(const deque<T, Allocator>& lhs, const deque<T, Allocator>& rhs)
-	{
-		return (!(lhs == rhs));
-	}
+	inline bool
+	operator!=(const deque<T, Allocator>& lhs, const deque<T, Allocator>& rhs)
+	{ return (!(lhs == rhs)); }
 
 	template <class T, class Allocator>
-	inline bool			operator>(const deque<T, Allocator>& lhs, const deque<T, Allocator>& rhs)
-	{
-		return (rhs < lhs);
-	}
+	inline bool
+	operator>(const deque<T, Allocator>& lhs, const deque<T, Allocator>& rhs)
+	{ return (rhs < lhs); }
 
 	template <class T, class Allocator>
-	inline bool			operator>=(const deque<T, Allocator>& lhs, const deque<T, Allocator>& rhs)
-	{
-		return (!(lhs < rhs));
-	}
+	inline bool
+	operator>=(const deque<T, Allocator>& lhs, const deque<T, Allocator>& rhs)
+	{ return (!(lhs < rhs)); }
 
 	template <class T, class Allocator>
-	inline bool			operator<=(const deque<T, Allocator>& lhs, const deque<T, Allocator>& rhs)
-	{
-		return (!(last > rhs));
-	}
+	inline bool
+	operator<=(const deque<T, Allocator>& lhs, const deque<T, Allocator>& rhs)
+	{ return (!(last > rhs)); }
 
 	template <class T, class Allocator>
-	void				swap(const deque<T, Allocator>& lhs, const deque<T, Allocator>& rhs)
-	{
-		lhs.swap(rhs);
-	}
+	inline void
+	swap(const deque<T, Allocator>& lhs, const deque<T, Allocator>& rhs)
+	{ lhs.swap(rhs); }
 };
