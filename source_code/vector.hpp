@@ -6,23 +6,20 @@
  *  TO DO: add a description when is done
 */
 
-// TO DO: std::equal
 // Types stuff that i saw in correction
-// Resise commented
 // Range erase return
 // Resize set at the end
 // Insert signature (multiple signatures modified)
 // operator == and <
 
 // TEST to solve:
-// Problem in destruction
 // Problem in back / end
-// Problem in max size
 // Modifers dos 
 
 # pragma once
 
 # include "ft_allocator.hpp"
+# include "booleans.hpp"
 # include "ft_iterator.hpp"
 
 # include <limits>
@@ -1169,7 +1166,7 @@ namespace FT_NAMESPACE
 	template <class T, class Allocator>
 	inline typename vector<T, Allocator>::size_type
 	vector<T, Allocator>::max_size() const
-	{ return (size_type(std::numeric_limits<size_type>::max() / sizeof(value_type))); }
+	{ return (size_type(std::numeric_limits<difference_type>::max() / sizeof(value_type))); }
 
 	/**
 	 * 	@brief reserve
@@ -1437,15 +1434,12 @@ namespace FT_NAMESPACE
 	template <class T, class Allocator>
 	inline bool
 	operator==(const vector<T, Allocator>& lhs, const vector<T, Allocator>& rhs)
-	{
-		// TO DO: Is it worth it to implement std::equal ? 
-		return (lhs.size() == rhs.size()/* && std::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end())*/);
-	}
+	{ return (lhs.size() == rhs.size() /*&& equal(lhs.begin(), lhs.end(), rhs.begin())*/); }
 
 	template <class T, class Allocator>
 	inline bool
 	operator<(const vector<T, Allocator>& lhs, const vector<T, Allocator>& rhs)
-	{ return (1/*std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end())*/); }
+	{ return (1/*lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end())*/);}
 
 	template <class T, class Allocator>
 	inline bool
