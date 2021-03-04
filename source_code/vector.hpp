@@ -19,7 +19,7 @@
 # pragma once
 
 # include "ft_allocator.hpp"
-# include "booleans.hpp"
+# include "algorithm.hpp"
 # include "ft_iterator.hpp"
 
 # include <limits>
@@ -1166,7 +1166,7 @@ namespace FT_NAMESPACE
 	template <class T, class Allocator>
 	inline typename vector<T, Allocator>::size_type
 	vector<T, Allocator>::max_size() const
-	{ return (size_type(std::numeric_limits<difference_type>::max() / sizeof(value_type))); }
+	{ return (min(size_type(std::numeric_limits<difference_type>::max() / sizeof(value_type)), memory.max_size())); }
 
 	/**
 	 * 	@brief reserve
