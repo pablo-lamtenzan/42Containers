@@ -21,6 +21,10 @@ std::ostream& operator<<(std::ostream& os, const std::pair<T1, T2>& pair)
 
 // TO DO: Insertion only works for map/multimap
 
+/*
+	TO DO for set/multiset
+ copy-paste and change std::pair by just a key.
+*/
 
 template <typename Container, typename T>
 inline static void test_tree_constructor(std::ofstream& fd)
@@ -43,7 +47,7 @@ inline static void test_tree_constructor(std::ofstream& fd)
 	// TEST: range constructor
 
 	Container c2 /*{ {1, 1}, {2, 2}, {3, 4},}*/;
-	
+
 	// WTF definition of insert not found in any container
 
 	for (size_t i = 15 ; i > size_t() ; i--)
@@ -239,7 +243,7 @@ inline static void test_tree_modifiers(std::ofstream& fd)
 
 	fd << "\'Insert\' test 2: " << c.size() << std::endl << "{ ";
 	for (typename Container::iterator it = r.begin() ; it != r.end() ; it++)
-		fd << *it << " ";
+		fd << *it << " "; 
 	fd << "}" << std::endl;
 
 	// TEST: erase

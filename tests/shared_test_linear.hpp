@@ -17,6 +17,9 @@
 # include <list>
 # include <deque>
 
+// Implemented libs
+# include "../source_code/vector.hpp"
+
 template <typename Container, typename T>
 inline static void test_constructor(std::ofstream& fd)
 {
@@ -47,6 +50,8 @@ inline static void test_constructor(std::ofstream& fd)
 	fd << "Test range constructor 1 (part 1/2): " << static_cast<std::string>(c2.size() == c1.size()
 	&& c2 == c1 ? "SUCCESS" : "ERROR") << std::endl;
 
+	fd << std::endl << c2.size() << " " << c2.empty() << std::endl;
+
 	fd << "Test range constructor 1 (part 2/2): " << std::endl << "{ ";
 	it = c2.begin();
 	for (size_t i = 0 ; i < c2.size() ; i++)
@@ -65,7 +70,6 @@ inline static void test_constructor(std::ofstream& fd)
 	for (size_t i = 0 ; i < c3.size() ; i++)
 		fd << *(it++) << static_cast<std::string>(i == c3.size() - 1 ? " }" : " ");
 	fd << std::endl;
-
 }
 
 template <typename Container, typename T>
@@ -91,9 +95,10 @@ inline static void test_assignation(std::ofstream& fd)
 
 	// TEST: assign
 
+	
 	Container r;
 
-	r.assign(42, T(42));
+	r.assign(size_t(42), T(42));
 	fd << "Test \'assign\' 1: " << std::endl << "["
 	<< r.size() << "]" << std::endl << "{ ";
 	for (typename Container::iterator i = r.begin() ; i != r.end() ; i++)
@@ -116,6 +121,10 @@ inline static void test_element_access(std::ofstream& fd)
 	fd << std::endl << "-------------- ELEMENT ACCESS ----------------" << std::endl;
 
 	// TEST: back
+
+	Container i1(1);
+
+	fd << i1.back() << std::endl;
 
 	Container c(0x42);
 
@@ -268,7 +277,8 @@ inline static void test_modifiers(std::ofstream& fd)
 	size_t y = 0;
 	for (typename Container::iterator i = c.begin() ; i != c.end() ; i++)
 		*i = T(y++);
-	c.insert(c.begin(), 42, T());
+	c.insert(c.begin(), size_t(42), T());
+
 	c.clear();
 	fd << "\'Clear\' test 2: " << c.size() << " " << c.empty() << std::endl;
 
@@ -277,8 +287,8 @@ inline static void test_modifiers(std::ofstream& fd)
 	Container ww;
 	Container www(size_t(42));
 
-	ww.insert(ww.begin(), 41, T(42));
-	www.insert(++www.begin(), 41, T(42));
+	ww.insert(ww.begin(), size_t(41), T(42));
+	www.insert(++www.begin(), size_t(41), T(42));
 	fd << "\'Insert test 1: " << ww.size() << " " << www.size() << std::endl
 	<< "{ ";
 	typename Container::iterator ll = ww.begin();
@@ -325,7 +335,7 @@ inline static void test_modifiers(std::ofstream& fd)
 
 	Container ii;
 
-	ii.insert(ii.begin(), 42, T(42));
+	ii.insert(ii.begin(), size_t(42), T(42));
 	typename Container::iterator xx = ii.begin();
 	for (size_t i = 18 ; i > 0 ; i--)
 		xx++;
@@ -345,7 +355,6 @@ inline static void test_modifiers(std::ofstream& fd)
 	for (typename Container::iterator i = ii.begin() ; i != ii.end() ; i++)
 		fd << *i << " ";
 	fd << " }" << std::endl;
-
 }
 
 template <typename Container, typename T>
@@ -424,7 +433,8 @@ inline static void test_non_members(std::ofstream& fd)
  * 	Perform shared test "cross-containers". Those are the most
  * 	common tests and each container must compile in those tests.
  * 
- * 	NOTE: stack and queue are excluded from those tests.
+ * 	NOTE: stack and queue are excluded from th		if (head != storage)
+ose tests.
 */
 template <typename Container, typename T>
 inline static void shared_tests(const std::string& filename)
@@ -437,7 +447,7 @@ inline static void shared_tests(const std::string& filename)
 		&test_reverse_iterators<Container, T>,
 		&test_capacity<Container, T>,
 		&test_modifiers<Container, T>,
-		&test_non_members<Container, T>
+		//&test_non_members<Container, T>
 	};
 
 	start_tests(filename, tests, ARRAY_SIZE(tests));
@@ -449,7 +459,7 @@ inline static void execute_shared_tests_for_linear_containers()
 	shared_tests<std::vector<T>, T>(std::string(std::string(TEST_DIR) + std::string(STD_VECTOR_FILENAME_SHARED)));
 	shared_tests<std::list<T>, T>(std::string(std::string(TEST_DIR) + std::string(STD_LIST_FILENAME_SHARED)));
 	shared_tests<std::deque<T>, T>(std::string(std::string(TEST_DIR) + std::string(STD_DEQUE_FILENAME_SHARED)));
-	shared_tests<std::vector<T>, T>(std::string(std::string(TEST_DIR) + std::string(FT_VECTOR_FILENAME_SHARED)));
+	shared_tests<ft::vector<T>, T>(std::string(std::string(TEST_DIR) + std::string(FT_VECTOR_FILENAME_SHARED)));
 	shared_tests<std::list<T>, T>(std::string(std::string(TEST_DIR) + std::string(FT_LIST_FILENAME_SHARED)));
 	shared_tests<std::deque<T>, T>(std::string(std::string(TEST_DIR) + std::string(FT_DEQUE_FILENAME_SHARED)));
 }

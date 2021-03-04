@@ -1,6 +1,6 @@
 
-# include <fstream>
 # include <sstream>
+# include <fstream>
 # include "shared_test_linear.hpp"
 # include "shared_test_tree.hpp"
 # include "tester.hpp"
@@ -83,8 +83,12 @@ int main()
 	{
 		if (i % 2)
 		{
-			std::ifstream ifs_ft(filenames[i - 1]);
-			std::ifstream ifs_std(filenames[i]);
+			std::ifstream ifs_ft;
+			std::ifstream ifs_std;
+
+			// TO DO: This does not work ...
+			ifs_ft.open(std::string("../") + std::string(TEST_DIR) + filenames[i - 1]);
+			ifs_ft.open(std::string("../") + std::string(TEST_DIR) + filenames[i]);
 
 			if (ifs_ft.bad() || ifs_std.bad())
 			{
