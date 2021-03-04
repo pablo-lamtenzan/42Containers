@@ -12,10 +12,6 @@
 // Insert signature (multiple signatures modified)
 // operator == and <
 
-// TEST to solve:
-// Problem in back / end
-// Modifers dos 
-
 # pragma once
 
 # include "ft_allocator.hpp"
@@ -441,7 +437,6 @@ namespace FT_NAMESPACE
 		void				alg_reserve(size_type n) throw(std::bad_alloc);
 	};
 
-	//@{
 	/**
 	 * 	@brief Constructors
 	 * 
@@ -449,6 +444,7 @@ namespace FT_NAMESPACE
 	 * 	Used to hold vector member and also has
 	 * 	basic operations functions.
 	*/
+	//@{
 	template <class T, class Alloc>
 	vector_algorithm<T, Alloc>::vector_algorithm()
 	: head(), tail(), storage(), memory()
@@ -461,14 +457,14 @@ namespace FT_NAMESPACE
 
 	template <class T, class Alloc>
 	vector_algorithm<T, Alloc>::vector_algorithm(const allocator_type& alloc)
-	:  head(), tail(), storage(), memory(alloc)
+	: head(), tail(), storage(), memory(alloc)
 	{ }
 
 	template <class T, class Alloc>
 	vector_algorithm<T, Alloc>::vector_algorithm(size_type n)
 	: memory()
 	{
-		alg_reserve(n);
+		alg_reserve(n); 
 		tail = storage;
 	}
 
@@ -777,9 +773,10 @@ namespace FT_NAMESPACE
 	vector<T, Allocator>::vec_clear()
 	throw()
 	{
-		for (; tail != head ; tail--)
-			memory.destroy(tail);
+		while (tail != head)
+			memory.destroy(tail--);
 	}
+
 	template <class T, class Allocator>
 	inline typename vector<T, Allocator>::size_type
 	vector<T, Allocator>::vec_get_iterator_index(iterator it)
@@ -962,7 +959,7 @@ namespace FT_NAMESPACE
 	{
 		// TO DO: out of range
 		if (n > size())
-			throw std::out_of_range(std::string("TO DO"));
+			throw std::out_of_range(std::string("vector::at() out of range"));
 		return ((*this)[n]);
 	}
 
@@ -980,7 +977,7 @@ namespace FT_NAMESPACE
 	{
 		// TO DO: out of range
 		if (n > size())
-			throw std::out_of_range(std::string("TO DO"));
+			throw std::out_of_range(std::string(std::string("vector::at() out of range")));
 		return ((*this)[n]);
 	}
 
@@ -1012,7 +1009,7 @@ namespace FT_NAMESPACE
 	template <class T, class Allocator>
 	inline typename vector<T, Allocator>::reference
 	vector<T, Allocator>::back()
-	{ return (*end()); }
+	{ return (*--end()); }
 
 	/**
 	 * 	@brief back
@@ -1022,7 +1019,7 @@ namespace FT_NAMESPACE
 	template <class T, class Allocator>
 	inline typename vector<T, Allocator>::const_reference
 	vector<T, Allocator>::back() const
-	{ return (*end()); }
+	{ return (*--end()); }
 
 	/**
 	 * 	@brief data
