@@ -12,6 +12,10 @@
 // Insert signature (multiple signatures modified)
 // operator == and <
 
+// IMPORTANT: any function having multiple signatures and 1 of those
+// 		is template, have to handle all the integers types != size_type 
+//		in the template siganture using is_integer class.
+
 # pragma once
 
 # include "ft_allocator.hpp"
@@ -638,6 +642,15 @@ namespace FT_NAMESPACE
 		void		vec_set(pointer dest, const_reference value, size_type n) throw(std::bad_alloc);
 		void		vec_clear() throw();
 		size_type	vec_get_iterator_index(iterator it) throw();
+		template <typename InputIt>
+		size_type	vec_get_size_range_constructor(InputIt& first, InputIt& last, void*) throw();
+		template <typename InputIt>
+		size_type	vec_get_size_range_constructor(InputIt n, InputIt&, int) throw();
+		void		vec_init_vector_size(size_type n, value_type value) throw();
+		template <typename InputIt>
+		void		vec_init_vector_range(InputIt& first, InputIt& last, void*) throw();
+		template <typename InputIt>
+		void		vec_init_vector_range(InputIt n, InputIt& value, int) throw();
 
 		/* Member functions */
 
@@ -789,6 +802,62 @@ namespace FT_NAMESPACE
 		return (index);
 	}
 
+	/**
+	 * 	@brief init the base size constructor when the range constructor
+	 * 	is called.
+	*/
+	template <class T, class Allocator>
+	template <typename InputIt>
+	inline typename vector<T, Allocator>::size_type
+	vector<T, Allocator>::vec_get_size_range_constructor(InputIt& first, InputIt& last, void*)
+	throw()
+	{ return (size_type(last - first)); }
+
+	/**
+	 * 	@brief init the base size constructor when the range constructor
+	 * 	is miss called. (The user attemps to call size constructor with a
+	 * 	integer type != std::site_t) 
+	*/
+	template <class T, class Allocator>
+	template <typename InputIt>
+	inline typename vector<T, Allocator>::size_type
+	vector<T, Allocator>::vec_get_size_range_constructor(InputIt n, InputIt&, int)
+	throw()
+	{ return (size_type(n)); }
+
+	/**
+	 * 	@brief size constructor vector construction routine
+	*/
+	template <class T, class Allocator>
+	inline void
+	vector<T, Allocator>::vec_init_vector_size(size_type n, value_type value)
+	throw()
+	{
+		for (size_type i = 0 ; i < n ; i++)
+			memory.construct(head + i, value);
+	}
+
+	/**
+	 * 	@brief range constructor vector construction routine
+	*/
+	template <class T, class Allocator>
+	template <typename InputIt>
+	inline void
+	vector<T, Allocator>::vec_init_vector_range(InputIt& first, InputIt& last, void*)
+	throw()
+	{ assign(first, last); }
+
+	/**
+	 * 	@brief used when range constructor is misscalled by the templates,
+	 * 	call size construction routine.
+	*/
+	template <class T, class Allocator>
+	template <typename InputIt>
+	inline void
+	vector<T, Allocator>::vec_init_vector_range(InputIt n, InputIt& value, int)
+	throw()
+	{ vec_init_vector_range(static_cast<size_type>(n), value); }
+
 	//////////////////////
 	// Member functions //
 	//////////////////////
@@ -815,10 +884,7 @@ namespace FT_NAMESPACE
 	template <class T, class Allocator>
 	vector<T, Allocator>::vector(size_type n, const_reference value, const allocator_type& alloc)
 	: Base(n, alloc)
-	{
-		for (size_type i = 0 ; i < n ; i++)
-			memory.construct(head + i, value);
-	}
+	{ vec_init_vector_size(n, value); }
 
 	/**
 	 * 	@brief Copy constructor
@@ -843,8 +909,8 @@ namespace FT_NAMESPACE
 	template <class T, class Allocator>
 	template <typename InputIterator>
 	vector<T, Allocator>::vector(InputIterator first, InputIterator last, const allocator_type& alloc)
-	: Base(size_type(last - first), alloc)
-	{ assign(first, last); }
+	: Base(vec_get_size_range_constructor(first, last, typename is_integral<InputIterator>::type()), alloc)
+	{ vec_init_vector_range(first, last, typename is_integral<InputIterator>::type()); }
 
 	/**
 	 * 	@brief Destuctor
