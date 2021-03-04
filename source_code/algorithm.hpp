@@ -11,6 +11,82 @@
 
 namespace FT_NAMESPACE
 {
+	/* Nested class template designed to hold any fundamental type */
+	template <class T>
+	struct is_integral
+	{ typedef void* type; };
+
+	/* Specilizated versions */
+	template <>
+	struct is_integral<bool>
+	{ typedef int type; };
+
+	template <>
+	struct is_integral<char>
+	{ typedef int type; };
+
+	template <>
+	struct is_integral<signed char>
+	{ typedef int type; };
+	
+	template <>
+	struct is_integral<unsigned char>
+	{ typedef int type; };
+
+	template <> 
+	struct is_integral<wchar_t>
+	{ typedef int type; };
+
+/*
+	template <>
+	struct is_integral<char16_t>
+	{ typedef int type; };
+
+	template <>
+	struct is_integral<char32_t>
+	{ typedef int type; };
+*/
+
+	template <>
+	struct is_integral<short>
+	{ typedef int type; };
+
+	template <>
+	struct is_integral<unsigned short>
+	{ typedef int type; };
+
+	template <>
+	struct is_integral<int>
+	{ typedef int type; };
+
+	template <>
+	struct is_integral<unsigned int>
+	{ typedef int type; };
+
+	template <>
+	struct is_integral<long>
+	{ typedef int type; };
+
+	template <>
+	struct is_integral<unsigned long>
+	{ typedef int type; };
+
+	template <>
+	struct is_integral<long long>
+	{ typedef int type; };
+
+	template <>
+	struct is_integral<unsigned long long>
+	{ typedef int type; };
+/*
+	template <>
+	struct is_integral<__int128_t>
+	{ typedef int type; };
+
+	template <>
+	struct is_integral<__uint128_t>
+	{ typedef int type; };
+*/
 	template <class InputIterator1, class InputIterator2>
   	bool
 	lexicographical_compare(InputIterator1 first1, InputIterator1 last1,
