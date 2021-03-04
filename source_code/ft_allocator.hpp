@@ -51,7 +51,7 @@ namespace FT_NAMESPACE
 		void			deallocate(pointer p /*, size_type amount*/) throw();
 		void			construct(pointer p, const_reference value) throw(std::bad_alloc);
 		void			destroy(pointer p) throw();
-		size_type		max_size() throw();
+		size_type		max_size() const throw();
 		template <typename T1>
 		friend bool		operator==(const allocator&, const allocator<T1>&) { return (true); }
 		template <typename T1>
@@ -120,7 +120,8 @@ namespace FT_NAMESPACE
 
 	template <typename T>
 	inline typename allocator<T>::size_type
-	allocator<T>::max_size() throw()
+	allocator<T>::max_size() const
+	throw()
 	{ return (size_type(-1) / sizeof(value_type)); }
 
 	template <typename T1, typename T2>
