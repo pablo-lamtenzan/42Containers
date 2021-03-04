@@ -644,6 +644,7 @@ namespace FT_NAMESPACE
 		void		vec_array_copy(pointer dest, const_pointer src, size_type n) throw();
 		void		vec_set(pointer dest, const_reference value, size_type n) throw(std::bad_alloc);
 		void		vec_clear() throw();
+		size_type	vec_get_iterator_index(iterator it) throw();
 
 		/* Member functions */
 
@@ -781,6 +782,17 @@ namespace FT_NAMESPACE
 	{
 		for (; tail != head ; tail--)
 			memory.destroy(tail);
+	}
+	template <class T, class Allocator>
+	inline typename vector<T, Allocator>::size_type
+	vector<T, Allocator>::vec_get_iterator_index(iterator it)
+	throw()
+	{
+		size_type index = 0;
+
+		for (iterator i = begin() ; i != it ; i++)
+			index++;
+		return (index);
 	}
 
 	//////////////////////
@@ -1223,13 +1235,9 @@ namespace FT_NAMESPACE
 	void
 	vector<T, Allocator>::insert(/*const_*/iterator pos, size_type amount, const_reference value)
 	{
-		// TO DO: What happens if pos isn't in the %vector ?
-
 		/* Find the iterator index (can't work dirrectly with iterators cause
 		realloc make lose iterators indexes). */
-		size_type index = 0;
-		for (iterator i = begin() ; i != pos ; i++)
-			index++;
+		size_type index = vec_get_iterator_index(pos);
 
 		/* Handle space (if realloc is needed, pos is lost) */
 		if (size_type(size() + amount) > capacity())
@@ -1261,7 +1269,7 @@ namespace FT_NAMESPACE
 	vector<T, Allocator>::insert(const_iterator pos, const_reference value)
 	{
 		insert(pos, size_type(1), value);
-		return (iterator((*this)[pos]));
+		return (iterator(&(*this)[pos]));
 	}
 
 	/**
@@ -1280,23 +1288,32 @@ namespace FT_NAMESPACE
 	typename vector<T, Allocator>::iterator
 	vector<T, Allocator>::insert(/*const_*/iterator pos, InputIt first, InputIt last)
 	{
-		// Handle space
+		// TO DO: if first is a member of *this and reserve is called ... THIS WONT WORK !
+
+		/* Find the iterator index (can't work dirrectly with iterators cause
+		realloc make lose iterators indexes). */
+		size_type index = vec_get_iterator_index(pos);
+
+		/* Handle space (if realloc is needed, pos is lost) */
 		const size_type amount = distance(first, last);
 		if (size_type(size() + amount) > capacity())
-			resize(size_type(capacity() * 2));
-		// Shift elements in range tail-pos by amount
-		iterator insertion_index = pos;
-		for (iterator i = end() ; i != pos ; i--)
-			*(i + amount) = *i;
-		// Insert amount copies of value
-		for (size_type i = 0 ; i < amount ; i++)
-			memory.construct(&*(pos++), *(first++));
-		tail += amount;
+			reserve(size_type(NEW_CAP(size() + amount)));
 
+		/* Use the index to shift all the elements by amount
+		in range (*this)[index] - (*this)[tail] (starting at tail) */
+		for (size_type i = POSITIVE(difference_type(size() - 1)) ; i > index ; i--)
+			(*this)[i + amount] = (*this)[i];
+
+		/* Insert amount copies of value */
+		iterator insertion_index(&(*this)[index]);
+		while (index < amount)
+			memory.construct(&(*this)[index++], *(first++));
+
+		tail = pointer(tail + amount);
 		return (insertion_index);
 	}
 
-		/**
+	/**
 	 * 	@brief erase
 	 * 
 	 * 	@param first An iterator that is the first iterator in erase range.
@@ -1321,7 +1338,7 @@ namespace FT_NAMESPACE
 		for (size_type i = pos + amount ; i < size() ; i++)
 			(*this)[i] = (*this)[i + amount];
 		tail -= amount;
-		return (iterator()); // TO DO
+		return (first);
 	}
 
 	/**
