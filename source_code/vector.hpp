@@ -29,6 +29,9 @@
 
 namespace FT_NAMESPACE
 {
+	# define NEW_CAP(x) x < std::size_t(8) ? std::size_t(8) : std::size_t(x * 2)
+	# define POSITIVE(x) x < std::ptrdiff_t(0) ? std::size_t(0) : std::size_t(x)
+
 	/////////////////////////////
 	// Vector iterarator class //
 	/////////////////////////////
@@ -396,7 +399,9 @@ namespace FT_NAMESPACE
 	/**
 	 * 	@brief Vector Algorithm
 	 * 
-	 * 	The vector base class.
+	 * 	The vector base class. The allocated memory is handled
+	 * 	by this class. The element holded by %vector are hadled in the
+	 * 	derivated class.
 	*/
 	template <class T, class Alloc>
 	struct vector_algorithm
@@ -429,14 +434,14 @@ namespace FT_NAMESPACE
 		~vector_algorithm();
 
 		/* Fast type basic operations */
-		void			alg_copy_data(const vector_algorithm& other) throw();
-		void			alg_swap_data(vector_algorithm& other) throw();
-		pointer			alg_allocate(size_type n) throw(std::bad_alloc);
-		void			alg_deallocate(pointer p) throw();
+		void				alg_copy_data(const vector_algorithm& other) throw();
+		void				alg_swap_data(vector_algorithm& other) throw();
+		pointer				alg_allocate(size_type n) throw(std::bad_alloc);
+		void				alg_deallocate(pointer p) throw();
 
 		protected:
 
-		void			alg_reserve(size_type n) throw(std::bad_alloc);
+		void				alg_reserve(size_type n) throw(std::bad_alloc);
 	};
 
 	//@{
@@ -544,7 +549,7 @@ namespace FT_NAMESPACE
 	template <class T, class Alloc>
 	inline typename vector_algorithm<T, Alloc>::pointer
 	vector_algorithm<T, Alloc>::alg_allocate(size_type n)
-	throw(std::bad_alloc)
+	throw(::std::bad_alloc)
 	{ return (long(n) >= 0 ? memory.allocate(n) : pointer()); }
 
 	/**
@@ -574,7 +579,7 @@ namespace FT_NAMESPACE
 	*/
 	template <class T, class Alloc>
 	inline void vector_algorithm<T, Alloc>::alg_reserve(size_type n)
-	throw(std::bad_alloc)
+	throw(::std::bad_alloc)
 	{
 		head = alg_allocate(n);
 		tail = head;
@@ -590,6 +595,11 @@ namespace FT_NAMESPACE
 	 * 
 	 * 	@tparam T the type of stored values.
 	 * 	@tparam Allocator an allocator class
+	 * 
+	 * 	Classical array data-structure.
+	 * 	
+	 * 	This class handles the element holded by %vector,
+	 * 	inherits from its base class that hanldes the array.
 	 * 
 	*/
 	template <class T, class Allocator = allocator<T>>
@@ -712,7 +722,7 @@ namespace FT_NAMESPACE
 	template <class T, class Allocator>
 	inline void
 	vector<T, Allocator>::vec_cpy(const vector& other, size_type n)
-	throw(std::bad_alloc)
+	throw(::std::bad_alloc)
 	{
 		for (size_type i = 0 ; i < n ; i++)
 			memory.construct(head + i, other.at(i));
@@ -750,7 +760,7 @@ namespace FT_NAMESPACE
 	template <class T, class Allocator>
 	inline void
 	vector<T, Allocator>::vec_set(pointer dest, const_reference value, size_type n)
-	throw(std::bad_alloc)
+	throw(::std::bad_alloc)
 	{
 		for (size_type i = 0 ; i < n ; i++)
 		{
@@ -832,13 +842,14 @@ namespace FT_NAMESPACE
 
 	/**
 	 * 	@brief Destuctor
+	 * 
+	 * 	NOTE: The destruction of the element holded by %vector are handled by this
+	 * 	function. The allocated array is handled by the base destructor.
+	 *
 	*/
 	template <class T, class Allocator>
 	vector<T, Allocator>::~vector()
-	{
-		vec_clear();
-		alg_deallocate(head);
-	}
+	{ vec_clear(); }
 
 	/**
 	 * 	@brief operator=
@@ -1161,7 +1172,7 @@ namespace FT_NAMESPACE
 			try {
 				tmp = alg_allocate(new_cap);
 			}
-		catch (std::bad_alloc& e) {
+			catch (std::bad_alloc& e) {
 				clear();
 				alg_deallocate(head);
 				std::cerr << e.what() << std::endl;
@@ -1212,19 +1223,28 @@ namespace FT_NAMESPACE
 	void
 	vector<T, Allocator>::insert(/*const_*/iterator pos, size_type amount, const_reference value)
 	{
-		// TO DO: (if i dont have it, i need an operator+ from normal iterator that return a size_type)
+		// TO DO: What happens if pos isn't in the %vector ?
 
-		// Handle space
+		/* Find the iterator index (can't work dirrectly with iterators cause
+		realloc make lose iterators indexes). */
+		size_type index = 0;
+		for (iterator i = begin() ; i != pos ; i++)
+			index++;
 
+		/* Handle space (if realloc is needed, pos is lost) */
 		if (size_type(size() + amount) > capacity())
-			resize(size_type(capacity() * 2));
-		// Shift elements in range tail-(*this)[pos] by amount
-		for (iterator i = end() ; i != pos ; i--)
-			*(i + amount) = *i;
-		// Insert amount copies of value
-		for (size_type i = 0 ; i < amount ; i++)
-			memory.construct(&*(pos++), value);
-		tail += amount;
+			reserve(size_type(NEW_CAP(size() + amount)));
+
+		/* Use the index to shift all the elements by amount
+		in range (*this)[index] - (*this)[tail] (starting at tail) */
+		for (size_type i = POSITIVE(difference_type(size() - 1)) ; i > index ; i--)
+			(*this)[i + amount] = (*this)[i];
+
+		/* Insert amount copies of value */
+		while (index < amount)
+			memory.construct(&(*this)[index++], value);
+
+		tail = pointer(tail + amount);
 	}
 
 	/**
