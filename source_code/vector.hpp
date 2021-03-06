@@ -6,15 +6,18 @@
  *  TO DO: add a description when is done
 */
 
-// Types stuff that i saw in correction
 // Range erase return
 // Resize set at the end
 // Insert signature (multiple signatures modified)
 // operator == and <
 
-// IMPORTANT: any function having multiple signatures and 1 of those
-// 		is template, have to handle all the integers types != size_type 
-//		in the template siganture using is_integer class.
+// TO DO: Insert has a version that returns an iterator and
+// 		a version that returns nothing, in the case that the user
+//		attemps to use the void signature using a integer != size_type aka size_t
+//		the iterator return signature is called and then it call the
+//		range insertion algorithm. Check what happens for the return value
+//		int the real std::vector.
+
 
 # pragma once
 
@@ -431,14 +434,14 @@ namespace FT_NAMESPACE
 		~vector_algorithm();
 
 		/* Fast type basic operations */
-		void				alg_copy_data(const vector_algorithm& other) throw();
-		void				alg_swap_data(vector_algorithm& other) throw();
-		pointer				alg_allocate(size_type n) throw(std::bad_alloc);
-		void				alg_deallocate(pointer p) throw();
+		void		alg_copy_data(const vector_algorithm& other) throw();
+		void		alg_swap_data(vector_algorithm& other) throw();
+		pointer		alg_allocate(size_type n) throw(std::bad_alloc);
+		void		alg_deallocate(pointer p) throw();
 
 		protected:
 
-		void				alg_reserve(size_type n) throw(std::bad_alloc);
+		void		alg_reserve(size_type n) throw(std::bad_alloc);
 	};
 
 	/**
@@ -646,11 +649,21 @@ namespace FT_NAMESPACE
 		size_type	vec_get_size_range_constructor(InputIt& first, InputIt& last, void*) throw();
 		template <typename InputIt>
 		size_type	vec_get_size_range_constructor(InputIt n, InputIt&, int) throw();
-		void		vec_init_vector_size(size_type n, value_type value) throw();
+		void		vec_init_vector_size(size_type n, value_type value) throw(std::bad_alloc);
 		template <typename InputIt>
-		void		vec_init_vector_range(InputIt& first, InputIt& last, void*) throw();
+		void		vec_init_vector_range(InputIt& first, InputIt& last, void*) throw(std::bad_alloc);
 		template <typename InputIt>
-		void		vec_init_vector_range(InputIt n, InputIt& value, int) throw();
+		void		vec_init_vector_range(InputIt n, InputIt& value, int) throw(std::bad_alloc);
+		void		vec_assign_amount(size_type amount, const_reference value) throw(std::bad_alloc);
+		template <typename InputIt>
+		void		vec_assign_range(InputIt& first, InputIt& last, void*) throw(std::bad_alloc);
+		template <typename InputIt>
+		void		vec_assign_range(InputIt amount, InputIt& value, int) throw(std::bad_alloc);
+		void		vec_insert_amount(/*const_*/iterator pos, size_type amount, const_reference value) throw(std::bad_alloc);
+		template <typename InputIt>
+		void		vec_insert_range(/*const_*/iterator pos, InputIt& first, InputIt& last, void*) throw(std::bad_alloc);
+		template <typename InputIt>
+		void		vec_insert_range(/*const_*/iterator pos, InputIt amount, InputIt& value, int) throw(std::bad_alloc);
 
 		/* Member functions */
 
@@ -664,10 +677,10 @@ namespace FT_NAMESPACE
 		const allocator_type& alloc = allocator_type());
 		vector(const vector& other);
 		~vector();
-		vector&			operator=(const vector& other);
-		void			assign(size_type count, const_reference value);
+		vector&					operator=(const vector& other);
+		void					assign(size_type count, const_reference value);
 		template <typename InputIt>
-		void			assign(InputIt first, InputIt last);
+		void					assign(InputIt first, InputIt last);
 
 		/* Element access */
 		reference				operator[](size_type n);
@@ -831,7 +844,7 @@ namespace FT_NAMESPACE
 	template <class T, class Allocator>
 	inline void
 	vector<T, Allocator>::vec_init_vector_size(size_type n, value_type value)
-	throw()
+	throw(::std::bad_alloc)
 	{
 		for (size_type i = 0 ; i < n ; i++)
 			memory.construct(head + i, value);
@@ -844,7 +857,7 @@ namespace FT_NAMESPACE
 	template <typename InputIt>
 	inline void
 	vector<T, Allocator>::vec_init_vector_range(InputIt& first, InputIt& last, void*)
-	throw()
+	throw(::std::bad_alloc)
 	{ assign(first, last); }
 
 	/**
@@ -855,8 +868,113 @@ namespace FT_NAMESPACE
 	template <typename InputIt>
 	inline void
 	vector<T, Allocator>::vec_init_vector_range(InputIt n, InputIt& value, int)
-	throw()
+	throw(::std::bad_alloc)
 	{ vec_init_vector_range(static_cast<size_type>(n), value); }
+
+	/**
+	 * 	@brief assign amount
+	*/
+	template <class T, class Allocator>
+	void
+	vector<T, Allocator>::vec_assign_amount(size_type count, const_reference value)
+	throw(::std::bad_alloc)
+	{
+		if (count > capacity())
+			resize(count, value);
+		else
+			vec_set(head, value, count);
+		tail = pointer(head + count);
+	}
+
+	/**
+	 * 	@brief assign range
+	*/
+	template <class T, class Allocator>
+	template <typename InputIt>
+	void
+	vector<T, Allocator>::vec_assign_range(InputIt& first, InputIt& last, void*)
+	throw(::std::bad_alloc)
+	{
+		vec_clear();
+		const size_type amount = last - first;
+		if (amount > capacity())
+			reserve(size_type(amount));
+		for (size_type i = 0 ; first != last ; i++)
+			memory.construct(head + i, *(first++));
+		tail = pointer(head + amount);
+	}
+
+	/**
+	 * 	@brief used when templates misscall vec_assign_range willing to
+	 * 	call assign amount
+	*/
+	template <class T, class Allocator>
+	template <typename InputIt>
+	inline void
+	vector<T, Allocator>::vec_assign_range(InputIt amount, InputIt& value, int)
+	throw(::std::bad_alloc)
+	{ vec_assign_amount(static_cast<size_type>(amount), static_cast<const_reference>(value)); }
+
+	template <class T, class Allocator>
+	void
+	vector<T, Allocator>::vec_insert_amount(/*const_*/iterator pos, size_type amount, const_reference value)
+	throw(::std::bad_alloc)
+	{
+		/* Find the iterator index (can't work dirrectly with iterators cause
+		realloc make lose iterators indexes). */
+		size_type index = vec_get_iterator_index(pos);
+
+		/* Handle space (if realloc is needed, pos is lost) */
+		if (size_type(size() + amount) > capacity())
+			reserve(size_type(NEW_CAP(size() + amount)));
+
+		/* Use the index to shift all the elements by amount
+		in range (*this)[index] - (*this)[tail] (starting at tail) */
+		for (size_type i = POSITIVE(difference_type(size() - 1)) ; i > index ; i--)
+			(*this)[i + amount] = (*this)[i];
+
+		/* Insert amount copies of value */
+		while (index < amount)
+			memory.construct(&(*this)[index++], value);
+
+		tail = pointer(tail + amount);
+	}
+
+	template <class T, class Allocator>
+	template <typename InputIt>
+	void
+	vector<T, Allocator>::vec_insert_range(/*const_*/iterator pos, InputIt& first, InputIt& last, void*)
+	throw(::std::bad_alloc)
+	{
+		// TO DO: if first is a member of *this and reserve is called ... THIS WONT WORK !
+
+		/* Find the iterator index (can't work dirrectly with iterators cause
+		realloc make lose iterators indexes). */
+		size_type index = vec_get_iterator_index(pos);
+
+		/* Handle space (if realloc is needed, pos is lost) */
+		const size_type amount = distance(first, last);
+		if (size_type(size() + amount) > capacity())
+			reserve(size_type(NEW_CAP(size() + amount)));
+
+		/* Use the index to shift all the elements by amount
+		in range (*this)[index] - (*this)[tail] (starting at tail) */
+		for (size_type i = POSITIVE(difference_type(size() - 1)) ; i > index ; i--)
+			(*this)[i + amount] = (*this)[i];
+
+		/* Insert amount copies of value */
+		while (index < amount)
+			memory.construct(&(*this)[index++], *(first++));
+
+		tail = pointer(tail + amount);
+	}
+
+	template <class T, class Allocator>
+	template <typename InputIt>
+	inline void
+	vector<T, Allocator>::vec_insert_range(/*const_*/iterator pos, InputIt amount, InputIt& value, int)
+	throw(::std::bad_alloc)
+	{ vec_insert_amount(pos, static_cast<size_type>(amount), static_cast<const_reference>(value)); }
 
 	//////////////////////
 	// Member functions //
@@ -952,15 +1070,9 @@ namespace FT_NAMESPACE
 	 * 	Set @a value to @c *this in a range of @c value.
 	*/
 	template <class T, class Allocator>
-	void
+	inline void
 	vector<T, Allocator>::assign(size_type count, const_reference value)
-	{
-		if (count > capacity())
-			resize(count, value);
-		else
-			vec_set(head, value, count);
-		tail = pointer(head + count);
-	}
+	{ vec_assign_amount(count, value); }
 
 	/**
 	 * 	@brief assign
@@ -973,17 +1085,9 @@ namespace FT_NAMESPACE
 	*/
 	template <class T, class Allocator>
 	template <typename InputIt>
-	void
+	inline void
 	vector<T, Allocator>::assign(InputIt first, InputIt last)
-	{
-		vec_clear();
-		const size_type amount = last - first;
-		if (amount > capacity())
-			reserve(size_type(amount));
-		for (size_type i = 0 ; first != last ; i++)
-			memory.construct(head + i, *(first++));
-		tail = pointer(head + amount);
-	}
+	{ vec_assign_range(first, last, typename is_integral<InputIt>::type()); }
 
 	////////////////////
 	// Element Access //
@@ -1292,28 +1396,9 @@ namespace FT_NAMESPACE
 	 * 	@param value A copy of it will be inserted @a amount times.
 	*/
 	template <class T, class Allocator>
-	void
+	inline void
 	vector<T, Allocator>::insert(/*const_*/iterator pos, size_type amount, const_reference value)
-	{
-		/* Find the iterator index (can't work dirrectly with iterators cause
-		realloc make lose iterators indexes). */
-		size_type index = vec_get_iterator_index(pos);
-
-		/* Handle space (if realloc is needed, pos is lost) */
-		if (size_type(size() + amount) > capacity())
-			reserve(size_type(NEW_CAP(size() + amount)));
-
-		/* Use the index to shift all the elements by amount
-		in range (*this)[index] - (*this)[tail] (starting at tail) */
-		for (size_type i = POSITIVE(difference_type(size() - 1)) ; i > index ; i--)
-			(*this)[i + amount] = (*this)[i];
-
-		/* Insert amount copies of value */
-		while (index < amount)
-			memory.construct(&(*this)[index++], value);
-
-		tail = pointer(tail + amount);
-	}
+	{ vec_insert_amount(pos, amount, value); }
 
 	/**
 	 * 	@brief insert
@@ -1329,7 +1414,7 @@ namespace FT_NAMESPACE
 	vector<T, Allocator>::insert(const_iterator pos, const_reference value)
 	{
 		insert(pos, size_type(1), value);
-		return (iterator(&(*this)[pos]));
+		return (iterator(pos));
 	}
 
 	/**
@@ -1345,32 +1430,11 @@ namespace FT_NAMESPACE
 	*/
 	template <class T, class Allocator>
 	template <typename InputIt>
-	typename vector<T, Allocator>::iterator
+	inline typename vector<T, Allocator>::iterator
 	vector<T, Allocator>::insert(/*const_*/iterator pos, InputIt first, InputIt last)
 	{
-		// TO DO: if first is a member of *this and reserve is called ... THIS WONT WORK !
-
-		/* Find the iterator index (can't work dirrectly with iterators cause
-		realloc make lose iterators indexes). */
-		size_type index = vec_get_iterator_index(pos);
-
-		/* Handle space (if realloc is needed, pos is lost) */
-		const size_type amount = distance(first, last);
-		if (size_type(size() + amount) > capacity())
-			reserve(size_type(NEW_CAP(size() + amount)));
-
-		/* Use the index to shift all the elements by amount
-		in range (*this)[index] - (*this)[tail] (starting at tail) */
-		for (size_type i = POSITIVE(difference_type(size() - 1)) ; i > index ; i--)
-			(*this)[i + amount] = (*this)[i];
-
-		/* Insert amount copies of value */
-		iterator insertion_index(&(*this)[index]);
-		while (index < amount)
-			memory.construct(&(*this)[index++], *(first++));
-
-		tail = pointer(tail + amount);
-		return (insertion_index);
+		vec_insert_range(pos, first, last, typename is_integral<InputIt>::type());
+		return (iterator(pos));
 	}
 
 	/**
