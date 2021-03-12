@@ -72,6 +72,9 @@
 		"typeinfo": "cpp",
 		"variant": "cpp",
 		"stack": "cpp",
-		"queue": "cpp"
+		"queue": "cpp",
+		"shared_mutex": "cpp",
+		"*.ipp": "cpp",
+		"span": "cpp"
 	}
 }

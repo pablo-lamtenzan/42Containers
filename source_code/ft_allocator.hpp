@@ -53,9 +53,9 @@ namespace FT_NAMESPACE
 		void			destroy(pointer p) throw();
 		size_type		max_size() const throw();
 		template <typename T1>
-		friend bool		operator==(const allocator&, const allocator<T1>&) { return (true); }
+		friend bool		operator==(const allocator&, const allocator<T1>&);
 		template <typename T1>
-		friend bool		operator!=(const allocator&, const allocator<T1>&) { return (false); }
+		friend bool		operator!=(const allocator&, const allocator<T1>&);
 	};
 
 	template <typename T>

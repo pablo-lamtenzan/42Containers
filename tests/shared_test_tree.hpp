@@ -11,6 +11,8 @@
 # include <map>
 # include <set>
 
+# include "../source_code/map.hpp"
+
 template <typename T>
 std::ostream& operator<<(std::ostream& os, const std::pair<T, T>& pair)
 { return (os << "{ " << pair.first << ", " << pair.second << " }"); }
@@ -433,7 +435,7 @@ inline static void shared_tree_tests(const std::string& filename)
 template <typename Key, typename Value>
 inline static void execute_shared_tests_for_tree_containers()
 {
-	shared_tree_tests<std::map<int, int>, int>(std::string(std::string(TEST_DIR) + std::string(FT_MAP_FILENAME_SHARED)));
+	shared_tree_tests<ft::map<int, int>, int>(std::string(std::string(TEST_DIR) + std::string(FT_MAP_FILENAME_SHARED)));
 	shared_tree_tests<std::map<int, int>, int>(std::string(std::string(TEST_DIR) + std::string(STD_MAP_FILENAME_SHARED)));
 	shared_tree_tests<std::multimap<int, int>, int>(std::string(std::string(TEST_DIR) + std::string(FT_MULTIMAP_FILENAME_SHARED)));
 	shared_tree_tests<std::multimap<int, int>, int>(std::string(std::string(TEST_DIR) + std::string(STD_MULTIMAP_FILENAME_SHARED)));

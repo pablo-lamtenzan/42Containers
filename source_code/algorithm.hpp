@@ -88,7 +88,7 @@ namespace FT_NAMESPACE
 	{ typedef int type; };
 */
 	template <class InputIterator1, class InputIterator2>
-  	bool
+  	inline bool
 	lexicographical_compare(InputIterator1 first1, InputIterator1 last1,
     InputIterator2 first2, InputIterator2 last2)
 	{
@@ -105,7 +105,7 @@ namespace FT_NAMESPACE
 	}
 
 	template<class InputIt1, class InputIt2>
-	bool
+	inline bool
 	equal(InputIt1 first1, InputIt1 last1, InputIt2 first2)
 	{
     	for (; first1 != last1 ; ++first1, ++first2)
@@ -115,7 +115,7 @@ namespace FT_NAMESPACE
 	}
 
 	template<class T> 
-	const T&
+	inline const T&
 	min(const T& a, const T& b)
 	{ return (b < a ? b : a); }
 };

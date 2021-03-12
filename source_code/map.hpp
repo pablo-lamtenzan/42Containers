@@ -6,7 +6,7 @@
 
 # pragma once
 
-# include <ft_rbtree.hpp>
+# include "ft_rbtree.hpp"
 # include <functional>
 
 namespace FT_NAMESPACE
@@ -30,25 +30,6 @@ namespace FT_NAMESPACE
 		typedef Compare						key_compare;
 		typedef Alloc						allocator_type;
 
-		/* value compare class, used for comparison */
-		struct value_compare : public std::binary_function<value_type, value_type, bool>
-		{
-			friend class map<key_type, value_type, key_compare, allocator_type>;
-
-			protected:
-
-			key_compare comp;
-
-			value_compare(key_compare c) : comp(c) { }
-
-			public:
-
-			value_compare()
-
-			operator()(const_reference lhs, const_reference rhs)
-			{ return (comp(lhs.first, rhs.first)); }
-		};
-
 		private:
 
 		typedef RedBlackTree<key_type, value_type, value_type, key_compare, allocator_type>	Tree;
@@ -63,7 +44,7 @@ namespace FT_NAMESPACE
 		typedef typename Tree::pointer			pointer;
 		typedef typename Tree::const_pointer	const_pointer;
 		typedef typename Tree::size_type		size_type;
-		typedef typename Tree::difference_type	difference_type;
+		typedef typename Tree::difference_size	difference_size;
 
 		typedef typename Tree::iterator			iterator;
 		typedef typename Tree::const_iterator	const_iterator;
@@ -71,10 +52,29 @@ namespace FT_NAMESPACE
 		typedef typename Tree::reverse_iterator			reverse_iterator;
 		typedef typename Tree::const_reverse_iterator	const_reverse_iterator;
 
+		/* value compare class, used for comparison */
+		struct value_compare : public std::binary_function<value_type, value_type, bool>
+		{
+			friend class map<key_type, value_type, key_compare, allocator_type>;
+
+			protected:
+
+			key_compare comp;
+
+			value_compare(key_compare c) : comp(c) { }
+
+			public:
+
+			//value_compare();
+
+			key_compare operator()(const_reference lhs, const_reference rhs)
+			{ return (comp(lhs.first, rhs.first)); }
+		};
+
 		/* Member functions */
 
 		map();
-		map(const key_compare& comp, const allocator_type& alloc);
+		map(const key_compare& comp, const allocator_type& alloc = allocator_type());
 		template <typename InputIt>
 		map(InputIt first, InputIt last);
 		template <typename InputIt>
@@ -129,9 +129,9 @@ namespace FT_NAMESPACE
 
 		/* Non-members */
 		template <typename K1, typename T1, typename C1, typename A1>
-		friend bool	operator==(const map<K1, T1, C1, A1>& lhs, const map>K1, T1, C1, A1>& rhs);
+		friend bool	operator==(const map<K1, T1, C1, A1>& lhs, const map<K1, T1, C1, A1>& rhs);
 		template <typename K1, typename T1, typename C1, typename A1>
-		friend bool	operator<(const map<K1, T1, C1, A1>& lhs, const map>K1, T1, C1, A1>& rhs);
+		friend bool	operator<(const map<K1, T1, C1, A1>& lhs, const map<K1, T1, C1, A1>& rhs);
 	};
 
 	/**
@@ -181,7 +181,7 @@ namespace FT_NAMESPACE
 	*/
 	template <class Key, class T, class Compare, class Alloc>
 	template <typename InputIt>
-	map<Key, T, Compare, Alloc>::map(InputIt first, InputIt last, const key_compare& comp, const allocator_type& alloc = allocator_type())
+	map<Key, T, Compare, Alloc>::map(InputIt first, InputIt last, const key_compare& comp, const allocator_type& alloc)
 	: tree(comp, alloc)
 	{ tree.aux_insert_range_unique(first, last); }
 
@@ -648,7 +648,7 @@ namespace FT_NAMESPACE
 	 * 	Specilisated version of swap made for %map objects.
 	*/
 	template <typename Key, typename T, typename Compare, typename Alloc>
-	void
+	inline void
 	swap(map<Key, T, Compare, Alloc>& lhs, map<Key, T, Compare, Alloc>& rhs)
 	{ lhs.swap(rhs); }
 };

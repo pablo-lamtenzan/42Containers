@@ -8,19 +8,10 @@
  * 	Deeper explenation in wikipedia.
  */
 
-/*
-TO DO:
- IMPORTANT:
- - aux_insert_and_rebalance(bool left_insertion, Node_Ptr target, Node_Ptr parent, RBT_Base<T>& header) throw();
- - aux_rebalance_for_erase(Const_Node_Ptr target, RBT_Base<T>& header) throw();
-
- ALL IS DONE EXECT REBALANCING
-*/
-
 #pragma once
 
-# include <ft_iterator.hpp>
-# include <ft_allocator.hpp>
+# include "ft_iterator.hpp"
+# include "ft_allocator.hpp"
 
 # include <utility> // std::pair
 
@@ -148,12 +139,14 @@ namespace FT_NAMESPACE
 	*/
 	template <typename T>
 	inline void
-	RBT_Header<T>::Node_reset() throw()
+	RBT_Header<T>::Node_reset()
+	throw()
 	{
-		parent = NULL;
-		left = &this;
-		right = &this;
-		count = 0ul;
+			// TO DO: CHECK THIS FNCT
+		header.parent = NULL;
+		header.left = 0/*this*/;
+		header.right = 0/*this*/;
+		tree_count = 0ul;
 	}
 
 	//@{
@@ -295,7 +288,7 @@ namespace FT_NAMESPACE
 
 	template <typename Val>
 	inline static const RBT_Node<Val>*
-	RBT_increment(RBT_Node<Val>* x)
+	RBT_increment(const RBT_Node<Val>* x)
 	throw()
 	{ return (aux_increment(static_cast<RBT_Node<Val>*>(x))); }
 	//@}
@@ -344,14 +337,14 @@ namespace FT_NAMESPACE
 	 * 	@brief Mutable/Const decrement signature
 	*/
 	template <typename Val>
-	inline RBT_Node<Val>*
+	inline static RBT_Node<Val>*
 	RBT_decrement(RBT_Node<Val>* x)
 	throw()
 	{ return (aux_decrement(x)); }
 
 	template <typename Val>
-	inline const RBT_Node<Val>*
-	RBT_decrement(RBT_Node<Val>* x)
+	inline static const RBT_Node<Val>*
+	RBT_decrement(const RBT_Node<Val>* x)
 	throw()
 	{ return (aux_decrement(static_cast<RBT_Node<Val>*>(x))); }
 	//@}
@@ -588,9 +581,9 @@ namespace FT_NAMESPACE
 
 		/* Imported members */
 
-		using RBT_Header::header;
-		using RBT_Header::tree_count;
-		using Base_Key_Compare::key_compare;
+		//using RBT_Header::header;
+		//using RBT_Header::tree_count;
+		//using Base_Key_Compare::key_compare;
 
 		/* Core */
 
@@ -599,7 +592,7 @@ namespace FT_NAMESPACE
 		/* Member functions */
 
 		RBT_Base();
-		RBT_Base(const Key_Compare& cmp, const RBT_Node& x);
+		RBT_Base(const Key_Compare& cmp, const RBT_Node& x, allocator_type alloc);
 		RBT_Base(const RBT_Base& other);
 	};
 
@@ -615,8 +608,8 @@ namespace FT_NAMESPACE
 	 * 	@brief Constructor
 	*/
 	template <typename Val, typename Key_Compare, typename Alloc>
-	RBT_Base<Val, Key_Compare, Alloc>::RBT_Base(const Key_Compare& cmp, const RBT_Node& x)
-	: Base_Key_Compare(cmp), RBT_Node(x), memory()
+	RBT_Base<Val, Key_Compare, Alloc>::RBT_Base(const Key_Compare& cmp, const RBT_Node& x, allocator_type alloc)
+	: Base_Key_Compare(cmp), RBT_Node(x), memory(alloc)
 	{ }
 
 	/**
@@ -680,7 +673,7 @@ namespace FT_NAMESPACE
 		typedef value_type*			pointer;
 		typedef const pointer		const_pointer;
 		typedef value_type&			reference;
-		typedef const reference		const_reference;
+		typedef const value_type&	const_reference;
 		typedef std::size_t			size_type;
 		typedef std::ptrdiff_t		difference_size;
 		typedef Alloc				allocator_type;
@@ -688,8 +681,15 @@ namespace FT_NAMESPACE
 		typedef RBT_iterator<value_type, reference, pointer>				iterator;
 		typedef RBT_iterator<value_type, const_reference, const_pointer>	const_iterator;
 
-		typedef reverse_iterator<iterator>		reverse_iterator;
-		typedef reference<const_iterator>		const_reverse_iterator;
+		typedef reverse_iterator<const_iterator>	const_reverse_iterator;
+		typedef reverse_iterator<iterator>			reverse_iterator;
+
+		/* Fast type base members */
+
+		using RBT_Base<Val, Compare, Alloc>::header;
+		using RBT_Base<Val, Compare, Alloc>::tree_count;
+		using RBT_Base<Val, Compare, Alloc>::key_compare;
+		using RBT_Base<Val, Compare, Alloc>::memory;
 
 		/* Auxiliar functions*/
 
@@ -704,7 +704,7 @@ namespace FT_NAMESPACE
 		Const_Node_Ptr&					get_rightmost() const throw();
 		Link_type						get_begin() throw();
 		Const_Link_type					get_begin() const throw();
-		Node_ptr&						get_end() throw();
+		Node_Ptr&						get_end() throw();
 		Const_Node_Ptr&					get_end() const throw();
 
 		/* Memory handlers */
@@ -712,7 +712,7 @@ namespace FT_NAMESPACE
 		void							put_node(Link_type p) throw();
 		void							construct_node(Link_type target,
 										const_reference value) throw(std::bad_alloc);
-		Link_type						create_node(const_reference value) throw(std::bad_alloc):
+		Link_type						create_node(const_reference value) throw(std::bad_alloc);
 		void							destroy_node(Link_type p) throw();
 		void							drop_node(Link_type p) throw();
 		template <typename NodeGen>
@@ -733,12 +733,10 @@ namespace FT_NAMESPACE
 										RBT_Node<Val>& header) throw();
 
 		/* Inserters */
-		std::pair<Node_Ptr, Node_Ptr>	aux_insert_unique_pos(const key_type& k) throw();
-		std::pair<Node_Ptr, Node_Ptr>	aux_insert_equal_pos(const key_type& k) throw();
-		std::pair<Node_Ptr, Node_Ptr>	aux_insert_hint_unique_pos(const key_type& k) throw();
-		std::pair<Node_Ptr, Node_Ptr>	aux_insert_hint_equal_pos(const key_type& k) throw();
-		std::pair<iterator, bool>		aux_insert_unique(const_reference value) throw(std::bad_alloc);
-		iterator						aux_insert_equal(const_reference value) throw(std::bad_alloc);
+		::std::pair<Node_Ptr, Node_Ptr>	aux_insert_unique_pos(const key_type& k) throw();
+		::std::pair<Node_Ptr, Node_Ptr>	aux_insert_equal_pos(const key_type& k) throw();
+		::std::pair<Node_Ptr, Node_Ptr>	aux_insert_hint_unique_pos(const_iterator position, const key_type& k) throw();
+		::std::pair<Node_Ptr, Node_Ptr>	aux_insert_hint_equal_pos(const_iterator position, const key_type& k) throw();
 		template <typename NodeGen>
 		iterator						aux_insert_unique(const_iterator pos, const_reference value,
 										NodeGen&) throw(std::bad_alloc);
@@ -749,13 +747,10 @@ namespace FT_NAMESPACE
 										NodeGen&) throw(std::bad_alloc);
 		iterator						aux_insert_equal(const_iterator pos, const_reference value)
 										throw(std::bad_alloc);
-		template <typename InputIt>
-		void							aux_insert_range_unique(InputIt first, InputIt last) throw(std::bad_alloc);
-		template <typename InputIt>
-		void							aux_insert_range_equal(InputIt first, InputIt last) throw(std::bad_alloc);
+
 		template <typename NodeGen>
 		iterator						aux_insert(Node_Ptr first, Node_Ptr last,
-										const_reference value, NodeGen&) throw(std::bad_alloc):
+										const_reference value, NodeGen&) throw(std::bad_alloc);
 		iterator						aux_insert_lower(Node_Ptr target, const_reference value) throw(std::bad_alloc);
 		iterator						aux_insert_equal_lower(const_reference value) throw(std::bad_alloc);
 
@@ -814,6 +809,13 @@ namespace FT_NAMESPACE
 		size_type						max_size() const;
 
 		/* Modifiers */
+		::std::pair<iterator, bool>		aux_insert_unique(const_reference value) throw(std::bad_alloc);
+		iterator						aux_insert_equal(const_reference value) throw(std::bad_alloc);
+		// CHECK THIS NEED 3 args no 2
+		template <typename InputIt>
+		void							aux_insert_range_unique(InputIt first, InputIt last) throw(std::bad_alloc);
+		template <typename InputIt>
+		void							aux_insert_range_equal(InputIt first, InputIt last) throw(std::bad_alloc);
 		void							clear();
 		void							erase(iterator pos);
 		void							erase(const_iterator pos);
@@ -893,13 +895,13 @@ namespace FT_NAMESPACE
 	RedBlackTree<K, V, KV, C, A>::get_begin() const
 	throw()
 	{ return (static_cast<Const_Link_type>(header.parent)); }
-
+/*
 	template <class K, class V, class KV, class C, class A>
 	inline typename RedBlackTree<K, V, KV, C, A>::Node_ptr&
 	RedBlackTree<K, V, KV, C, A>::get_end()
 	throw()
 	{ return (&header); }
-
+*/
 	template <class K, class V, class KV, class C, class A>
 	inline typename RedBlackTree<K, V, KV, C, A>::Const_Node_Ptr&
 	RedBlackTree<K, V, KV, C, A>::get_end() const
@@ -910,7 +912,8 @@ namespace FT_NAMESPACE
 	inline static const typename RedBlackTree<K, V, KV, C, A>::key_type&
 	sget_key(typename RedBlackTree<K, V, KV, C, A>::Const_Link_type target)
 	throw()
-	{ return (Key_Val()(*target->Node_get_value_ptr())); }
+	// TO DO: Check if the good Key_Val is used (if wrong: solution meke it member)
+	{ return (RedBlackTree<K, V, KV, C, A>::Key_Val()(*target->Node_get_value_ptr())); }
 
 	template <class K, class V, class KV, class C, class A>
 	inline static const typename RedBlackTree<K, V, KV, C, A>::key_type&
@@ -922,13 +925,13 @@ namespace FT_NAMESPACE
 	inline static typename RedBlackTree<K, V, KV, C, A>::Link_type
 	sget_left(typename RedBlackTree<K, V, KV, C, A>::Node_Ptr target)
 	throw()
-	{ return (static_cast<Link_type>(target->left)); }
+	{ return (static_cast<typename RedBlackTree<K, V, KV, C, A>::Link_type>(target->left)); }
 
 	template <class K, class V, class KV, class C, class A>
 	inline static typename RedBlackTree<K, V, KV, C, A>::Const_Link_type
 	sget_left(typename RedBlackTree<K, V, KV, C, A>::Const_Node_Ptr target)
 	throw()
-	{ return (static_cast<Const_Link_type>(target->left)); }
+	{ return (static_cast<typename RedBlackTree<K, V, KV, C, A>::Const_Link_type>(target->left)); }
 
 	template <class K, class V, class KV, class C, class A>
 	inline static typename RedBlackTree<K, V, KV, C, A>::Link_type
@@ -973,14 +976,16 @@ namespace FT_NAMESPACE
 	inline typename RedBlackTree<K, V, KV, C, A>::Link_type
 	RedBlackTree<K, V, KV, C, A>::get_node()
 	throw(::std::bad_alloc)
-	{ return (memory.allocate(1ul)); }
+	// TO DO: Check this !
+	{ return (reinterpret_cast<Link_type>(memory.allocate(1ul))); }
 
 
 	template <class K, class V, class KV, class C, class A>
 	inline void
 	RedBlackTree<K, V, KV, C, A>::put_node(Link_type p)
 	throw()
-	{ memory.deallocate(p); }
+	// TO DO: Check this
+	{ memory.deallocate(reinterpret_cast<pointer>(p)); }
 
 	/**
 	 * 	@brief construct node
@@ -1018,7 +1023,7 @@ namespace FT_NAMESPACE
 	throw(::std::bad_alloc)
 	{
 		Link_type	new_node = get_node();
-		construct_node(new_node, value_type);
+		construct_node(new_node, value);
 		return (new_node);
 	}
 
@@ -1066,8 +1071,8 @@ namespace FT_NAMESPACE
 	{
 		Link_type	cln = node_gen(*src->Node_get_value_ptr());
 		cln->color = src->color;
-		cln->left = NULL;
-		cln->right = NULL;
+		cln->left = 0;
+		cln->right = 0;
 		return (cln);
 	}
 
@@ -1147,7 +1152,7 @@ namespace FT_NAMESPACE
 		Link_type root = aux_copy(src.get_begin(), get_end(), gen);
 		get_leftmost() = sget_minimum(root);
 		get_rightmost() = sget_maximum(root);
-		count = src.count;
+		tree_count = src.tree_count;
 		return (root);
 	}
 
@@ -1181,7 +1186,7 @@ namespace FT_NAMESPACE
 			tmp->left->parent = target;
 
 		/* tmp takes as parent it grand-parent */
-		tmp->parent = x->parent;
+		tmp->parent = target->parent;
 
 		/* Change the root if the root is the target */
 		if (target == root)
@@ -1207,7 +1212,7 @@ namespace FT_NAMESPACE
 
 		Node_Ptr const tmp = sget_left(target);
 
-		if ((target->left = tamp->right))
+		if ((target->left = tmp->right))
 			tmp->right = target;
 		tmp->parent = target->parent;
 		if (target == root)
@@ -1222,7 +1227,7 @@ namespace FT_NAMESPACE
 
 	template <class K, class V, class KV, class C, class A>
 	static void
-	aux_rebalance_tree(typename RedBlackTree<K, V, KV, C, A>::Node_Ptr& const target,
+	aux_rebalance_tree(typename RedBlackTree<K, V, KV, C, A>::Node_Ptr const& target,
 	typename RedBlackTree<K, V, KV, C, A>::Node_Ptr const parent_child,
 	typename RedBlackTree<K, V, KV, C, A>::Node_Ptr const grand_parent_child,
 	void (&rot1)(typename RedBlackTree<K, V, KV, C, A>::Node_Ptr const, typename RedBlackTree<K, V, KV, C, A>::Node_Ptr&),
@@ -1311,7 +1316,8 @@ namespace FT_NAMESPACE
 	template <class K, class V, class KV, class C, class A>
 	static bool
 	aux_erase_rebalance(typename RedBlackTree<K, V, KV, C, A>::Node_Ptr& tmp,
-	typename RedBlackTree<K, V, KV, C, A>::Node_Ptr& parent_tmp, bool is_right)
+	typename RedBlackTree<K, V, KV, C, A>::Node_Ptr& parent_tmp, bool is_right,
+	typename RedBlackTree<K, V, KV, C, A>::Node_Ptr& root)
 	throw()
 	{
 		typedef typename RedBlackTree<K, V, KV, C, A>::Node_Ptr Node_Ptr;
@@ -1328,14 +1334,14 @@ namespace FT_NAMESPACE
 		{
 			brother->color = RBT_Black;
 			parent_tmp->color = RBT_Red;
-			rot[is_right](parent_tmp, get_root());
+			rot[is_right](parent_tmp, root);
 			brother = is_right ? parent_tmp->right : parent_tmp->left;
 		}
 
 		if ((!is_right && (brother->left == 0 || brother->left->color == RBT_Black)
 			&& (brother->right == 0 || brother->right->color == RBT_Black))
 			|| ((is_right && (brother->right == 0 || brother->right->color == RBT_Black)
-			&& (brother->left == 0 || brother->right->color == RBT_Black)))
+			&& (brother->left == 0 || brother->right->color == RBT_Black))))
 		{
 			brother->color = RBT_Red;
 			tmp = parent_tmp;
@@ -1347,14 +1353,14 @@ namespace FT_NAMESPACE
 			{
 				brother->left->color = RBT_Black;
 				brother->color = RBT_Red;
-				rot[!is_right](brother, get_root());
+				rot[!is_right](brother, root);
 				brother = parent_tmp->right;
 			}
 			brother->color = parent_tmp->color;
 			parent_tmp->color = RBT_Black;
 			if ((is_right && brother->left) || (!is_right && brother->right))
 				!is_right ? brother->right->color : brother->left->color = RBT_Black;
-			rot[is_right](parent_tmp, get_root());
+			rot[is_right](parent_tmp, root);
 			return (true);
 		}
 		return (false);
@@ -1432,7 +1438,7 @@ namespace FT_NAMESPACE
 				if (target->parent->left == target)
 					target->parent->left = tmp;
 				else
-					arget->parent->right = tmp;
+					target->parent->right = tmp;
 			}
 
 			// TO DO: Is it worth to make a function for this condition ?
@@ -1457,9 +1463,9 @@ namespace FT_NAMESPACE
 		{
 			while (tmp != get_root() && (!tmp || tmp->color == RBT_Black))
 			{
-				if (tmp == tmp_parent->left && aux_erase_rebalance(tmp, tmp_parent, false))
+				if (tmp == tmp_parent->left && aux_erase_rebalance(tmp, tmp_parent, false, get_root()))
 					break ;
-				else if (aux_erase_rebalance(tmp, tmp_parent, true))
+				else if (aux_erase_rebalance(tmp, tmp_parent, true, get_root()))
 					break ;
 
 				if (tmp)
@@ -1493,11 +1499,12 @@ namespace FT_NAMESPACE
 		{
 			y = x;
 			if ((cmp = key_compare(k, sget_key(x))))
-				x = sget_left(x);
+				x = x->left;
 			else
-				x = sget_right(x);
+				x = x->right;
 		}
 		iterator i(y);
+		
 
 		/* If no match */
 		if (cmp)
@@ -1535,7 +1542,8 @@ namespace FT_NAMESPACE
 		while (x)
 		{
 			y = x;
-			if ((cmp = key_compare(k, sget_key(x))))
+			// TO DO: Check this function
+			if (key_compare(k, sget_key(x)))
 				x = sget_left(x);
 			else
 				x = sget_right(x);
@@ -1555,6 +1563,7 @@ namespace FT_NAMESPACE
 	throw()
 	{
 		iterator pos = position; // TO DO: const cast method in iterator
+		iterator before = pos; // TO DO CHECK THIS
 
 		/* If the requested position is the last node. */
 		if (pos == end())
@@ -1568,10 +1577,9 @@ namespace FT_NAMESPACE
 		}
 
 		/* If is not the last and the comparison is false try before*/
+
 		else if (key_compare(k, sget_key(pos.node)))
 		{
-			iterator before = pos;
-
 			/* If pos is the begin */
 			if (pos.node == get_leftmost())
 				return (std::pair<Node_Ptr, Node_Ptr>(get_leftmost(), get_leftmost()));
@@ -1586,11 +1594,11 @@ namespace FT_NAMESPACE
 		}
 
 		/* Else if the inverse comparison is false try after */
-		else i f(key_compare(sget_key(pos.node), k))
+		else if(key_compare(sget_key(pos.node), k))
 		{
 			iterator after = pos;
 
-				/* If pos is the begin */
+			/* If pos is the begin */
 			if (pos.node == get_rightmost())
 				return (std::pair<Node_Ptr, Node_Ptr>(0, get_rightmost()));
 
@@ -1619,6 +1627,7 @@ namespace FT_NAMESPACE
 	throw()
 	{
 		iterator pos = position; // TO DO: const cast method in iterator
+		iterator before = pos; // TO DO CHECK
 
 		/* If the requested position is the last node. */
 		if (pos == end())
@@ -1634,8 +1643,6 @@ namespace FT_NAMESPACE
 		/* If is not the last and the comparison is false try before*/
 		else if (key_compare(k, sget_key(pos.node)))
 		{
-			iterator before = pos;
-
 			/* If pos is the begin */
 			if (pos.node == get_leftmost())
 				return (std::pair<Node_Ptr, Node_Ptr>(get_leftmost(), get_leftmost()));
@@ -1650,7 +1657,7 @@ namespace FT_NAMESPACE
 		}
 
 		/* Else if the inverse comparison is false try after */
-		else i f(key_compare(sget_key(pos.node), k))
+		else if(key_compare(sget_key(pos.node), k))
 		{
 			iterator after = pos;
 
@@ -1713,7 +1720,7 @@ namespace FT_NAMESPACE
 	throw(::std::bad_alloc)
 	{
 		/* Get the position to insert */
-		std::pair<Node_Ptr, Node_Ptr> pos = aux_insert_equal_pos(Key_Val()(value));
+		std::pair<Node_Ptr, Node_Ptr> pos = aux_insert_equal_pos(KV()(value));
 
 		/* Insert the data */
 		Node_Alloc nd(*this);
@@ -1733,11 +1740,11 @@ namespace FT_NAMESPACE
 	template <class K, class V, class KV, class C, class A>
 	template <typename NodeGen>
 	typename RedBlackTree<K, V, KV, C, A>::iterator
-	RedBlackTree<K, V, KV, C, A>::aux_insert_unique(const_iterator pos, const_reference value, NodeGen& node_gen)
+	RedBlackTree<K, V, KV, C, A>::aux_insert_unique(const_iterator p, const_reference value, NodeGen& node_gen)
 	throw(::std::bad_alloc)
 	{
 		/* Get the index of the insertion */
-		std::pair<Node_Ptr, Node_Ptr> pos = aux_insert_hint_unique_pos(pos, Key_Val()(value));
+		std::pair<Node_Ptr, Node_Ptr> pos = aux_insert_hint_unique_pos(p, KV()(value));
 
 		/* If the value is unique proceed to the insertion */
 		if (pos.second)
@@ -1759,11 +1766,11 @@ namespace FT_NAMESPACE
 	template <class K, class V, class KV, class C, class A>
 	template <typename NodeGen>
 	typename RedBlackTree<K, V, KV, C, A>::iterator
-	RedBlackTree<K, V, KV, C, A>::aux_insert_equal(const_iterator pos, const_reference value, NodeGen& node_gen)
+	RedBlackTree<K, V, KV, C, A>::aux_insert_equal(const_iterator p, const_reference value, NodeGen& node_gen)
 	throw(::std::bad_alloc)
 	{
 		/* Get the index of the insertion */
-		std::pair<Node_Ptr, Node_Ptr> pos = aux_insert_hint_equal_pos(pos, Key_Val()(value));
+		std::pair<Node_Ptr, Node_Ptr> pos = aux_insert_hint_equal_pos(p, KV()(value));
 
 		/* Check for no match and then proced to insert */
 		if (pos.second)
@@ -1826,7 +1833,7 @@ namespace FT_NAMESPACE
 	throw(::std::bad_alloc)
 	{
 		/* Check if is a left insertion */
-		bool is_left_insertion = first || last = get_end() || key_compare(Key_Val()(value, sget_key(last)));
+		bool is_left_insertion = first || last = get_end() || key_compare(KV()(value), sget_key(last));
 
 		/* Allocate a new node */
 		Link_type nd = node_gen(value);
@@ -1851,7 +1858,7 @@ namespace FT_NAMESPACE
 	throw(::std::bad_alloc)
 	{
 		/* Check if is a left insertion */
-		bool is_left_insertion = target == get_end() || !key_compare(sget_key(target), Key_Val()(value));
+		bool is_left_insertion = target == get_end() || !key_compare(sget_key(target), KV()(value));
 
 		/* Allocate a new node */
 		Link_type nd = create_node(value);
@@ -1885,7 +1892,7 @@ namespace FT_NAMESPACE
 		{
 			target = i;
 			/* Search the lower equal node */
-			if (!key_compare(sget_key(i), Key_Val(value)))
+			if (!key_compare(sget_key(i), Key_Val()(value)))
 				sget_left(i);
 			else
 				sget_right(i);
@@ -1910,9 +1917,9 @@ namespace FT_NAMESPACE
 	{
 		while (target)
 		{
-			aux_erase(sget_right(target));
+			aux_erase(target->right);
 			Link_type tmp = target;
-			target = sget_left(target);
+			target = target->left;
 			drop_node(tmp);
 		}
 	}
@@ -2103,7 +2110,7 @@ namespace FT_NAMESPACE
 	template <typename Arg>
 	typename RedBlackTree<K, V, KV, C, A>::Link_type
 	RedBlackTree<K, V, KV, C, A>::Node_Alloc::operator()(const Arg arg)
-	throw (std::bad_alloc)
+	throw (::std::bad_alloc)
 	{ return (rbtree.create_node(arg)); }
 
 
@@ -2115,7 +2122,8 @@ namespace FT_NAMESPACE
 	 * 	@brief Default Constructor
 	*/
 	template <class K, class V, class KV, class C, class A>
-	RedBlackTree() { }
+	RedBlackTree<K, V, KV, C, A>::RedBlackTree()
+	{ }
 
 	/**
 	 * 	@brief Constructor
@@ -2124,8 +2132,9 @@ namespace FT_NAMESPACE
 	 * 	@param alloc An allocator.
 	*/
 	template <class K, class V, class KV, class C, class A>
-	RedBlackTree<K, V, KV, C, A>::RedBlackTree(const Compare& cmp, const allocator_type& alloc)
-	: RBT_Base(cmp, Node_Ptr(alloc))
+	RedBlackTree<K, V, KV, C, A>::RedBlackTree(const C& cmp, const allocator_type& alloc)
+	: RBT_Base<V, C, A>(cmp, RBT_Node<V>(), alloc)
+	// TO DO: Check this
 	{ }
 
 	/**
@@ -2169,7 +2178,7 @@ namespace FT_NAMESPACE
 	*/
 	template <class K, class V, class KV, class C, class A>
 	inline typename RedBlackTree<K, V, KV, C, A>::const_iterator
-	begin() const
+	RedBlackTree<K, V, KV, C, A>::begin() const
 	{ return (const_iterator(get_leftmost())); }
 
 	/**
@@ -2244,7 +2253,7 @@ namespace FT_NAMESPACE
 	template <class K, class V, class KV, class C, class A>
 	inline bool
 	RedBlackTree<K, V, KV, C, A>::empty() const
-	{ return (count == 0); }
+	{ return (tree_count == 0); }
 
 	/**
 	 * 	@brief size
@@ -2254,7 +2263,7 @@ namespace FT_NAMESPACE
 	template <class K, class V, class KV, class C, class A>
 	inline typename RedBlackTree<K, V, KV, C, A>::size_type
 	RedBlackTree<K, V, KV, C, A>::size() const
-	{ return (count); }
+	{ return (tree_count); }
 
 	/**
 	 * 	@brief max_size
@@ -2421,8 +2430,7 @@ namespace FT_NAMESPACE
 		/* Check for the end or return the lower match */
 		if (match == end() || key_compare(k, sget_key(match.node)))
 			return (end());
-		else
-			return (match);
+		return (match);
 	}
 
 	/**
@@ -2448,7 +2456,7 @@ namespace FT_NAMESPACE
 				x = sget_right(x);
 
 			/* Inverse key check false go left */
-			else if (key_compare(k, sget_key(x))
+			else if (key_compare(k, sget_key(x)))
 			{
 				/* Store last left node */
 				y = x;
@@ -2494,7 +2502,7 @@ namespace FT_NAMESPACE
 				x = sget_right(x);
 
 			/* Inverse key check false go left */
-			else if (key_compare(k, sget_key(x))
+			else if (key_compare(k, sget_key(x)))
 			{
 				/* Store last left node */
 				y = x;
@@ -2529,7 +2537,7 @@ namespace FT_NAMESPACE
 
 	template <class K, class V, class KV, class C, class A>
 	inline typename RedBlackTree<K, V, KV, C, A>::iterator
-	upper_bound(const key_type& k)
+	RedBlackTree<K, V, KV, C, A>::upper_bound(const key_type& k)
 	{ return (aux_upper_bound(get_begin(), get_end(), k)); }
 
 	template <class K, class V, class KV, class C, class A>
@@ -2547,7 +2555,7 @@ namespace FT_NAMESPACE
 	 * 	@return The %RedBlackTree key compare.
 	*/
 	template <class K, class V, class KV, class C, class A>
-	inline typename RedBlackTree<K, V, KV, C, A>::Compare
+	inline C // mmm //typename RedBlackTree<K, V, KV, C, A>::Compare
 	RedBlackTree<K, V, KV, C, A>::key_comp() const
 	{ return (key_compare); }
 
@@ -2567,12 +2575,12 @@ namespace FT_NAMESPACE
 	template <class K, class V, class KV, class C, class A>
 	inline bool
 	operator==(const RedBlackTree<K, V, KV, C, A>& lhs, const RedBlackTree<K, V, KV, C, A>& rhs)
-	{ return (lhs.size() == rhs.size() && std::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()); }
+	{ return (lhs.size() == rhs.size() && std::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end())); }
 
 	template <class K, class V, class KV, class C, class A>
 	inline bool
 	operator<(const RedBlackTree<K, V, KV, C, A>& lhs, const RedBlackTree<K, V, KV, C, A>& rhs)
-	{ return (std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), ehs.end())); }
+	{ return (std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end())); }
 
 	template <class K, class V, class KV, class C, class A>
 	inline bool
