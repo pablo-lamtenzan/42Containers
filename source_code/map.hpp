@@ -104,7 +104,7 @@ namespace FT_NAMESPACE
 		size_type				max_size() const;
 
 		/* Modifiers */
-		void					clear() const;
+		void					clear();
 		::std::pair<iterator, bool>	insert(const_reference pair);
 		iterator				insert(iterator pos, const_reference pair);
 		template <typename InputIt>
@@ -112,7 +112,7 @@ namespace FT_NAMESPACE
 		void 					erase(iterator pos);
 		size_type				erase(const key_type& k);
 		void					erase(iterator first, iterator last);
-		void					swap(const map& other);
+		void					swap(map& other);
 
 		/* Lookup */
 		iterator				find(const key_type& k);
@@ -399,7 +399,7 @@ namespace FT_NAMESPACE
 	*/
 	template <class Key, class T, class Compare, class Alloc>
 	inline void
-	map<Key, T, Compare, Alloc>::clear() const
+	map<Key, T, Compare, Alloc>::clear()
 	{ tree.clear(); }
 
 	/**
@@ -489,7 +489,7 @@ namespace FT_NAMESPACE
 	*/
 	template <class Key, class T, class Compare, class Alloc>
 	inline void
-	map<Key, T, Compare, Alloc>::swap(const map& other)
+	map<Key, T, Compare, Alloc>::swap(map& other)
 	{ tree.swap(other.tree); }
 
 	////////////
