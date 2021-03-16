@@ -116,7 +116,7 @@ namespace FT_NAMESPACE
 
 		/* Lookup */
 		iterator				find(const key_type& k);
-		// TO DO: add count
+		size_type				count(const key_type& k) const;
 		::std::pair<iterator, iterator>	equal_range(const key_type& k);
 		iterator				lower_bound(const key_type& k);
 		const_iterator			lower_bound(const key_type& k) const;
@@ -509,6 +509,18 @@ namespace FT_NAMESPACE
 	{ return (tree.find(k)); }
 
 	/**
+	 * 	@brief find
+	 * 
+	 * 	@param k The key of the pair to find.
+	 * 
+	 * 	@return The the amount of elements maching with the given key @p k.
+	*/
+	template <class Key, class T, class Compare, class Alloc>
+	inline typename map<Key, T, Compare, Alloc>::size_type
+	map<Key, T, Compare, Alloc>::count(const key_type& k) const
+	{ return (tree.count(k)); }
+
+	/**
 	 * 	@brief equal_range
 	 * 
 	 * 	@param k A key.
@@ -621,22 +633,22 @@ namespace FT_NAMESPACE
 	template <typename Key, typename T, typename Compare, typename Alloc>
 	inline bool
 	operator!=(const map<Key, T, Compare, Alloc>& lhs, const map<Key, T, Compare, Alloc>& rhs)
-	{ return (lhs.tree != rhs.tree); }
+	{ return (!(lhs == rhs)); }
 
 	template <typename Key, typename T, typename Compare, typename Alloc>
 	inline bool
 	operator>(const map<Key, T, Compare, Alloc>& lhs, const map<Key, T, Compare, Alloc>& rhs)
-	{ return (lhs.tree > rhs.tree); }
+	{ return (rhs < lhs); }
 
 	template <typename Key, typename T, typename Compare, typename Alloc>
 	inline bool
 	operator<=(const map<Key, T, Compare, Alloc>& lhs, const map<Key, T, Compare, Alloc>& rhs)
-	{ return (lhs.tree <= rhs.tree); }
+	{ return (!(lhs > rhs)); }
 
 	template <typename Key, typename T, typename Compare, typename Alloc>
 	inline bool
 	operator>=(const map<Key, T, Compare, Alloc>& lhs, const map<Key, T, Compare, Alloc>& rhs)
-	{ return (lhs.tree >= rhs.tree); }
+	{ return (!(lhs < rhs)); }
 	//@}
 
 	/**

@@ -8,6 +8,10 @@
  * 	Deeper explenation in wikipedia.
  */
 
+// TO DO:
+// - Const iterator incrememtation / decrementation is commented
+// - Change std::distance in count by my distance
+
 #pragma once
 
 # include "ft_iterator.hpp"
@@ -380,49 +384,30 @@ namespace FT_NAMESPACE
 	// Red Black tree iterator //
 	/////////////////////////////
 
-	/**
-	 * 	@brief RBT Iterator
-	 * 
-	 * 	@tparam T The type of the value holded by the node.
-	 * 	@tparam T_Ref A reference to T.
-	 * 	@tparam T_Ptr A pointer to T.
-	 * 
-	 * 	NOTE: Using T_ref as const and T_ptr this class can be define a const iterator.
-	*/
-	template <class T, class T_Ref, class T_Ptr>
+	template <typename T>
 	struct RBT_iterator
 	{
 		/* Member types */
 
-		typedef T					value_type;
-		typedef T_Ref				reference;
-		typedef const value_type&	const_reference;
-		typedef T_Ptr				pointer;
-		typedef const value_type*	const_pointer;
+		typedef T			value_type;
+		typedef value_type&	reference;
+		typedef value_type*	pointer;
 
-		typedef bidirectional_iterator_tag	iterator_tag;
+		typedef bidirectional_iterator_tag	iterator_category;
 		typedef std::ptrdiff_t				difference_type;
 
-		typedef RBT_iterator<value_type, reference, pointer>			Self;
-		typedef const RBT_iterator<T, const_reference, const_pointer>	Const_Self;
-
-		typedef typename RBT_Node_Base::Base_Ptr		Node_Ptr;
-		typedef RBT_Node<T>*							Link_type;
+		typedef RBT_iterator<value_type>	Self;
+		typedef RBT_Node_Base::Base_Ptr		Node_Ptr;
+		typedef RBT_Node<value_type>*		Link_type;
 
 		/* Core */
 
 		Node_Ptr		node;
-		// TO DO: Node must Const_Node_Ptr for Const_Self (for the moment only fucntional of mutable instances)
-		// I Must typedef the type of the node depending of the iterator instance.
 
 		/* Member functions */
 
 		RBT_iterator();
-		RBT_iterator(Node_Ptr x);
-		RBT_iterator(Const_Self& it);
-
-		Self			it_const_cast();
-		Const_Self		it_const_cast() const;
+		explicit RBT_iterator(Node_Ptr x);
 
 		/* Requires read/write iterators */
 		reference		operator*() const;
@@ -430,103 +415,202 @@ namespace FT_NAMESPACE
 
 		/* Require forward iterators */
 		Self&			operator++();
-		Const_Self&		operator++() const;
 		Self			operator++(int);
-		Const_Self		operator++(int) const;
 
 		/* Require bidirectional iterators */
 		Self&			operator--();
-		Const_Self&		operator--() const;
 		Self			operator--(int);
-		Const_Self		operator--(int) const;
 
 		/* Non members */
 		friend bool	operator==(const Self&, const Self&);
 		friend bool	operator!=(const Self&, const Self&);
-		friend bool	operator==(const Const_Self&, const Const_Self&);
-		friend bool	operator!=(const Const_Self&, const Const_Self&);
 	};
 
 	/**
 	 * 	@brief Default constructor
 	*/
-	template <class T, class T_Ref, class T_Ptr>
-	RBT_iterator<T, T_Ref, T_Ptr>::RBT_iterator()
+	template <typename T>
+	RBT_iterator<T>::RBT_iterator()
 	: node()
 	{ }
 
 	/**
 	 * 	@brief Constructor
 	*/
-	template <class T, class T_Ref, class T_Ptr>
-	RBT_iterator<T, T_Ref, T_Ptr>::RBT_iterator(Node_Ptr x)
+	template <typename T>
+	RBT_iterator<T>::RBT_iterator(Node_Ptr x)
 	: node(x)
 	{ }
-
-	/**
-	 * 	@brief Convert const constructor
-	*/
-	template <class T, class T_Ref, class T_Ptr>
-	RBT_iterator<T, T_Ref, T_Ptr>::RBT_iterator(Const_Self& it)
-	: node(it.node)
-	{ }
-
-	template <class T, class T_Ref, class T_Ptr>
-	typename RBT_iterator<T, T_Ref, T_Ptr>::Self
-	RBT_iterator<T, T_Ref, T_Ptr>::it_const_cast()
-	{ return (Self(const_cast<typename Self::Node_Ptr>(node))); }
-
-	template <class T, class T_Ref, class T_Ptr>
-	typename RBT_iterator<T, T_Ref, T_Ptr>::Const_Self
-	RBT_iterator<T, T_Ref, T_Ptr>::it_const_cast() const
-	{ return (Self(const_cast<typename Const_Self::Node_Ptr>(node))); }
 
 	///////////////////////////////////
 	// Requires read/write iterators //
 	///////////////////////////////////
 
-	template <class T, class T_Ref, class T_Ptr>
-	inline typename RBT_iterator<T, T_Ref, T_Ptr>::reference
-	RBT_iterator<T, T_Ref, T_Ptr>::operator*() const
+	template <typename T>
+	inline typename RBT_iterator<T>::reference
+	RBT_iterator<T>::operator*() const
 	{ return (*static_cast<Link_type>(node)->Node_get_value_ptr()); }
 
-	template <class T, class T_Ref, class T_Ptr>
-	inline typename RBT_iterator<T, T_Ref, T_Ptr>::pointer
-	RBT_iterator<T, T_Ref, T_Ptr>::operator->() const
+	template <typename T>
+	inline typename RBT_iterator<T>::pointer
+	RBT_iterator<T>::operator->() const
 	{ return (static_cast<Link_type>(node)->Node_get_value_ptr()); }
-
+	
 	////////////////////////////////
 	// Requires forward iterators //
 	////////////////////////////////
 
-	template <class T, class T_Ref, class T_Ptr>
-	inline typename RBT_iterator<T, T_Ref, T_Ptr>::Self&
-	RBT_iterator<T, T_Ref, T_Ptr>::operator++()
+	template <typename T>
+	inline typename RBT_iterator<T>::Self&
+	RBT_iterator<T>::operator++()
 	{
 		node = RBT_increment(node);
 		return (*this);
 	}
 
-	template <class T, class T_Ref, class T_Ptr>
-	inline typename RBT_iterator<T, T_Ref, T_Ptr>::Const_Self&
-	RBT_iterator<T, T_Ref, T_Ptr>::operator++() const
-	{
-		operator++();
-		return (*this);
-	}
-
-	template <class T, class T_Ref, class T_Ptr>
-	inline typename RBT_iterator<T, T_Ref, T_Ptr>::Self
-	RBT_iterator<T, T_Ref, T_Ptr>::operator++(int)
+	template <typename T>
+	inline typename RBT_iterator<T>::Self
+	RBT_iterator<T>::operator++(int)
 	{
 		Self tmp = *this;
-		operator++();
+		node = RBT_increment(node);
 		return (tmp);
 	}
 
-	template <class T, class T_Ref, class T_Ptr>
-	inline typename RBT_iterator<T, T_Ref, T_Ptr>::Const_Self
-	RBT_iterator<T, T_Ref, T_Ptr>::operator++(int) const
+	//////////////////////////////////////
+	// Requires bidirectional iterators //
+	//////////////////////////////////////
+
+	template <typename T>
+	inline typename RBT_iterator<T>::Self&
+	RBT_iterator<T>::operator--()
+	{
+		node = RBT_decrement(node);
+		return (*this);
+	}
+
+	template <typename T>
+	inline typename RBT_iterator<T>::Self
+	RBT_iterator<T>::operator--(int)
+	{
+		Self tmp = *this;
+		node = RBT_decrement(node);
+		return (tmp);
+	}
+
+	/////////////////
+	// Non members //
+	/////////////////
+
+	template <typename T>
+	inline bool
+	operator==(const typename RBT_iterator<T>::Self& lhs, const typename RBT_iterator<T>::Self& rhs)
+	{ return (lhs.node == rhs.node); }
+
+	template <typename T>
+	inline bool
+	operator!=(const typename RBT_iterator<T>::Self& lhs, const typename RBT_iterator<T>::Self& rhs)
+	{ return (lhs.node != rhs.node); }
+
+	///////////////////////////////////
+	// Red Black tree const iterator //
+	///////////////////////////////////
+
+	template <typename T>
+	struct RBT_const_iterator
+	{
+		/* Member types */
+
+		typedef T			value_type;
+		typedef value_type&	reference;
+		typedef value_type*	pointer;
+
+		typedef RBT_iterator<value_type> iterator;
+
+		typedef bidirectional_iterator_tag	iterator_category;
+		typedef std::ptrdiff_t				difference_type;
+
+		typedef RBT_const_iterator<value_type>	Self;
+		typedef RBT_Node_Base::Const_Base_Ptr	Node_Ptr;
+		typedef const RBT_Node<value_type>*		Link_type;
+
+		/* Core */
+
+		Node_Ptr	node;
+
+		/* Member functions */
+
+		RBT_const_iterator();
+		explicit RBT_const_iterator(Node_Ptr x);
+		RBT_const_iterator(const iterator& it);
+		iterator	it_const_cast() const;
+
+		/* Requires read/write iterators */
+		reference		operator*() const;
+		pointer			operator->() const;
+
+		/* Require forward iterators */
+		Self&			operator++();
+		Self			operator++(int);
+
+		/* Require bidirectional iterators */
+		Self&			operator--();
+		Self			operator--(int);
+
+		/* Non members */
+		friend bool	operator==(const Self&, const Self&);
+		friend bool	operator!=(const Self&, const Self&);
+	};
+
+	template <typename T>
+	RBT_const_iterator<T>::RBT_const_iterator()
+	: node()
+	{ }
+
+	template <typename T>
+	RBT_const_iterator<T>::RBT_const_iterator(Node_Ptr x)
+	: node(x)
+	{ }
+
+	template <typename T>
+	RBT_const_iterator<T>::RBT_const_iterator(const iterator& it)
+	: node(it.node)
+	{ }
+
+	template <typename T>
+	inline typename RBT_const_iterator<T>::iterator
+	RBT_const_iterator<T>::it_const_cast() const
+	{ return (iterator(const_cast<typename iterator::Node_Ptr>(node))); }
+
+	///////////////////////////////////
+	// Requires read/write iterators //
+	///////////////////////////////////
+
+	template <typename T>
+	inline typename RBT_const_iterator<T>::reference
+	RBT_const_iterator<T>::operator*() const
+	{ return (*static_cast<Link_type>(node)->Node_get_value_ptr()); }
+
+	template <typename T>
+	inline typename RBT_const_iterator<T>::pointer
+	RBT_const_iterator<T>::operator->() const
+	{ return (static_cast<Link_type>(node)->Node_get_value_ptr()); }
+	
+	////////////////////////////////
+	// Requires forward iterators //
+	////////////////////////////////
+
+	template <typename T>
+	inline typename RBT_const_iterator<T>::Self&
+	RBT_const_iterator<T>::operator++()
+	{
+		//node = RBT_increment(node);
+		return (*this);
+	}
+
+	template <typename T>
+	inline typename RBT_const_iterator<T>::Self
+	RBT_const_iterator<T>::operator++(int)
 	{
 		Self tmp = *this;
 		operator++();
@@ -537,34 +621,17 @@ namespace FT_NAMESPACE
 	// Requires bidirectional iterators //
 	//////////////////////////////////////
 
-	template <class T, class T_Ref, class T_Ptr>
-	inline typename RBT_iterator<T, T_Ref, T_Ptr>::Self&
-	RBT_iterator<T, T_Ref, T_Ptr>::operator--()
+	template <typename T>
+	inline typename RBT_const_iterator<T>::Self&
+	RBT_const_iterator<T>::operator--()
 	{
-		node = RBT_decrement(node);
+		//node = RBT_decrement(node);
 		return (*this);
 	}
 
-	template <class T, class T_Ref, class T_Ptr>
-	inline typename RBT_iterator<T, T_Ref, T_Ptr>::Const_Self&
-	RBT_iterator<T, T_Ref, T_Ptr>::operator--() const
-	{
-		operator--();
-		return (*this);
-	}
-
-	template <class T, class T_Ref, class T_Ptr>
-	inline typename RBT_iterator<T, T_Ref, T_Ptr>::Self
-	RBT_iterator<T, T_Ref, T_Ptr>::operator--(int)
-	{
-		Self tmp = *this;
-		operator--();
-		return (tmp);
-	}
-
-	template <class T, class T_Ref, class T_Ptr>
-	inline typename RBT_iterator<T, T_Ref, T_Ptr>::Const_Self
-	RBT_iterator<T, T_Ref, T_Ptr>::operator--(int) const
+	template <typename T>
+	inline typename RBT_const_iterator<T>::Self
+	RBT_const_iterator<T>::operator--(int)
 	{
 		Self tmp = *this;
 		operator--();
@@ -575,28 +642,14 @@ namespace FT_NAMESPACE
 	// Non members //
 	/////////////////
 
-	template <class T, class T_Ref, class T_Ptr>
+	template <typename T>
 	inline bool
-	operator==(const typename RBT_iterator<T, T_Ref, T_Ptr>::Self& lhs,
-	const typename RBT_iterator<T, T_Ref, T_Ptr>::Self& rhs)
+	operator==(const typename RBT_const_iterator<T>::Self& lhs, const typename RBT_const_iterator<T>::Self& rhs)
 	{ return (lhs.node == rhs.node); }
 
-	template <class T, class T_Ref, class T_Ptr>
+	template <typename T>
 	inline bool
-	operator!=(const typename RBT_iterator<T, T_Ref, T_Ptr>::Self& lhs,
-	const typename RBT_iterator<T, T_Ref, T_Ptr>::Self& rhs)
-	{ return (lhs.node != rhs.node); }
-
-	template <class T, class T_Ref, class T_Ptr>
-	inline bool
-	operator==(const typename RBT_iterator<T, T_Ref, T_Ptr>::Const_Self& lhs,
-	const typename RBT_iterator<T, T_Ref, T_Ptr>::Const_Self& rhs)
-	{ return (lhs.node == rhs.node); }
-
-	template <class T, class T_Ref, class T_Ptr>
-	inline bool
-	operator!=(const typename RBT_iterator<T, T_Ref, T_Ptr>::Const_Self& lhs,
-	const typename RBT_iterator<T, T_Ref, T_Ptr>::Const_Self& rhs)
+	operator!=(const typename RBT_const_iterator<T>::Self& lhs, const typename RBT_const_iterator<T>::Self& rhs)
 	{ return (lhs.node != rhs.node); }
 
 	/////////////////////////
@@ -718,8 +771,8 @@ namespace FT_NAMESPACE
 		typedef std::ptrdiff_t		difference_size;
 		typedef Alloc				allocator_type;
 
-		typedef RBT_iterator<value_type, reference, pointer>				iterator;
-		typedef RBT_iterator<value_type, const_reference, const_pointer>	const_iterator;
+		typedef RBT_iterator<value_type>		iterator;
+		typedef RBT_const_iterator<value_type>	const_iterator;
 
 		typedef reverse_iterator<const_iterator>	const_reverse_iterator;
 		typedef reverse_iterator<iterator>			reverse_iterator;
@@ -730,6 +783,8 @@ namespace FT_NAMESPACE
 		using RBT_Base<Val, Compare, Alloc>::tree_count;
 		using RBT_Base<Val, Compare, Alloc>::key_compare;
 		using RBT_Base<Val, Compare, Alloc>::memory;
+		using RBT_Base<Val, Compare, Alloc>::Header_reset;
+		using RBT_Base<Val, Compare, Alloc>::Header_move_data;
 
 		/* Auxiliar functions*/
 
@@ -974,6 +1029,7 @@ namespace FT_NAMESPACE
 	throw()
 	{ return (sget_key(static_cast<Const_Link_type>(target))); }
 
+	/// Node_Ptr to Link_type conversion
 	template <class K, class V, class KV, class C, class A>
 	inline typename RedBlackTree<K, V, KV, C, A>::Link_type
 	RedBlackTree<K, V, KV, C, A>::sget_left(Node_Ptr target)
@@ -981,6 +1037,7 @@ namespace FT_NAMESPACE
 	{ return (static_cast<Link_type>(target->left)); }
 
 /*
+	/// Const_Node_Ptr to Const_Link_type conversion
 	template <class K, class V, class KV, class C, class A>
 	inline typename RedBlackTree<K, V, KV, C, A>::Const_Link_type
 	RedBlackTree<K, V, KV, C, A>::sget_left(Const_Node_Ptr target)
@@ -988,6 +1045,7 @@ namespace FT_NAMESPACE
 	{ return (static_cast<Const_Link_type>(target->left)); }
 */
 
+	/// Node_Ptr to Link_type conversion
 	template <class K, class V, class KV, class C, class A>
 	inline typename RedBlackTree<K, V, KV, C, A>::Link_type
 	RedBlackTree<K, V, KV, C, A>::sget_right(Node_Ptr target)
@@ -995,6 +1053,7 @@ namespace FT_NAMESPACE
 	{ return (static_cast<Link_type>(target->right)); }
 
 /*
+	/// Const_Node_Ptr to Const_Link_type conversion
 	template <class K, class V, class KV, class C, class A>
 	inline typename RedBlackTree<K, V, KV, C, A>::Const_Link_type
 	RedBlackTree<K, V, KV, C, A>::sget_right(Const_Node_Ptr target)
@@ -1166,8 +1225,8 @@ namespace FT_NAMESPACE
 		try {
 
 			/* Copy the right branches */
-			if (sget_right(target))
-				sget_right(top) = aux_copy(sget_right(target), top, node_gen);
+			if (target->right)
+				top->right = aux_copy(sget_right(target), top, node_gen);
 
 			/* Link parent - child */
 			parent = top;
@@ -1178,12 +1237,12 @@ namespace FT_NAMESPACE
 			{
 				/* Copy the left branch node */
 				Link_type i = clone_node(target, node_gen);
-				sget_left(parent) = i;
+				parent->left = i;
 				i->parent = parent;
 		
 				/* For each left branch copy the right branch */
-				if (sget_right(target))
-					sget_right(i) = aux_copy(sget_right(target), i, node_gen);
+				if (target->right)
+					i->right = aux_copy(sget_right(target), i, node_gen);
 
 				/* Link parent - child */
 				parent = i;
@@ -1525,9 +1584,11 @@ namespace FT_NAMESPACE
 		{
 			while (tmp != get_root() && (!tmp || tmp->color == RBT_Black))
 			{
-				if (tmp == tmp_parent->left && aux_erase_rebalance(tmp, tmp_parent, false, get_root()))
+				if (tmp == tmp_parent->left && aux_erase_rebalance(static_cast<Node_Ptr>(tmp),
+				static_cast<Node_Ptr>(tmp_parent), false, get_root()))
 					break ;
-				else if (aux_erase_rebalance(tmp, tmp_parent, true, get_root()))
+				else if (aux_erase_rebalance(static_cast<Node_Ptr>(tmp),
+				static_cast<Node_Ptr>(tmp_parent), true, get_root()))
 					break ;
 
 				if (tmp)
@@ -1579,7 +1640,7 @@ namespace FT_NAMESPACE
 		}
 
 		/* If reverse conparison no match return */
-		if (key_compare(sget_right(i.node), k))
+		if (key_compare(sget_key(i.node), k))
 			return (std::pair<Node_Ptr, Node_Ptr>(0, y));
 
 		/* If macthes */
@@ -1976,7 +2037,7 @@ namespace FT_NAMESPACE
 	{
 		while (target)
 		{
-			aux_erase(target->right);
+			aux_erase(sget_right(target));
 			Link_type tmp = target;
 			target = sget_left(target);
 			drop_node(tmp);
@@ -2364,7 +2425,7 @@ namespace FT_NAMESPACE
 	RedBlackTree<K, V, KV, C, A>::clear()
 	{
 		aux_erase(begin());
-		RBT_Header::Header_reset();
+		Header_reset();
 	}
 
 	/**
@@ -2446,10 +2507,10 @@ namespace FT_NAMESPACE
 	{
 		/* *this is empty */
 		if (get_root() == 0 && other.get_root())
-			header.Header_move_data(other.header);
+			Header_move_data(other);
 		/* other is empty */
 		else if (other.get_root() == 0)
-			other.header.Header_move_data(header);
+			other.Header_move_data(*this);
 		/* both aren't empty */
 		else
 		{
@@ -2483,7 +2544,7 @@ namespace FT_NAMESPACE
 	RedBlackTree<K, V, KV, C, A>::count(const key_type& k) const
 	{
 		std::pair<const_iterator, const_iterator> match = equal_range(k);
-		return (size_type(distance(match.first, match.second)));
+		return (size_type(std::distance(match.first, match.second)));
 	}
 
 	/**
