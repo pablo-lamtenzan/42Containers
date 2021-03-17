@@ -118,4 +118,34 @@ namespace FT_NAMESPACE
 	inline const T&
 	min(const T& a, const T& b)
 	{ return (b < a ? b : a); }
+
+	template <typename Arg, typename Result>
+	struct unary_function
+	{
+		/// @c argument_type is the type of the argument.
+		typedef Arg		argument_type;
+		/// @c result_type is the type of the return
+		typedef Result	result_type;
+	};
+
+	/// Operator() calls pair.first
+	template <typename Pair>
+	struct Select_1st
+	: public unary_function<Pair, typename Pair::first_type>
+	{
+		typedef typename Pair::first_type	first_type;
+
+		first_type&			operator()(Pair& x) const;
+		const first_type&	operator()(const Pair& x) const;
+	};
+
+	template <typename Pair>
+	inline typename Select_1st<Pair>::first_type&
+	Select_1st<Pair>::operator()(Pair& x) const
+	{ return (x.first); }
+
+	template <typename Pair>
+	inline const typename Select_1st<Pair>::first_type&
+	Select_1st<Pair>::operator()(const Pair& x) const
+	{ return (x.first); }
 };

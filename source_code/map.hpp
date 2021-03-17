@@ -32,8 +32,7 @@ namespace FT_NAMESPACE
 
 		private:
 
-		typedef RedBlackTree<key_type, value_type, value_type, key_compare, allocator_type>	Tree;
-		// TO DO: 3rd template arg is wrong
+		typedef RedBlackTree<key_type, value_type, Select_1st<value_type>, key_compare, allocator_type>	Tree;
 
 		Tree	tree;
 
