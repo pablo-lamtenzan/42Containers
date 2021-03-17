@@ -148,4 +148,23 @@ namespace FT_NAMESPACE
 	inline const typename Select_1st<Pair>::first_type&
 	Select_1st<Pair>::operator()(const Pair& x) const
 	{ return (x.first); }
+
+	/// Operator() calls just the value
+	template <typename T>
+	struct Identity
+	: public unary_function<T, T>
+	{
+		T&			operator()(T& x) const;
+		const T&	operator()(const T& x) const;
+	};
+
+	template <typename T>
+	inline T&
+	Identity<T>::operator()(T& x) const
+	{ return (x); }
+
+	template <typename T>
+	inline const T&
+	Identity<T>::operator()(const T& x) const
+	{ return (x); }
 };

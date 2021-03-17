@@ -19,8 +19,7 @@ namespace FT_NAMESPACE
 	 * 
 	 * 	Supports bidirectional iterators.
 	*/
-	template <typename Key, typename Compare, typename Alloc = allocator<Key>>
-	// TO DO Compare is init by default
+	template <typename Key, typename Compare = ::std::less<Key>, typename Alloc = allocator<Key>>
 	class set
 	{
 		/* Member types */
@@ -37,8 +36,8 @@ namespace FT_NAMESPACE
 
 		private:
 
-		typedef RedBlackTree<key_type, value_type, value_type, key_compare, allocator_type> Tree;
-		// TO DO: 3rd tempalte arg is incomplete
+		typedef RedBlackTree<key_type, value_type, Identity<value_type>, key_compare, allocator_type> Tree;
+
 		Tree tree;
 
 		/* Imported member types */

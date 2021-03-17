@@ -5,7 +5,7 @@
 
 # pragma once
 
-# include <ft_rbtree.hpp>
+# include "ft_rbtree.hpp"
 # include <functional>
 
 namespace FT_NAMESPACE
@@ -29,6 +29,29 @@ namespace FT_NAMESPACE
 		typedef Compare						key_compare;
 		typedef Alloc						allocator_type;
 
+		private:
+
+		typedef RedBlackTree<key_type, value_type, Select_1st<value_type>, key_compare, allocator_type>	Tree;
+
+		Tree	tree;
+
+		public:
+
+		/* Imported member types */
+
+		typedef typename Tree::reference		reference;
+		typedef typename Tree::const_reference	const_reference;
+		typedef typename Tree::pointer			pointer;
+		typedef typename Tree::const_pointer	const_pointer;
+		typedef typename Tree::size_type		size_type;
+		typedef typename Tree::difference_size	difference_type;
+
+		typedef typename Tree::iterator			iterator;
+		typedef typename Tree::const_iterator	const_iterator;
+
+		typedef typename Tree::reverse_iterator			reverse_iterator;
+		typedef typename Tree::const_reverse_iterator	const_reverse_iterator;
+
 		/* value compare class, used for comparison */
 		struct value_compare : public std::binary_function<value_type, value_type, bool>
 		{
@@ -42,39 +65,15 @@ namespace FT_NAMESPACE
 
 			public:
 
-			value_compare()
+			// value_compare();
 
-			operator()(const_reference lhs, const_reference rhs)
+			key_compare operator()(const_reference lhs, const_reference rhs)
 			{ return (comp(lhs.first, rhs.first)); }
 		};
 
-		private:
-
-		typedef RedBlackTree<key_type, value_type, value_type, key_compare, allocator_type>	Tree;
-		// TO DO: 3rd template arg is wrong
-
-		Tree	tree;
-
-		/* Imported member types */
-
-		public:
-
-		typedef typename Tree::reference		reference;
-		typedef typename Tree::const_reference	const_reference;
-		typedef typename Tree::pointer			pointer;
-		typedef typename Tree::const_pointer	const_pointer;
-		typedef typename Tree::size_type		size_type;
-		typedef typename Tree::difference_type	difference_type;
-
-		typedef typename Tree::iterator			iterator;
-		typedef typename Tree::const_iterator	const_iterator;
-
-		typedef typename Tree::reverse_iterator			reverse_iterator;
-		typedef typename Tree::const_reverse_iterator	const_reverse_iterator;
-
 		/* Member functions */
 		multimap();
-		multimap(const key_compare& comp, const allocator_type& alloc);
+		multimap(const key_compare& comp, const allocator_type& alloc = allocator_type());
 		template <typename InputIt>
 		multimap(InputIt first, InputIt last);
 		template <typename InputIt>
@@ -99,8 +98,8 @@ namespace FT_NAMESPACE
 		size_type		max_size() const;
 
 		/* Modifiers */
-		void			clear() const;
-		::std::pair<iterator, bool>	insert(const_reference pair);
+		void			clear();
+		iterator		insert(const_reference pair);
 		iterator		insert(iterator pos, const_reference pair);
 				template <typename InputIt>
 		void			insert(InputIt first, InputIt last);
@@ -108,11 +107,11 @@ namespace FT_NAMESPACE
 		void 			erase(iterator pos);
 		size_type		erase(const key_type& k);
 		void			erase(iterator first, iterator last);
-		void			swap(const multimap& other);
+		void			swap(multimap& other);
 
 		/* Lookup */
-		// TO DO: add count
 		iterator		find(const key_type& k);
+		size_type		count(const key_type& k) const;
 		::std::pair<iterator, iterator>	equal_range(const key_type& k);
 		iterator		lower_bound(const key_type& k);
 		const_iterator	lower_bound(const key_type& k) const;
@@ -125,9 +124,9 @@ namespace FT_NAMESPACE
 
 		/* Non members */
 		template <typename K1, typename T1, typename C1, typename A1>
-		friend bool	operator==(const multimap<K1, T1, C1, A1>& lhs, const multimap>K1, T1, C1, A1>& rhs);
+		friend bool	operator==(const multimap<K1, T1, C1, A1>& lhs, const multimap<K1, T1, C1, A1>& rhs);
 		template <typename K1, typename T1, typename C1, typename A1>
-		friend bool	operator<(const multimap<K1, T1, C1, A1>& lhs, const multimap>K1, T1, C1, A1>& rhs);
+		friend bool	operator<(const multimap<K1, T1, C1, A1>& lhs, const multimap<K1, T1, C1, A1>& rhs);
 	};
 
 	/**
@@ -334,7 +333,7 @@ namespace FT_NAMESPACE
 	*/
 	template <class Key, class T, class Compare, class Alloc>
 	inline void
-	multimap<Key, T, Compare, Alloc>::clear() const
+	multimap<Key, T, Compare, Alloc>::clear()
 	{ tree.clear(); }
 
 	/**
@@ -345,7 +344,7 @@ namespace FT_NAMESPACE
 	 * 	Attemps to insert @p pair into the %multimap.
 	*/
 	template <class Key, class T, class Compare, class Alloc>
-	inline ::std::pair<typename multimap<Key, T, Compare, Alloc>::iterator, bool>
+	inline typename multimap<Key, T, Compare, Alloc>::iterator
 	multimap<Key, T, Compare, Alloc>::insert(const_reference pair)
 	{ return (tree.aux_insert_equal(pair)); }
 
@@ -424,7 +423,7 @@ namespace FT_NAMESPACE
 	*/
 	template <class Key, class T, class Compare, class Alloc>
 	inline void
-	multimap<Key, T, Compare, Alloc>::swap(const multimap& other)
+	multimap<Key, T, Compare, Alloc>::swap(multimap& other)
 	{ tree.swap(other.tree); }
 
 	////////////
@@ -556,22 +555,22 @@ namespace FT_NAMESPACE
 	template <typename Key, typename T, typename Compare, typename Alloc>
 	inline bool
 	operator!=(const multimap<Key, T, Compare, Alloc>& lhs, const multimap<Key, T, Compare, Alloc>& rhs)
-	{ return (lhs.tree != rhs.tree); }
+	{ return (!(lhs == rhs)); }
 
 	template <typename Key, typename T, typename Compare, typename Alloc>
 	inline bool
 	operator>(const multimap<Key, T, Compare, Alloc>& lhs, const multimap<Key, T, Compare, Alloc>& rhs)
-	{ return (lhs.tree > rhs.tree);	}
+	{ return (rhs < lhs); }
 
 	template <typename Key, typename T, typename Compare, typename Alloc>
 	inline bool
 	operator<=(const multimap<Key, T, Compare, Alloc>& lhs, const multimap<Key, T, Compare, Alloc>& rhs)
-	{ return (lhs.tree <= rhs.tree); }
+	{ return (!(lhs > rhs)); }
 
 	template <typename Key, typename T, typename Compare, typename Alloc>
 	inline bool
 	operator>=(const multimap<Key, T, Compare, Alloc>& lhs, const multimap<Key, T, Compare, Alloc>& rhs)
-	{ return (lhs.tree >= rhs.tree); }
+	{ return (!(lhs < rhs)); }
 	//@}
 
 	/**

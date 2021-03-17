@@ -36,8 +36,8 @@ namespace FT_NAMESPACE
 
 		private:
 
-		typedef RedBlackTree<key_type, value_type, value_type, key_compare, allocator_type> Tree;
-		// TO DO: 3rd tempalte arg is incomplete
+		typedef RedBlackTree<key_type, value_type, Identity<value_type>, key_compare, allocator_type> Tree;
+
 		Tree tree;
 
 		/* Imported member types */
